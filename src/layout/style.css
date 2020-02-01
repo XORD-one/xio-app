@@ -1,0 +1,74 @@
+.socialIcons{
+    order: 1;
+}
+
+.logo{
+    order:2;
+}
+
+.connectButton{
+    order: 3;
+    text-align: right;
+}
+
+
+.layoutHeading{
+    color: white;
+    
+}
+.tableHeader {
+  font-weight: bold !important;
+  color: white !important;
+  border: 0px !important;
+  font-family: "Montserrat", sans-serif !important;
+  letter-spacing: 2px !important;
+  text-align: center !important;
+  padding-top: 0 !important;
+  margin:10px;
+}
+
+.layoutSubHeading{
+    color: rgb(198, 96, 101);
+    font-weight: bold;
+    margin-top: 0px;
+    letter-spacing: 3px;
+}
+
+.childContainer{
+    padding: 32px 20px;
+}
+
+
+
+@media  screen and (max-width: 500px){
+    .socialIcons{
+        order: 2;
+        text-align: center;
+    }
+    
+    .logo{
+        order:1;
+    }
+    
+    .connectButton{
+        order: 3;
+        text-align: center;
+        padding-top: 15px;
+    }
+    
+    .layoutHeading{
+        padding: 20px 20px 0px;
+        font-size: 18px;
+        margin-bottom: 6px;
+    }
+    .layoutSubHeading{
+        font-size: 10px;
+        padding: 0px 30px 10px;    
+    }
+    .tabarText{
+        font-size: 12px;
+    }
+    .childContainer{
+        padding: 32px 5px;
+    }
+}
