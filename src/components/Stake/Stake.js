@@ -107,6 +107,12 @@ const Stake = props => {
     setOpen(false);
   };
 
+  const uptrend="UPTREND (1UP)"
+  const binance="BINANCE (BNB)"
+  const bat="BAT (BAT)"
+  const ethereum="ETHEREUM (ETH)"
+  const opacit="OPACITY (OPQ)"
+
   return (
     <>
       {
@@ -142,28 +148,28 @@ const Stake = props => {
               <DialogContentText
                 style={{ fontFamily: "'Montserrat', sans-serif", fontWeight:'bolder', backgroundColor: "#1C1C1C", color: "#D4D4D4" }}
               >
-                UPTREND 1UP
+                {uptrend}
               </DialogContentText>
 
               <DialogContentText
                 style={{ fontFamily: "'Montserrat', sans-serif", fontWeight:'bolder', backgroundColor: "#1C1C1C", color: "#D4D4D4" }}
               >
-                UPTREND 1UP
+            { bat}
               </DialogContentText>
               <DialogContentText
                 style={{ fontFamily: "'Montserrat', sans-serif", fontWeight:'bolder', backgroundColor: "#1C1C1C", color: "#D4D4D4" }}
               >
-                UPTREND 1UP
+              {binance}
               </DialogContentText>
               <DialogContentText
                 style={{ fontFamily: "'Montserrat', sans-serif", fontWeight:'bolder', backgroundColor: "#1C1C1C", color: "#D4D4D4" }}
               >
-                UPTREND 1UP
+                {ethereum}
               </DialogContentText>
               <DialogContentText
                 style={{ fontFamily: "'Montserrat', sans-serif", fontWeight:'bolder', backgroundColor: "#1C1C1C", color: "#D4D4D4" }}
               >
-                UPTREND 1UP
+                {opacit}
               </DialogContentText>
             </DialogContent>
           </Dialog>

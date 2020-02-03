@@ -110,7 +110,7 @@ const tabBodyRow2_1 = {
   // borderRadius: '3px',
 
   flexDirection: "row",
-  alignItems: "center",
+  // alignItems: "center",
   border: "1px solid #414141",
   backgroundColor: "#1C1C1C",
   borderRadius: "3px"
@@ -166,9 +166,10 @@ const XordId = props => {
                 fontFamily: "'Montserrat', sans-serif",
                 fontStyle: "italic",
                 letterSpacing: "2px",
-                margin:"0px",
+                // margin:"0px",
                 textAlign:"center",
-                marginBottom:"10px"
+                // marginBottom:"10px",
+                // paddingBottom:"10px"
               }}
               className="firstSectionHeadings"
             >
@@ -181,7 +182,8 @@ const XordId = props => {
                 alignSelf: "center",
                 fontWeight: "bold",
                 margin:"0px",
-                textAlign:"center"
+                textAlign:"center",
+                marginBottom:"10px"
               }}
             >
               0
@@ -199,9 +201,9 @@ const XordId = props => {
                 fontFamily: "'Montserrat', sans-serif",
                 fontStyle: "italic",
                 letterSpacing: "2px",
-                margin:"0px",
+                // margin:"0px",
                 textAlign:"center",
-                marginBottom:"10px"
+                // marginBottom:"10px"
               }}
               className="firstSectionHeadings"
             >
@@ -214,7 +216,9 @@ const XordId = props => {
                 alignSelf: "center",
                 fontWeight: "bold",
                 margin:"0px",
-                textAlign:"center"
+                textAlign:"center",
+                marginBottom:"10px",
+
               }}
             >
               0
@@ -232,9 +236,9 @@ const XordId = props => {
                 fontFamily: "'Montserrat', sans-serif",
                 fontStyle: "italic",
                 letterSpacing: "2px",
-                margin:"0px",
+                // margin:"0px",
                 textAlign:"center",
-                marginBottom:"10px"
+                // marginBottom:"10px"
               }}
               className="firstSectionHeadings"
             >
@@ -247,7 +251,9 @@ const XordId = props => {
                 alignSelf: "center",
                 fontWeight: "bold",
                 margin:"0px",
-                textAlign:"center"
+                textAlign:"center",
+                marginBottom:"10px",
+
               }}
             >
               0
@@ -257,13 +263,14 @@ const XordId = props => {
 
         <Grid container item md={12} className="section" >
           <Grid container item justify="center" style={tabBodyRow2_1} md={11}>
-            <Grid item md={12}>
+            <Grid  item md={12} style={{textAlign:'center'}}>
               <h6
                 style={{
                   color: "#C66065",
                   fontFamily: "'Montserrat', sans-serif",
                   fontStyle: "italic",
                   letterSpacing: "2px",
+                  alignSelf:'center'
                 }}
                 
               >
@@ -343,38 +350,38 @@ const XordId = props => {
                   letterSpacing: "1px"
                 }}
               >
-                _
+              3626
               </h6>
               <h6
                 style={{
                   fontFamily: "'Montserrat', sans-serif",
                   color: "white",
-                  fontWeight: "bold",
+                  // fontWeight: "bold",
                   letterSpacing: "1px"
                 }}
               >
-                _
+                1000
               </h6>
               <h6
                 style={{
                   fontFamily: "'Montserrat', sans-serif",
                   color: "white",
                   alignSelf: "center",
-                  fontWeight: "bold",
+                  // fontWeight: "bold",
                   letterSpacing: "1px"
                 }}
               >
-                _
+                BAT
               </h6>
               <h6
                 style={{
                   fontFamily: "'Montserrat', sans-serif",
                   color: "white",
-                  fontWeight: "bold",
+                  // fontWeight: "bold",
                   letterSpacing: "1px"
                 }}
               >
-                _
+                100
               </h6>
             </Grid>
           </Grid>
@@ -391,7 +398,7 @@ const XordId = props => {
                   letterSpacing: "2px"
                 }}
               >
-                ACTIVE PORTAL INFORMATION
+                PORTAL INTEREST RATE
               </h6>
             </Grid>
 
