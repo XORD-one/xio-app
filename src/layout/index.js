@@ -66,7 +66,7 @@ const tabBody = {
 
 // export default 
  const Index=({ children, tabName, }) =>{
-  const [completed, setCompleted] = useState(true)
+  const [completed, setCompleted] = useState(false)
 
   console.log("tabname====>", tabName)
 
