@@ -176,34 +176,54 @@ const Stake = props => {
         </React.Fragment>
       }
 
-      <Layout>
-        <Grid container item className="firstSectionContainer" md={12}>
+      <Layout tabName="stake">
+        <Grid container item className="firstSectionContainer " md={12}>
           <Grid
             container
             item
             style={tabBodyRow3}
-            md={12}
-            className="section"
+     
             md={10}
+            xs={12}
+            sm={12}
           >
             <Grid
               style={{
                 display: "flex",
                 flexDirection: "row",
-                // justifyContent: "space-between",
                 alignContent: "center"
               }}
+              md={12}
+              sm={12}
+              xs={12}
             >
               <Grid
                 className="tableHeader"
                 style={{
                   display: "flex",
                   flexDirection: "row",
-                  justifyContent: "space-between"
+                  justifyContent: "space-around"
                 }}
+                md={12}
+                sm={12}
+                xs={12}
+                // spacing={2}
               >
-                <Grid className="tableHeader">
-                  <h6>{durationDays}</h6>
+                <Grid container item className="tableHeader" md={3} sm={12} xs={12} >
+                  <Grid container item xs={12}>
+
+                  <h6 >{durationDays}</h6>
+                  </Grid>
+                  <Grid   item xs={12} style={{ display: "flex", flexDirection: "row",justifyContent:"space-between" }}>
+                    <Grid  className="firstSectionItem">
+                      <input className="inputText" placeholder="0.0" />
+                    </Grid>
+                    <Grid className="plusEqual" >+</Grid>
+                  </Grid>
+                </Grid>
+
+                <Grid item className="tableHeader" md={3} xs={12}sm={12} >
+                  <h6 style={{display:'flex'}}>{durationDays}</h6>
                   <Grid style={{ display: "flex", flexDirection: "row" }}>
                     <Grid className="firstSectionItem">
                       <input className="inputText" placeholder="0.0" />
@@ -212,18 +232,8 @@ const Stake = props => {
                   </Grid>
                 </Grid>
 
-                <Grid className="tableHeader">
-                  <h6>{durationDays}</h6>
-                  <Grid style={{ display: "flex", flexDirection: "row" }}>
-                    <Grid className="firstSectionItem">
-                      <input className="inputText" placeholder="0.0" />
-                    </Grid>
-                    <Grid className="plusEqual">+</Grid>
-                  </Grid>
-                </Grid>
-
-                <Grid className="tableHeader">
-                  <h6>{outputToken}</h6>
+                <Grid item className="tableHeader" md={3} xs={12} sm={12}>
+                  <h6 style={{display:'flex'}}>{outputToken}</h6>
                   <Grid style={{ display: "flex", flexDirection: "row" }}>
                     <Grid
                       className="firstSectionItem"
@@ -254,12 +264,14 @@ const Stake = props => {
                   </Grid>
                 </Grid>
 
-                <Grid className="tableHeader">
-                  <h6>{instantInterest}</h6>
+                <Grid item className="tableHeader" md={3} xs={12} sm={12}>
+                  <h6 style={{display:'flex'}}>{instantInterest}</h6>
                   <Grid className="firstSectionItem">
                     <input className="inputText" placeholder="1000" />
                   </Grid>
                 </Grid>
+
+
               </Grid>
             </Grid>
           </Grid>

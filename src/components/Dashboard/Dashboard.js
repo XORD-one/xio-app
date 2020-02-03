@@ -36,17 +36,17 @@ const styles = theme => ({
     border: "0px",
     fontFamily: "'Montserrat', sans-serif",
     letterSpacing: "2px",
-    textAlign:"center",
-    paddingTop:0
+    textAlign: "center",
+    paddingTop: 0
   },
   tableBody: {
     color: "white",
 
     fontSize: "12px",
     border: "0px",
-    textAlign:"center",
+    textAlign: "center",
     fontFamily: "'Montserrat', sans-serif",
-    fontWeight:400
+    fontWeight: 400
   }
 });
 const getDateFormatted = time => {
@@ -123,14 +123,14 @@ const tabBodyRow2_1_1 = {
 const tabBodyRow2_1_2 = {
   flexDirection: "row",
   justifyContent: "space-around",
-  flexWrap:"no-wrap"
+  flexWrap: "no-wrap"
   // alignItems:"center",
 };
 
 const tabBodyRow2_1_3 = {
   flexDirection: "row",
 
-  justifyContent: "space-around"
+  justifyContent: "space-between"
 };
 
 const tabBodyRow3_1 = {
@@ -153,12 +153,13 @@ const XordId = props => {
 
   return (
     <>
-      <Layout>
-        <Grid container item className="firstSectionContainer" md={12}>
+      <Layout tabName="dashboard">
+        <Grid container item className="firstSectionContainer" md={12} justify="space-around">
           <Grid
             item
             className="firstSectionItem"
             md={3}
+            xs={4}
           >
             <h6
               style={{
@@ -167,7 +168,7 @@ const XordId = props => {
                 fontStyle: "italic",
                 letterSpacing: "2px",
                 // margin:"0px",
-                textAlign:"center",
+                textAlign: "center",
                 // marginBottom:"10px",
                 // paddingBottom:"10px"
               }}
@@ -181,9 +182,9 @@ const XordId = props => {
                 color: "white",
                 alignSelf: "center",
                 fontWeight: "bold",
-                margin:"0px",
-                textAlign:"center",
-                marginBottom:"10px"
+                margin: "0px",
+                textAlign: "center",
+                marginBottom: "10px"
               }}
             >
               0
@@ -194,6 +195,8 @@ const XordId = props => {
             item
             className="firstSectionItem"
             md={3}
+            xs={4}
+
           >
             <h6
               style={{
@@ -202,12 +205,12 @@ const XordId = props => {
                 fontStyle: "italic",
                 letterSpacing: "2px",
                 // margin:"0px",
-                textAlign:"center",
+                textAlign: "center",
                 // marginBottom:"10px"
               }}
               className="firstSectionHeadings"
             >
-              STACKED XIO
+              STAKED XIO
             </h6>
             <h2
               style={{
@@ -215,9 +218,9 @@ const XordId = props => {
                 color: "white",
                 alignSelf: "center",
                 fontWeight: "bold",
-                margin:"0px",
-                textAlign:"center",
-                marginBottom:"10px",
+                margin: "0px",
+                textAlign: "center",
+                marginBottom: "10px",
 
               }}
             >
@@ -229,6 +232,8 @@ const XordId = props => {
             item
             className="firstSectionItem"
             md={3}
+            xs={4}
+
           >
             <h6
               style={{
@@ -237,7 +242,7 @@ const XordId = props => {
                 fontStyle: "italic",
                 letterSpacing: "2px",
                 // margin:"0px",
-                textAlign:"center",
+                textAlign: "center",
                 // marginBottom:"10px"
               }}
               className="firstSectionHeadings"
@@ -250,9 +255,9 @@ const XordId = props => {
                 color: "white",
                 alignSelf: "center",
                 fontWeight: "bold",
-                margin:"0px",
-                textAlign:"center",
-                marginBottom:"10px",
+                margin: "0px",
+                textAlign: "center",
+                marginBottom: "10px",
 
               }}
             >
@@ -261,132 +266,56 @@ const XordId = props => {
           </Grid>
         </Grid>
 
-        <Grid container item md={12} className="section" >
-          <Grid container item justify="center" style={tabBodyRow2_1} md={11}>
-            <Grid  item md={12} style={{textAlign:'center'}}>
+
+{/* ///////////// */}
+
+        <Grid container item style={tabBodyRow3} md={12} className="section" >
+          <Grid container item style={tabBodyRow3_1} md={11}>
+            <Grid container item style={tabBodyRow3_1_1} md={12}>
               <h6
                 style={{
                   color: "#C66065",
                   fontFamily: "'Montserrat', sans-serif",
                   fontStyle: "italic",
-                  letterSpacing: "2px",
-                  alignSelf:'center'
+                  letterSpacing: "2px"
                 }}
-                
               >
-                ACTIVE PORTAL INFORMATION
+                ACTIVE PORTAN INFORMATION
               </h6>
             </Grid>
-            <Grid container item className="sectionTwoItems" md={12}>
-              <Grid item md={3} >
-              <h6
-                style={{
-                  fontFamily: "'Montserrat', sans-serif",
-                  color: "white",
-                  textAlign: "center",
-                  fontWeight: "bold",
-                  letterSpacing: "2px",
-                  margin:0
-                }}
-                className="firstSectionHeadings"
-              >
-                PORTAL ID
-              </h6>
 
-              </Grid>
-              <Grid item md={3} >
-                
-              <h6
-                style={{
-                  fontFamily: "'Montserrat', sans-serif",
-                  color: "white",
-                  textAlign: "center",
-                  fontWeight: "bold",
-                  letterSpacing: "2px",
-                  margin:0
-                }}
-                className="firstSectionHeadings"
-              >
-                STAKED XIO
-              </h6>
-              </Grid>
-              <Grid item md={3} >
-              <h6
-                style={{
-                  fontFamily: "'Montserrat', sans-serif",
-                  color: "white",
-                  textAlign: "center",
-                  fontWeight: "bold",
-                  letterSpacing: "2px",
-                  margin:0
-                }}
-              >
-                OUTPUT TOKEN
-              </h6>
-
-              </Grid>
-              <Grid item md={3} >
-              <h6
-                style={{
-                  fontFamily: "'Montserrat', sans-serif",
-                  color: "white",
-                  textAlign: "center",
-                  fontWeight: "bold",
-                  letterSpacing: "2px",
-                  margin:0
-                }}
-              >
-                REMAINING DAYS
-              </h6>
-              </Grid>
-            </Grid>
-
-            <Grid container item md={12} style={tabBodyRow2_1_3}>
-              <h6
-                style={{
-                  fontFamily: "'Montserrat', sans-serif",
-                  color: "white",
-                  alignSelf: "center",
-                  letterSpacing: "1px"
-                }}
-              >
-              3626
-              </h6>
-              <h6
-                style={{
-                  fontFamily: "'Montserrat', sans-serif",
-                  color: "white",
-                  // fontWeight: "bold",
-                  letterSpacing: "1px"
-                }}
-              >
-                1000
-              </h6>
-              <h6
-                style={{
-                  fontFamily: "'Montserrat', sans-serif",
-                  color: "white",
-                  alignSelf: "center",
-                  // fontWeight: "bold",
-                  letterSpacing: "1px"
-                }}
-              >
-                BAT
-              </h6>
-              <h6
-                style={{
-                  fontFamily: "'Montserrat', sans-serif",
-                  color: "white",
-                  // fontWeight: "bold",
-                  letterSpacing: "1px"
-                }}
-              >
-                100
-              </h6>
+            <Grid container item style={tabBodyRow3_1_2} md={10}>
+              <Paper className={classes.root} align="center">
+                <Table className={classes.table} align="center">
+                  <TableHead>
+                    <TableRow>
+                      <TableCell className="tableHeader" ><h6 style={{ margin: 0 }} >PORTAL ID</h6></TableCell>
+                      <TableCell className="tableHeader" align="center">
+                        <h6 style={{ margin: 0 }} >STAKED XIO</h6>
+                      </TableCell>
+                      <TableCell className="tableHeader" align="center">
+                        <h6 style={{ margin: 0 }} >OUTPUT TOKEN</h6>
+                      </TableCell>
+                      <TableCell className="tableHeader" align="center">
+                        <h6 style={{ margin: 0 }} >REMAINING DAYS</h6>
+                      </TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    <TableRow style={{ cursor: "pointer" }}>
+                      <TableCell className="tableBody" >3626</TableCell>
+                      <TableCell className="tableBody">1000</TableCell>
+                      <TableCell className="tableBody">BAT</TableCell>
+                      <TableCell className="tableBody">100</TableCell>
+                    </TableRow>
+                   
+                  </TableBody>
+                </Table>
+              </Paper>
             </Grid>
           </Grid>
-        </Grid>
-
+          </Grid>
+{/* ///////////////// */}
         <Grid container item style={tabBodyRow3} md={12} className="section" >
           <Grid container item style={tabBodyRow3_1} md={11}>
             <Grid container item style={tabBodyRow3_1_1} md={12}>
@@ -407,39 +336,39 @@ const XordId = props => {
                 <Table className={classes.table} align="center">
                   <TableHead>
                     <TableRow>
-                      <TableCell className="tableHeader" ><h6 style={{margin:0}} >TOKEN</h6></TableCell>
-                      <TableCell className="tableHeader"  align="center">
-                        <h6 style={{margin:0}} >COLLATERAL</h6>
+                      <TableCell className="tableHeader" ><h6 style={{ margin: 0 }} >TOKEN</h6></TableCell>
+                      <TableCell className="tableHeader" align="center">
+                        <h6 style={{ margin: 0 }} >COLLATERAL</h6>
                       </TableCell>
-                      <TableCell className="tableHeader"  align="center">
-                        <h6 style={{margin:0}} >STAKED XIO</h6>
+                      <TableCell className="tableHeader" align="center">
+                        <h6 style={{ margin: 0 }} >STAKED XIO</h6>
                       </TableCell>
-                      <TableCell className="tableHeader"  align="center">
-                        <h6 style={{margin:0}} >INTEREST</h6>
+                      <TableCell className="tableHeader" align="center">
+                        <h6 style={{ margin: 0 }} >INTEREST</h6>
                       </TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
                     <TableRow style={{ cursor: "pointer" }}>
-                      <TableCell className="tableBody">1UP</TableCell>
-                      <TableCell
-                        align="center"
-                        className="tableBody"
-                      ></TableCell>
-                      <TableCell
-                        align="center"
-                        className="tableBody"
-                      ></TableCell>
-                      <TableCell
-                        align="center"
-                        className="tableBody"
-                      ></TableCell>
+                      <TableCell className="tableBody" style={{ latterSpacing: '2px' }}>1UP</TableCell>
+                      <TableCell className="tableBody">500,362</TableCell>
+                      <TableCell className="tableBody">23,643</TableCell>
+                      <TableCell className="tableBody">48% </TableCell>
+                    </TableRow>
+                    <TableRow style={{ cursor: "pointer",marginTop:'0px' }}>
+                      <TableCell className="tableBody" style={{ latterSpacing: '2px' }}>1UP</TableCell>
+                      <TableCell className="tableBody">500,362</TableCell>
+                      <TableCell className="tableBody">23,643</TableCell>
+                      <TableCell className="tableBody">48%</TableCell>
                     </TableRow>
                   </TableBody>
                 </Table>
               </Paper>
             </Grid>
           </Grid>
+
+
+
         </Grid>
       </Layout>
     </>

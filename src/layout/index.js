@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from 'react';
 import { Grid, Typography, Button } from "@material-ui/core";
 import RocketIcon from "@material-ui/icons/Delete";
 import Logo from "../components/assets/images/xio-logo.svg";
@@ -64,7 +64,12 @@ const tabBody = {
   // height:'50vh'
 };
 
-export default function index({ children }) {
+// export default 
+ const Index=({ children, tabName, }) =>{
+  const [completed, setCompleted] = useState(true)
+
+  console.log("tabname====>", tabName)
+
   return (
     <>
       <Grid container>
@@ -166,7 +171,7 @@ export default function index({ children }) {
           >
             <h4
               style={{
-                color: "white",
+                color: tabName === "dashboard" ? "white" : "#545454",
                 justifyContent: "flex-start",
                 letterSpacing: "2px"
               }}
@@ -176,17 +181,21 @@ export default function index({ children }) {
             </h4>
             <h4
               style={{
-                color: "#545454",
+                color: tabName === "stake" ? "white" : "#545454",
+                // color: "#545454",
                 justifyContent: "center",
                 letterSpacing: "2px"
               }}
               className="tabarText"
+            // onClick={(event) =>history.push('/stake')}
+
             >
               STAKE
             </h4>
             <h4
               style={{
-                color: "#545454",
+                color: tabName === "withdraw" ? "white" : "#545454",
+                // color: "#545454",
                 justifyContent: "flex-end",
                 letterSpacing: "2px"
               }}
@@ -203,9 +212,10 @@ export default function index({ children }) {
             style={tabBody}
             md={8}
           >
-            {children}
-            
-            {/* <Grid
+
+            { !completed && children}
+
+          { completed &&   <Grid
               className=" tableHeader"
               item
              
@@ -215,7 +225,8 @@ export default function index({ children }) {
               <h6>
                YOU HAVE COMPLETED THE DEMO
               </h6>
-            </Grid> */}
+            </Grid>}
+
           </Grid>
           <Grid
             className=" tableHeader"
@@ -224,39 +235,82 @@ export default function index({ children }) {
             xs={12}
             style={{ alignSelf: "center" }}
           >
-            {/* <h6>IF YOU STAKES <span style={{ color: '#C66065' }}>X</span> TOKENS FOR <span style={{ color: '#C66065' }}>X</span> DAYS , YOU WILL IMMEDIATELY RECEIVE <span style={{ color: '#C66065' }}>X TOKENS</span></h6>
-            <div style={{ backgroundColor: '#C66065', border: "1px solid #414141", display: "inline-block", padding: 10, borderRadius: 5 }} >
-              <h4 style={{ color: "#b8b8b8", display: "inline-block", fontFamily: "'Montserrat', sans-serif", margin: 0 }} >CONFIRM STAKE</h4>
-            </div> */}
-
-            <h6>
-              <span style={{ color: "#C66065" }}>XIO </span>HAS A BALANCE OF
+            {
+              tabName === "stake" &&
+              <>
+                <h6>IF YOU STAKES <span style={{ color: '#C66065' }}>X</span> TOKENS FOR <span style={{ color: '#C66065' }}>X</span> DAYS , YOU WILL IMMEDIATELY RECEIVE <span style={{ color: '#C66065' }}>X TOKENS</span></h6>
+                <div style={{ backgroundColor: '#C66065', border: "1px solid #414141", display: "inline-block", padding: 10, borderRadius: 5 }} >
+                  <h4 style={{ color: "#b8b8b8", display: "inline-block", fontFamily: "'Montserrat', sans-serif", margin: 0 }} >CONFIRM STAKE</h4>
+                </div>
+              </>
+            }
+            {
+              tabName === "withdraw"  &&
+              <>
+                <h6>
+                  <span style={{ color: "#C66065" }}>XIO </span>HAS A BALANCE OF
               <span style={{ color: "#C66065" }}> 1000 </span> AVAILABLE FOR
-              WITHDRAW
+                  WITHDRAW
             </h6>
-            <div
-              style={{
-                backgroundColor: "#C66065",
-                border: "1px solid #414141",
-                display: "inline-block",
-                padding: 10,
-                borderRadius: 5
-              }}
-            >
-              <h4
-                style={{
-                  color: "#b8b8b8",
-                  display: "inline-block",
-                  fontFamily: "'Montserrat', sans-serif",
-                  margin: 0
-                }}
-              >
-                CONFIRM WITHDRAW
+                <div
+                  style={{
+                    backgroundColor: "#C66065",
+                    border: "1px solid #414141",
+                    display: "inline-block",
+                    padding: 10,
+                    borderRadius: 5
+                  }}
+                >
+                  <h4
+                    style={{
+                      color: "#b8b8b8",
+                      display: "inline-block",
+                      fontFamily: "'Montserrat', sans-serif",
+                      margin: 0
+                    }}
+                  >
+                    CONFIRM WITHDRAW
               </h4>
-            </div>
+
+                </div>
+              </>
+            }
+
+{
+              completed &&
+              <>
+             
+          
+                <div
+                  style={{
+                    backgroundColor: "#C66065",
+                    border: "1px solid #414141",
+                    display: "inline-block",
+                    padding: 10,
+                    borderRadius: 5,
+                    marginTop:'40px'
+                  }}
+                >
+                  <h4
+                    style={{
+                      color: "#b8b8b8",
+                      display: "inline-block",
+                      fontFamily: "'Montserrat', sans-serif",
+                      margin: 0
+                    }}
+                  >
+                    START OVER
+              </h4>
+
+                </div>
+              </>
+            }
           </Grid>
         </Grid>
       </Grid>
     </>
   );
 }
+
+
+export default Index

@@ -175,7 +175,7 @@ const Withdraw = props => {
         </React.Fragment>
       }
 
-      <Layout>
+      <Layout tabName="withdraw">
         <Grid container item className="firstSectionContainer" md={12}>
           <Grid
             container
