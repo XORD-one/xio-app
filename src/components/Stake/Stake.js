@@ -116,7 +116,7 @@ const Stake = props => {
   return (
     <>
       {
-        // showDropdown &&
+
         <React.Fragment>
           <Dialog
             style={{ borderRadius: "5px" }}
@@ -125,38 +125,51 @@ const Stake = props => {
             // md={1}
             open={open}
             onClose={handleClose}
-            aria-labelledby="max-width-dialog-title"
+            // aria-labelledby="max-width-dialog-title"
           >
             <DialogTitle
               style={{
                 border: "2px solid #3E3E3E",
                 backgroundColor: "#363636",
                 color: "#030303",
-                padding: "2px 50px"
+                padding: "0px 50px"
               }}
+              justify="center"
             >
+
               <DialogContentText
                 style={{
-                  padding: "1px 5px",
                   fontFamily: "'Montserrat', sans-serif",
                   letterSpacing: "2px",
                   fontWeight: "bolder",
-                  fontSize: "10px",
                   color: "#030303",
                   cursor: "pointer",
                   textAlign: "center",
-                  verticalAlign: "center"
+                  
+                  padding: '0px',
+                  marginTop:'18px'
                 }}
               >
-                <SearchIcon
-                  style={{
-                    color: "#DADADA",
-                    cursor: "pointer",
-                    fontSize: "17px",
-                    marginTop: "10px"
-                  }}
-                />
-                <span>SEARCH TOKEN NAME</span>
+                <Grid container  justify="center">
+
+                  <SearchIcon
+                    style={{
+
+                      color: "#DADADA",
+                      cursor: "pointer",
+                      fontSize: "24px",
+                      marginRight: '18px',
+                      // display:'inline !important',
+                      // marginTop: "10px",
+
+                    }}
+                  // fontSize="large"
+                  // viewBox="0 0 50 20"
+                  />
+
+
+                  <span style={{ fontSize: '12px', letterSpacing: '3px' }}>SEARCH TOKEN NAME</span>
+                </Grid>
               </DialogContentText>
             </DialogTitle>
 
@@ -166,7 +179,8 @@ const Stake = props => {
                 color: "#D4D4D4",
                 textAlign: "center",
                 border: "2px solid #3E3E3E",
-                borderTop: "0px"
+                borderTop: "0px",
+                paddingTop:'25px'
               }}
             >
               <DialogContentText
@@ -221,6 +235,9 @@ const Stake = props => {
                 {opacit}
               </DialogContentText>
             </DialogContent>
+
+
+
           </Dialog>
         </React.Fragment>
       }
@@ -228,11 +245,7 @@ const Stake = props => {
       <Layout tabName="stake">
         <Grid container item className="firstSectionContainer " md={12}>
           <Grid
-            // className="tableHeader"
             style={{
-              // display: "flex",
-              // flexDirection: "row",
-              // justifyContent: "center",
               paddingBottom: "10px"
             }}
             container
@@ -308,8 +321,8 @@ const Stake = props => {
               <Grid
                 sm={12}
                 xs={12}
-               container
-               justify="center"
+                container
+                justify="center"
               >
                 <Grid
                   className="firstSectionItem"
