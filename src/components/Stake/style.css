@@ -103,6 +103,10 @@ border:2px solid white;
   .tableBody {
     /* padding: 10px 3px !important; */
   }
+
+  .plusEqual{
+    padding-top:15px;
+  }
   /* .sectionTwoItems{
         font-size: 9px;
     } */

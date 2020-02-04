@@ -67,8 +67,8 @@ const styles = theme => ({
 });
 
 const tabBodyRow3 = {
-  display: "flex",
-  flexDirection: "column"
+  // display: "flex",
+  // flexDirection: "column"
   //   border: "1px solid #d6cbcb",
   // alignItems: "center"
 };
@@ -91,17 +91,12 @@ const useStyles = makeStyles(theme => ({
 
 const Withdraw = props => {
   const { showDropdown, setShowDropdown } = props;
-  const amountXio = "   AMOUNT (XIO)";
-  const durationDays = "   DURATION (DAYS)";
-  const outputToken = "  OUTPUT (TOKEN)";
-  const instantInterest = "  INSTANT INTEREST";
+  const amountXio = "AMOUNT (XIO)";
+  const durationDays = "DURATION (DAYS)";
+  const outputToken = "SELECT TOKEN";
+  const instantInterest = "WITHDRAW AMOUNT";
   const classes = useStyles();
 
-  const uptrend="UPTREND (1UP)"
-  const binance="BINANCE (BNB)"
-  const bat="BAT (BAT)"
-  const ethereum="ETHEREUM (ETH)"
-  const opacit="OPACITY (OPQ)"
   const [open, setOpen] = React.useState(false);
 
   const handleClickOpen = () => {
@@ -112,153 +107,217 @@ const Withdraw = props => {
     setOpen(false);
   };
 
+  const uptrend = "UPTREND (1UP)";
+  const binance = "BINANCE (BNB)";
+  const bat = "BAT (BAT)";
+  const ethereum = "ETHEREUM (ETH)";
+  const opacit = "OPACITY (OPQ)";
+
   return (
     <>
       {
-        // showDropdown &&
+
         <React.Fragment>
           <Dialog
-          style={{borderRadius:"5px"}}
+            style={{ borderRadius: "5px" }}
             fullWidth={true}
             maxWidth={"xs"}
             // md={1}
             open={open}
             onClose={handleClose}
-            aria-labelledby="max-width-dialog-title"
+            // aria-labelledby="max-width-dialog-title"
           >
             <DialogTitle
               style={{
                 border: "2px solid #3E3E3E",
                 backgroundColor: "#363636",
                 color: "#030303",
-                padding:"2px 50px",
+                padding: "0px 50px"
               }}
+              justify="center"
             >
-              <DialogContentText style={{ padding:'1px 5px',fontFamily: "'Montserrat', sans-serif",letterSpacing:'2px',fontWeight:'bolder', fontSize: "10px",color: "#030303",cursor: "pointer",textAlign: "center",verticalAlign:'center' }}>
-                <SearchIcon style={{ color: "#DADADA", cursor: "pointer", fontSize:'17px',marginTop:'10px'}}  />
-                <span>SEARCH TOKEN NAME</span>
+
+              <DialogContentText
+                style={{
+                  fontFamily: "'Montserrat', sans-serif",
+                  letterSpacing: "2px",
+                  fontWeight: "bolder",
+                  color: "#030303",
+                  cursor: "pointer",
+                  textAlign: "center",
+                  
+                  padding: '0px',
+                  marginTop:'18px'
+                }}
+              >
+                <Grid container  justify="center">
+
+                  <SearchIcon
+                    style={{
+
+                      color: "#DADADA",
+                      cursor: "pointer",
+                      fontSize: "24px",
+                      marginRight: '18px',
+                      // display:'inline !important',
+                      // marginTop: "10px",
+
+                    }}
+                  // fontSize="large"
+                  // viewBox="0 0 50 20"
+                  />
+
+
+                  <span style={{ fontSize: '12px', letterSpacing: '3px' }}>SEARCH TOKEN NAME</span>
+                </Grid>
               </DialogContentText>
             </DialogTitle>
 
             <DialogContent
-              style={{ backgroundColor: "#1C1C1C", color: "#D4D4D4",textAlign: "center" ,border: "2px solid #3E3E3E",borderTop:'0px'}}
+              style={{
+                backgroundColor: "#1C1C1C",
+                color: "#D4D4D4",
+                textAlign: "center",
+                border: "2px solid #3E3E3E",
+                borderTop: "0px",
+                paddingTop:'25px'
+              }}
             >
-             
               <DialogContentText
-                style={{ fontFamily: "'Montserrat', sans-serif", fontWeight:'bolder', backgroundColor: "#1C1C1C", color: "#D4D4D4" }}
+                style={{
+                  fontFamily: "'Montserrat', sans-serif",
+                  fontWeight: "bolder",
+                  backgroundColor: "#1C1C1C",
+                  color: "#D4D4D4"
+                }}
               >
                 {uptrend}
               </DialogContentText>
 
               <DialogContentText
-                style={{ fontFamily: "'Montserrat', sans-serif", fontWeight:'bolder', backgroundColor: "#1C1C1C", color: "#D4D4D4" }}
+                style={{
+                  fontFamily: "'Montserrat', sans-serif",
+                  fontWeight: "bolder",
+                  backgroundColor: "#1C1C1C",
+                  color: "#D4D4D4"
+                }}
               >
-            { bat}
+                {bat}
               </DialogContentText>
               <DialogContentText
-                style={{ fontFamily: "'Montserrat', sans-serif", fontWeight:'bolder', backgroundColor: "#1C1C1C", color: "#D4D4D4" }}
+                style={{
+                  fontFamily: "'Montserrat', sans-serif",
+                  fontWeight: "bolder",
+                  backgroundColor: "#1C1C1C",
+                  color: "#D4D4D4"
+                }}
               >
-              {binance}
+                {binance}
               </DialogContentText>
               <DialogContentText
-                style={{ fontFamily: "'Montserrat', sans-serif", fontWeight:'bolder', backgroundColor: "#1C1C1C", color: "#D4D4D4" }}
+                style={{
+                  fontFamily: "'Montserrat', sans-serif",
+                  fontWeight: "bolder",
+                  backgroundColor: "#1C1C1C",
+                  color: "#D4D4D4"
+                }}
               >
                 {ethereum}
               </DialogContentText>
               <DialogContentText
-                style={{ fontFamily: "'Montserrat', sans-serif", fontWeight:'bolder', backgroundColor: "#1C1C1C", color: "#D4D4D4" }}
+                style={{
+                  fontFamily: "'Montserrat', sans-serif",
+                  fontWeight: "bolder",
+                  backgroundColor: "#1C1C1C",
+                  color: "#D4D4D4"
+                }}
               >
                 {opacit}
               </DialogContentText>
             </DialogContent>
+
+
+
           </Dialog>
         </React.Fragment>
       }
 
       <Layout tabName="withdraw">
-        <Grid container item className="firstSectionContainer" md={12}>
+        <Grid container item className="firstSectionContainer " md={12}>
           <Grid
+            style={{
+              paddingBottom: "10px"
+            }}
             container
             item
-            style={tabBodyRow3}
+            justify="center"
             md={12}
-            className="section"
-            md={6}
+            sm={12}
+            xs={12}
           >
-            <Grid
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                // justifyContent: "space-between",
-                alignContent: "center"
-              }}
-            >
+          
+            <Grid container item className="tableHeader" md={3} sm={12} xs={12} justify="center">
+              <Grid item sm={12} xs={12} >
+                <p style={{ fontSize: "11px" }}>{outputToken}</p>
+              </Grid>
+
               <Grid
-                className="tableHeader"
-                style={{
-                  display: "flex",
-                  flexDirection: "row",
-                  justifyContent: "space-between"
-                }}
+                sm={12}
+                xs={6}
+                container
+                justify="center"
               >
-                {/* <Grid className="tableHeader">
-                  <h6>{durationDays}</h6>
-                  <Grid style={{ display: "flex", flexDirection: "row" }}>
-                    <Grid className="firstSectionItem">
-                      <input className="inputText" placeholder="0.0" />
-                    </Grid>
-                    <Grid className="plusEqual">+</Grid>
-                  </Grid>
-                </Grid> */}
-
-                {/* <Grid className="tableHeader">
-                  <h6>{durationDays}</h6>
-                  <Grid style={{ display: "flex", flexDirection: "row" }}>
-                    <Grid className="firstSectionItem">
-                      <input className="inputText" placeholder="0.0" />
-                    </Grid>
-                    <Grid className="plusEqual">+</Grid>
-                  </Grid>
-                </Grid> */}
-
-                <Grid className="tableHeader">
-                  <h6>{outputToken}</h6>
-                  <Grid style={{ display: "flex", flexDirection: "row" }}>
-                    <Grid
-                      className="firstSectionItem"
-                      onClick={handleClickOpen}
-                      style={{
-                        display: "flex",
-                        flexDirection: "row",
-                        justifyContent: "space-around",
-                        cursor: "pointer"
-                      }}
-                    >
-                      <input
-                        className="inputText"
-                        placeholder="XIO"
-                        disabled={true}
-                        style={{ cursor: "pointer" }}
-                      />
-                      <ExpandMoreIcon
-                        style={{
-                          fontSize: 40,
-                          color: "#C66065",
-                          cursor: "pointer"
-                        }}
-                      />
-                    </Grid>
-
-                    <Grid className="plusEqual">+</Grid>
-                  </Grid>
+                <Grid
+                  className="firstStakeSectionItem"
+                  onClick={handleClickOpen}
+                  style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    justifyContent: "space-around",
+                    cursor: "pointer"
+                  }}
+                  item
+                >
+                  <input
+                    className="inputText"
+                    placeholder="XIO"
+                    disabled={true}
+                    style={{ cursor: "pointer" }}
+                    xs={12}
+                  />
+                  <ExpandMoreIcon
+                    style={{
+                      fontSize: 40,
+                      color: "#C66065",
+                      cursor: "pointer"
+                    }}
+                  />
                 </Grid>
+              </Grid>
+            </Grid>
 
-                <Grid className="tableHeader">
-                  <h6>{instantInterest}</h6>
-                  <Grid className="firstSectionItem">
-                    <input className="inputText" placeholder="1000" />
-                  </Grid>
-                </Grid>
+            <Grid
+              container
+              item
+              md={1}
+              sm={12}
+              xs={12}
+              direction="row"
+              justify="center"
+              alignItems="flex-end"
+            >
+              <Grid item md={12} className="plusEqual" align="center">
+                =
+              </Grid>
+            </Grid>
+
+            <Grid container item className="tableHeader" md={3} sm={12} xs={12} justify="center" >
+              <Grid item sm={12} xs={12} >
+                <p style={{ fontSize: "11px" }}>{instantInterest}</p>
+              </Grid>
+
+              <Grid item sm={12} xs={6} className="firstStakeSectionItem" >
+                <input className="inputText" placeholder="0.0" />
               </Grid>
             </Grid>
           </Grid>
