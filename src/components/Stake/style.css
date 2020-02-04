@@ -90,18 +90,18 @@ border:2px solid white;
 
 @media screen and (max-width: 500px) {
   .firstSectionContainer {
-    justify-content: space-between;
+    /* justify-content: space-between; */
     /* padding-bottom:20px; */
     /* margin-bottom:20px; */
   }
   .firstSectionHeadings {
-    font-size: 9px;
+    /* font-size: 9px; */
   }
   .tableHeader {
     /* padding: 0 !important; */
   }
   .tableBody {
-    padding: 10px 3px !important;
+    /* padding: 10px 3px !important; */
   }
   /* .sectionTwoItems{
         font-size: 9px;
