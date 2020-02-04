@@ -260,7 +260,7 @@ const Stake = props => {
                 <p style={{ fontSize: "11px" }}>{amountXio}</p>
               </Grid>
 
-              <Grid item sm={12} xs={12} className="firstSectionItem">
+              <Grid item sm={12} xs={6} className="firstStakeSectionItem">
                 <input className="inputText" placeholder="0.0" />
               </Grid>
             </Grid>
@@ -292,7 +292,7 @@ const Stake = props => {
                 <p style={{ fontSize: "11px" }}>{durationDays}</p>
               </Grid>
 
-              <Grid item sm={12} xs={12} className="firstSectionItem">
+              <Grid item sm={12} xs={6} className="firstStakeSectionItem">
 
                 <input className="inputText" placeholder="0.0" xs={12} />
               </Grid>
@@ -320,12 +320,12 @@ const Stake = props => {
 
               <Grid
                 sm={12}
-                xs={12}
+                xs={6}
                 container
                 justify="center"
               >
                 <Grid
-                  className="firstSectionItem"
+                  className="firstStakeSectionItem"
                   onClick={handleClickOpen}
                   style={{
                     display: "flex",
@@ -373,7 +373,7 @@ const Stake = props => {
                 <p style={{ fontSize: "11px" }}>{instantInterest}</p>
               </Grid>
 
-              <Grid item sm={12} xs={12} className="firstSectionItem" >
+              <Grid item sm={12} xs={6} className="firstStakeSectionItem" >
                 <input className="inputText" placeholder="0.0" />
               </Grid>
             </Grid>
