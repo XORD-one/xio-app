@@ -46,7 +46,9 @@ const styles = theme => ({
     border: "0px",
     textAlign: "center",
     fontFamily: "'Montserrat', sans-serif",
-    fontWeight: 400
+    fontWeight: 400,
+    paddingBottom:'20px',
+    marginBottom:'40px'
   }
 });
 const getDateFormatted = time => {
@@ -146,7 +148,10 @@ const tabBodyRow3_1_1 = {
   justifyContent: "center"
 };
 
-const tabBodyRow3_1_2 = {};
+const tabBodyRow3_1_2 = {
+  paddingBottom:"20px",
+}
+
 
 const XordId = props => {
   const { classes } = props;
@@ -167,10 +172,8 @@ const XordId = props => {
                 fontFamily: "'Montserrat', sans-serif",
                 fontStyle: "italic",
                 letterSpacing: "2px",
-                // margin:"0px",
                 textAlign: "center",
-                // marginBottom:"10px",
-                // paddingBottom:"10px"
+              
               }}
               className="firstSectionHeadings"
             >
@@ -180,11 +183,9 @@ const XordId = props => {
               style={{
                 fontFamily: "'Montserrat', sans-serif",
                 color: "white",
-                alignSelf: "center",
                 fontWeight: "bold",
-                margin: "0px",
                 textAlign: "center",
-                marginBottom: "10px"
+                padding:'0px',
               }}
             >
               0
@@ -204,9 +205,7 @@ const XordId = props => {
                 fontFamily: "'Montserrat', sans-serif",
                 fontStyle: "italic",
                 letterSpacing: "2px",
-                // margin:"0px",
                 textAlign: "center",
-                // marginBottom:"10px"
               }}
               className="firstSectionHeadings"
             >
@@ -216,11 +215,9 @@ const XordId = props => {
               style={{
                 fontFamily: "'Montserrat', sans-serif",
                 color: "white",
-                alignSelf: "center",
                 fontWeight: "bold",
-                margin: "0px",
                 textAlign: "center",
-                marginBottom: "10px",
+                padding:'0px',
 
               }}
             >
@@ -241,9 +238,7 @@ const XordId = props => {
                 fontFamily: "'Montserrat', sans-serif",
                 fontStyle: "italic",
                 letterSpacing: "2px",
-                // margin:"0px",
                 textAlign: "center",
-                // marginBottom:"10px"
               }}
               className="firstSectionHeadings"
             >
@@ -253,11 +248,9 @@ const XordId = props => {
               style={{
                 fontFamily: "'Montserrat', sans-serif",
                 color: "white",
-                alignSelf: "center",
                 fontWeight: "bold",
-                margin: "0px",
                 textAlign: "center",
-                marginBottom: "10px",
+                padding:'0px',
 
               }}
             >
@@ -285,7 +278,6 @@ const XordId = props => {
             </Grid>
 
             <Grid container item style={tabBodyRow3_1_2} md={10}>
-              <Paper className={classes.root} align="center">
                 <Table className={classes.table} align="center">
                   <TableHead>
                     <TableRow>
@@ -301,17 +293,18 @@ const XordId = props => {
                       </TableCell>
                     </TableRow>
                   </TableHead>
-                  <TableBody>
+                  <TableBody style={{paddingBottom:"20px"}}>
                     <TableRow style={{ cursor: "pointer" }}>
                       <TableCell className="tableBody" >3626</TableCell>
                       <TableCell className="tableBody">1000</TableCell>
                       <TableCell className="tableBody">BAT</TableCell>
                       <TableCell className="tableBody">100</TableCell>
                     </TableRow>
+                
+
                    
                   </TableBody>
                 </Table>
-              </Paper>
             </Grid>
           </Grid>
           </Grid>
@@ -332,7 +325,7 @@ const XordId = props => {
             </Grid>
 
             <Grid container item style={tabBodyRow3_1_2} md={10}>
-              <Paper className={classes.root} align="center">
+              {/* <Paper className={classes.root} align="center"> */}
                 <Table className={classes.table} align="center">
                   <TableHead>
                     <TableRow>
@@ -363,7 +356,7 @@ const XordId = props => {
                     </TableRow>
                   </TableBody>
                 </Table>
-              </Paper>
+              {/* </Paper> */}
             </Grid>
           </Grid>
 
