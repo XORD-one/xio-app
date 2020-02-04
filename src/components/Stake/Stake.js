@@ -67,8 +67,8 @@ const styles = theme => ({
 });
 
 const tabBodyRow3 = {
-  display: "flex",
-  flexDirection: "column"
+  // display: "flex",
+  // flexDirection: "column"
   //   border: "1px solid #d6cbcb",
   // alignItems: "center"
 };
@@ -91,10 +91,10 @@ const useStyles = makeStyles(theme => ({
 
 const Stake = props => {
   const { showDropdown, setShowDropdown } = props;
-  const amountXio = "   AMOUNT (XIO)";
-  const durationDays = "   DURATION (DAYS)";
-  const outputToken = "  OUTPUT (TOKEN)";
-  const instantInterest = "  INSTANT INTEREST";
+  const amountXio = "AMOUNT (XIO)";
+  const durationDays = "DURATION (DAYS)";
+  const outputToken = "OUTPUT (TOKEN)";
+  const instantInterest = "INSTANT INTEREST";
   const classes = useStyles();
 
   const [open, setOpen] = React.useState(false);
@@ -107,11 +107,11 @@ const Stake = props => {
     setOpen(false);
   };
 
-  const uptrend="UPTREND (1UP)"
-  const binance="BINANCE (BNB)"
-  const bat="BAT (BAT)"
-  const ethereum="ETHEREUM (ETH)"
-  const opacit="OPACITY (OPQ)"
+  const uptrend = "UPTREND (1UP)"
+  const binance = "BINANCE (BNB)"
+  const bat = "BAT (BAT)"
+  const ethereum = "ETHEREUM (ETH)"
+  const opacit = "OPACITY (OPQ)"
 
   return (
     <>
@@ -119,7 +119,7 @@ const Stake = props => {
         // showDropdown &&
         <React.Fragment>
           <Dialog
-          style={{borderRadius:"5px"}}
+            style={{ borderRadius: "5px" }}
             fullWidth={true}
             maxWidth={"xs"}
             // md={1}
@@ -132,42 +132,42 @@ const Stake = props => {
                 border: "2px solid #3E3E3E",
                 backgroundColor: "#363636",
                 color: "#030303",
-                padding:"2px 50px",
+                padding: "2px 50px",
               }}
             >
-              <DialogContentText style={{ padding:'1px 5px',fontFamily: "'Montserrat', sans-serif",letterSpacing:'2px',fontWeight:'bolder', fontSize: "10px",color: "#030303",cursor: "pointer",textAlign: "center",verticalAlign:'center' }}>
-                <SearchIcon style={{ color: "#DADADA", cursor: "pointer", fontSize:'17px',marginTop:'10px'}}  />
+              <DialogContentText style={{ padding: '1px 5px', fontFamily: "'Montserrat', sans-serif", letterSpacing: '2px', fontWeight: 'bolder', fontSize: "10px", color: "#030303", cursor: "pointer", textAlign: "center", verticalAlign: 'center' }}>
+                <SearchIcon style={{ color: "#DADADA", cursor: "pointer", fontSize: '17px', marginTop: '10px' }} />
                 <span>SEARCH TOKEN NAME</span>
               </DialogContentText>
             </DialogTitle>
 
             <DialogContent
-              style={{ backgroundColor: "#1C1C1C", color: "#D4D4D4",textAlign: "center" ,border: "2px solid #3E3E3E",borderTop:'0px'}}
+              style={{ backgroundColor: "#1C1C1C", color: "#D4D4D4", textAlign: "center", border: "2px solid #3E3E3E", borderTop: '0px' }}
             >
-             
+
               <DialogContentText
-                style={{ fontFamily: "'Montserrat', sans-serif", fontWeight:'bolder', backgroundColor: "#1C1C1C", color: "#D4D4D4" }}
+                style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 'bolder', backgroundColor: "#1C1C1C", color: "#D4D4D4" }}
               >
                 {uptrend}
               </DialogContentText>
 
               <DialogContentText
-                style={{ fontFamily: "'Montserrat', sans-serif", fontWeight:'bolder', backgroundColor: "#1C1C1C", color: "#D4D4D4" }}
+                style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 'bolder', backgroundColor: "#1C1C1C", color: "#D4D4D4" }}
               >
-            { bat}
+                {bat}
               </DialogContentText>
               <DialogContentText
-                style={{ fontFamily: "'Montserrat', sans-serif", fontWeight:'bolder', backgroundColor: "#1C1C1C", color: "#D4D4D4" }}
+                style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 'bolder', backgroundColor: "#1C1C1C", color: "#D4D4D4" }}
               >
-              {binance}
+                {binance}
               </DialogContentText>
               <DialogContentText
-                style={{ fontFamily: "'Montserrat', sans-serif", fontWeight:'bolder', backgroundColor: "#1C1C1C", color: "#D4D4D4" }}
+                style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 'bolder', backgroundColor: "#1C1C1C", color: "#D4D4D4" }}
               >
                 {ethereum}
               </DialogContentText>
               <DialogContentText
-                style={{ fontFamily: "'Montserrat', sans-serif", fontWeight:'bolder', backgroundColor: "#1C1C1C", color: "#D4D4D4" }}
+                style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 'bolder', backgroundColor: "#1C1C1C", color: "#D4D4D4" }}
               >
                 {opacit}
               </DialogContentText>
@@ -179,109 +179,115 @@ const Stake = props => {
       <Layout tabName="stake">
         <Grid container item className="firstSectionContainer " md={12}>
           <Grid
-            container
-            item
-            style={tabBodyRow3}
-     
-            md={10}
-            xs={12}
+            // className="tableHeader"
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "center",
+              paddingBottom:'10px',
+            }}
+            md={12}
             sm={12}
+            xs={12}
           >
-            <Grid
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                alignContent: "center"
-              }}
-              md={12}
-              sm={12}
-              xs={12}
-            >
+            <Grid container item className="tableHeader" md={2} sm={12} xs={12}  >
+              <Grid  item xs={12} align="center">
+                <p style={{fontSize:"11px"}}>{amountXio}</p>
+              </Grid>
+
+              <Grid item xs={12} className="firstSectionItem">
+                <input className="inputText" placeholder="0.0" />
+              </Grid>
+            </Grid>
+
+            <Grid container item md={1} xs={12} direction="row" justify="center" alignItems="flex-end">
+              <Grid item md={12} className="plusEqual" align="center" >+</Grid>
+            </Grid>
+
+
+            <Grid container item className="tableHeader" md={2} sm={12} xs={12} >
+              <Grid  item xs={12} align="center">
+                <p style={{fontSize:"11px"}}>{durationDays}</p>
+              </Grid>
+
+              <Grid item xs={12} className="firstSectionItem">
+                <input className="inputText" placeholder="0.0" />
+              </Grid>
+            </Grid>
+
+            <Grid container item md={1} xs={12} direction="row" justify="center" alignItems="flex-end">
+              <Grid item md={12} className="plusEqual" align="center" >+</Grid>
+            </Grid>
+
+
+            <Grid container item className="tableHeader" md={2} sm={12} xs={12} >
+              <Grid  item xs={12} align="center">
+                <p style={{fontSize:"11px"}}>{outputToken}</p>
+
+                
+              </Grid>
+
+              <Grid style={{ display: "flex", flexDirection: "row" }}>
               <Grid
-                className="tableHeader"
+                className="firstSectionItem"
+                onClick={handleClickOpen}
                 style={{
                   display: "flex",
                   flexDirection: "row",
-                  justifyContent: "space-around"
+                  justifyContent: "space-around",
+                  cursor: "pointer"
                 }}
-                md={12}
-                sm={12}
-                xs={12}
-                // spacing={2}
               >
-                <Grid container item className="tableHeader" md={3} sm={12} xs={12} >
-                  <Grid container item xs={12}>
-
-                  <h6 >{durationDays}</h6>
-                  </Grid>
-                  <Grid   item xs={12} style={{ display: "flex", flexDirection: "row",justifyContent:"space-between" }}>
-                    <Grid  className="firstSectionItem">
-                      <input className="inputText" placeholder="0.0" />
-                    </Grid>
-                    <Grid className="plusEqual" >+</Grid>
-                  </Grid>
-                </Grid>
-
-                <Grid item className="tableHeader" md={3} xs={12}sm={12} >
-                  <h6 style={{display:'flex'}}>{durationDays}</h6>
-                  <Grid style={{ display: "flex", flexDirection: "row" }}>
-                    <Grid className="firstSectionItem">
-                      <input className="inputText" placeholder="0.0" />
-                    </Grid>
-                    <Grid className="plusEqual">+</Grid>
-                  </Grid>
-                </Grid>
-
-                <Grid item className="tableHeader" md={3} xs={12} sm={12}>
-                  <h6 style={{display:'flex'}}>{outputToken}</h6>
-                  <Grid style={{ display: "flex", flexDirection: "row" }}>
-                    <Grid
-                      className="firstSectionItem"
-                      onClick={handleClickOpen}
-                      style={{
-                        display: "flex",
-                        flexDirection: "row",
-                        justifyContent: "space-around",
-                        cursor: "pointer"
-                      }}
-                    >
-                      <input
-                        className="inputText"
-                        placeholder="XIO"
-                        disabled={true}
-                        style={{ cursor: "pointer" }}
-                      />
-                      <ExpandMoreIcon
-                        style={{
-                          fontSize: 40,
-                          color: "#C66065",
-                          cursor: "pointer"
-                        }}
-                      />
-                    </Grid>
-
-                    <Grid className="plusEqual">=</Grid>
-                  </Grid>
-                </Grid>
-
-                <Grid item className="tableHeader" md={3} xs={12} sm={12}>
-                  <h6 style={{display:'flex'}}>{instantInterest}</h6>
-                  <Grid className="firstSectionItem">
-                    <input className="inputText" placeholder="1000" />
-                  </Grid>
-                </Grid>
-
-
+                <input
+                  className="inputText"
+                  placeholder="XIO"
+                  disabled={true}
+                  style={{ cursor: "pointer" }}
+                />
+                <ExpandMoreIcon
+                  style={{
+                    fontSize: 40,
+                    color: "#C66065",
+                    cursor: "pointer"
+                  }}
+                />
+              </Grid>
               </Grid>
             </Grid>
+
+
+              <Grid container item md={1} xs={12} direction="row" justify="center" alignItems="flex-end">
+                <Grid item md={12} className="plusEqual" align="center"  >=</Grid>
+              </Grid>
+
+
+
+              <Grid  item className="tableHeader" md={2} sm={12} xs={12} >
+                <Grid container item xs={12} align="center">
+                  <p style={{fontSize:"11px"}}>{instantInterest}</p>
+
+                </Grid>
+
+                <Grid item xs={12} className="firstSectionItem">
+                  <input className="inputText" placeholder="0.0" />
+                </Grid>
+              </Grid>
+
+
+
+
+
+            
+
+            </Grid>
+
           </Grid>
-        </Grid>
       </Layout>
     </>
-  );
-};
-
+      );
+    };
+    
 Stake.propTypes = {
-  // classes: PropTypes.object.isRequired
-};
-export default withStyles(styles)(Stake);
+        // classes: PropTypes.object.isRequired
+      };
+      export default withStyles(styles)(Stake);
