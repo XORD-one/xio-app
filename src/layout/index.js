@@ -60,6 +60,8 @@ const tabBody = {
 
 const Index = ({ children, tabName }) => {
   const [completed, setCompleted] = useState(false)
+  const [walletConnected, setWalletConnected] = useState(true)
+
 
 
 
@@ -121,6 +123,7 @@ const Index = ({ children, tabName }) => {
                 border: "1px solid #414141",
                 display: "inline-block",
                 padding: 10,
+                paddingRight:15,
                 borderRadius: 5
               }}
             >
@@ -129,7 +132,7 @@ const Index = ({ children, tabName }) => {
                 height="20px"
                 width="20px"
                 style={{
-                  margin: "0px 10px 0px 0px",
+                  margin: "0px 20px 0px 0px",
                   position: "relative",
                   top: 5
                 }}
@@ -139,10 +142,14 @@ const Index = ({ children, tabName }) => {
                   color: "#b8b8b8",
                   display: "inline-block",
                   fontFamily: "'Montserrat', sans-serif",
-                  margin: 0
+                  margin: 0,
+                  letterSpacing:'2px',
                 }}
               >
-                CONNECT WALLET
+                {walletConnected ?
+
+                 "0X123...DAYZ":"CONNECT WALLET "
+                }
               </h4>
             </div>
           </Grid>
