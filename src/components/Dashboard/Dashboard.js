@@ -159,12 +159,14 @@ const XordId = props => {
   return (
     <>
       <Layout tabName="dashboard">
-        <Grid container item className="firstSectionContainer" md={12} justify="space-around">
+        <Grid container item className="firstSectionContainer" md={12} xs={12} >
           <Grid
+        
             item
             className="firstSectionItem"
             md={3}
             xs={4}
+          
           >
             <h6
               style={{
@@ -273,7 +275,7 @@ const XordId = props => {
                   letterSpacing: "2px"
                 }}
               >
-                ACTIVE PORTAN INFORMATION
+                ACTIVE PORTAL INFORMATION
               </h6>
             </Grid>
 

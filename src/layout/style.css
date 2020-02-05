@@ -18,7 +18,7 @@
 }
 .tableHeader {
   font-weight: bold !important;
-  color: white !important;
+  /* color: white !important; */
   border: 0px !important;
   font-family: "Montserrat", sans-serif !important;
   letter-spacing: 2px !important;

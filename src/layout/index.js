@@ -12,16 +12,21 @@ import {
   faGithub,
   faLinkedinIn
 } from "@fortawesome/free-brands-svg-icons";
+import { useHistory } from "react-router-dom";
 
-const mainContainer = {
-  // display: 'flex',
-  // flexDirection: 'row',
-  // backgroundColor: '#1C1C1C',
-  // height:'100vh',
-};
-const headerGrid = {
-  justifyContent: "space-around"
-};
+
+
+
+const layoutHeading={
+  color:'white',
+}
+
+const tableHeader={
+  color:'white',
+
+}
+
+
 const socialIcon = {
   color: "#b8b8b8",
   margin: 0,
@@ -29,10 +34,7 @@ const socialIcon = {
   marginRight: 10,
   cursor: "pointer"
 };
-const iconDiv = {};
-const logoDiv = {};
 
-const btnDiv = {};
 
 const headingDiv = {
   flexDirection: "column",
@@ -41,38 +43,35 @@ const headingDiv = {
   alignItems: "center"
 };
 
-const tabConatiner = {
-  flexDirection: "row",
-  justifyContent: "center"
-  // alignItems: "center",
-};
-const tabHeader = {
-  flexDirection: "row",
-  justifyContent: "space-around",
-  border: "1px solid #C66065",
-  borderRadius: "5px"
-};
+
+
 const tabBody = {
   backgroundColor: "#030303",
   margin: 0,
-  // border:'2px solid #2a2a2a',
-  // justifyContent: "space-around",
   borderLeft: "2px solid #2d2d2d",
   borderRight: "2px solid #2d2d2d",
   borderBottom: "2px solid #2d2d2d"
 
-  // height:'50vh'
 };
 
-// export default 
- const Index=({ children, tabName, }) =>{
+
+const Index = ({ children, tabName }) => {
   const [completed, setCompleted] = useState(false)
+
+
+
+  let history = useHistory();
+
+  
+    
+
+  console.log("hiostory prtop in layout",history)
 
   console.log("tabname====>", tabName)
 
   return (
-    <>
-      <Grid container>
+    <div style={{backgroundColor:'#1C1C1C', minHeight: '100vh'}}>
+      <Grid  >
         <Grid
           container
           justify="space-between"
@@ -81,7 +80,7 @@ const tabBody = {
         >
           <Grid
             className="socialIcons"
-            style={iconDiv}
+            // style={iconDiv}
             item
             md={3}
             xs={12}
@@ -147,7 +146,7 @@ const tabBody = {
         </Grid>
 
         <Grid container style={headingDiv} md={12}>
-          <h1 className="layoutHeading">Instant and Upfront Interest</h1>
+          <h1  style={layoutHeading} className="layoutHeading">Instant and Upfront Interest</h1>
           <h3 className="layoutSubHeading">STAKE XIO. GET PAID. ZERO WAIT</h3>
         </Grid>
 
@@ -173,9 +172,11 @@ const tabBody = {
               style={{
                 color: tabName === "dashboard" ? "white" : "#545454",
                 justifyContent: "flex-start",
-                letterSpacing: "2px"
+                letterSpacing: "2px",
+                cursor:'pointer',
               }}
               className="tabarText"
+            onClick={() =>history.push("/")}
             >
               DASHBOARD
             </h4>
@@ -184,10 +185,12 @@ const tabBody = {
                 color: tabName === "stake" ? "white" : "#545454",
                 // color: "#545454",
                 justifyContent: "center",
-                letterSpacing: "2px"
+                letterSpacing: "2px",
+                cursor:'pointer',
+
               }}
               className="tabarText"
-            // onClick={(event) =>history.push('/stake')}
+              onClick={() =>history.push("/stake")}
 
             >
               STAKE
@@ -197,9 +200,13 @@ const tabBody = {
                 color: tabName === "withdraw" ? "white" : "#545454",
                 // color: "#545454",
                 justifyContent: "flex-end",
-                letterSpacing: "2px"
+                letterSpacing: "2px",
+                cursor:'pointer',
+
               }}
               className="tabarText"
+              onClick={() =>history.push("/withdraw")}
+
             >
               WITHDRAW
             </h4>
@@ -213,23 +220,26 @@ const tabBody = {
             md={8}
           >
 
-            { !completed && children}
+            {!completed && children}
 
-          { completed &&   <Grid
+            {completed && <Grid
               className=" tableHeader"
+              style={tableHeader}
               item
-             
+
               xs={12}
               style={{ alignSelf: "center" }}
             >
               <h6>
-               YOU HAVE COMPLETED THE DEMO
+                YOU HAVE COMPLETED THE DEMO
               </h6>
             </Grid>}
 
           </Grid>
           <Grid
             className=" tableHeader"
+            style={tableHeader}
+
             item
             md={6}
             xs={12}
@@ -238,19 +248,19 @@ const tabBody = {
             {
               tabName === "stake" &&
               <>
-                <h6>IF YOU STAKES <span style={{ color: '#C66065' }}>X</span> TOKENS FOR <span style={{ color: '#C66065' }}>X</span> DAYS , YOU WILL IMMEDIATELY RECEIVE <span style={{ color: '#C66065' }}>X TOKENS</span></h6>
+                <h6>IF YOU STAKE <span style={{ color: '#C66065' }}>X</span> TOKENS FOR <span style={{ color: '#C66065' }}>X</span> DAYS , YOU WILL IMMEDIATELY RECEIVE <span style={{ color: '#C66065' }}>X TOKENS</span></h6>
                 <div style={{ backgroundColor: '#C66065', border: "1px solid #414141", display: "inline-block", padding: 10, borderRadius: 5 }} >
                   <h4 style={{ color: "#b8b8b8", display: "inline-block", fontFamily: "'Montserrat', sans-serif", margin: 0 }} >CONFIRM STAKE</h4>
                 </div>
               </>
             }
             {
-              tabName === "withdraw"  &&
+              tabName === "withdraw" &&
               <>
                 <h6>
                   <span style={{ color: "#C66065" }}>XIO </span>HAS A BALANCE OF
               <span style={{ color: "#C66065" }}> 1000 </span> AVAILABLE FOR
-                  WITHDRAW
+                      WITHDRAW
             </h6>
                 <div
                   style={{
@@ -276,11 +286,11 @@ const tabBody = {
               </>
             }
 
-{
+            {
               completed &&
               <>
-             
-          
+
+
                 <div
                   style={{
                     backgroundColor: "#C66065",
@@ -288,7 +298,7 @@ const tabBody = {
                     display: "inline-block",
                     padding: 10,
                     borderRadius: 5,
-                    marginTop:'40px'
+                    marginTop: '40px'
                   }}
                 >
                   <h4
@@ -308,7 +318,7 @@ const tabBody = {
           </Grid>
         </Grid>
       </Grid>
-    </>
+    </div>
   );
 }
 
