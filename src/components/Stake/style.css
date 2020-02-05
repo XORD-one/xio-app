@@ -5,9 +5,9 @@
 }
 
 .firstStakeSectionItem {
-  border: 1px solid rgb(65, 65, 65) !important;
-  background-color: rgb(28, 28, 28) !important;
-  height:40px;
+  /* border: 1px solid rgb(65, 65, 65) !important;
+  background-color: rgb(28, 28, 28) !important; */
+  height: 40px;
   border-radius: 3px !important;
   padding: 1px 5px !important;
 }
@@ -24,7 +24,7 @@
 
 .tableHeader {
   /* font-weight: semi-bold !important; */
-  color: white !important;
+  /* color: white !important; */
   border: 0px !important;
   font-family: "Montserrat", sans-serif !important;
   letter-spacing: 2px !important;
@@ -57,36 +57,28 @@
   border: transparent;
   outline: transparent;
 }
-.plusEqual{
-    font-family: "Montserrat", sans-serif !important;
-    color:#C66065 !important;
-/* margin-left: 15px; */
-/* margin-right: 20px; */
-/* margin-top:7px; */
-    font-size: 1.5em;
-    font-weight: bolder;
-    /* padding: 10px 10px !important; */
-
+.plusEqual {
+  font-family: "Montserrat", sans-serif !important;
+  /* color: #c66065 !important; */
+  /* margin-left: 15px; */
+  /* margin-right: 20px; */
+  /* margin-top:7px; */
+  font-size: 1.5em;
+  font-weight: bolder;
+  /* padding: 10px 10px !important; */
 }
 
-.dropdown{
-position: absolute;
-top:200px;
-left: 100px;
-border:2px solid white;
+.dropdown {
+  position: absolute;
+  top: 200px;
+  left: 100px;
+  border: 2px solid white;
 }
-.dropdownHeader{
-
-}
-
-.dropdownBody{
-
+.dropdownHeader {
 }
 
-
-
-
-
+.dropdownBody {
+}
 
 @media screen and (max-width: 500px) {
   .firstSectionContainer {
@@ -104,8 +96,8 @@ border:2px solid white;
     /* padding: 10px 3px !important; */
   }
 
-  .plusEqual{
-    padding-top:15px;
+  .plusEqual {
+    padding-top: 15px;
   }
   /* .sectionTwoItems{
         font-size: 9px;

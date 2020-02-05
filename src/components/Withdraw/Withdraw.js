@@ -256,7 +256,7 @@ const Withdraw = props => {
             xs={12}
           >
           
-            <Grid container item className="tableHeader" md={3} sm={12} xs={12} justify="center">
+            <Grid container item className="tableHeader" md={3} sm={4} xs={12} justify="center">
               <Grid item sm={12} xs={12} >
                 <p style={{ fontSize: "11px" }}>{outputToken}</p>
               </Grid>
@@ -311,7 +311,7 @@ const Withdraw = props => {
               </Grid>
             </Grid>
 
-            <Grid container item className="tableHeader" md={3} sm={12} xs={12} justify="center" >
+            <Grid container item className="tableHeader" md={3} sm={4} xs={12} justify="center" >
               <Grid item sm={12} xs={12} >
                 <p style={{ fontSize: "11px" }}>{instantInterest}</p>
               </Grid>

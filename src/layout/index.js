@@ -15,7 +15,10 @@ import {
 import { useHistory } from "react-router-dom";
 
 
+const layoutSubHeading={
+  color: "rgb(198, 96, 101)",
 
+}
 
 const layoutHeading={
   color:'white',
@@ -147,7 +150,7 @@ const Index = ({ children, tabName }) => {
 
         <Grid container style={headingDiv} md={12}>
           <h1  style={layoutHeading} className="layoutHeading">Instant and Upfront Interest</h1>
-          <h3 className="layoutSubHeading">STAKE XIO. GET PAID. ZERO WAIT</h3>
+          <h3 className="layoutSubHeading" style={layoutSubHeading}>STAKE XIO. GET PAID. ZERO WAIT</h3>
         </Grid>
 
         <Grid

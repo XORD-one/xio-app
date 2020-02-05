@@ -66,13 +66,6 @@ const styles = theme => ({
   }
 });
 
-const tabBodyRow3 = {
-  // display: "flex",
-  // flexDirection: "column"
-  //   border: "1px solid #d6cbcb",
-  // alignItems: "center"
-};
-
 const useStyles = makeStyles(theme => ({
   form: {
     display: "flex",
@@ -88,6 +81,22 @@ const useStyles = makeStyles(theme => ({
     marginTop: theme.spacing(1)
   }
 }));
+
+const tableHeader={
+color:'white',
+}
+
+
+const firstStakeSectionItem={
+  border: '1px solid rgb(65, 65, 65)',
+  backgroundColor: 'rgb(28, 28, 28)', 
+}
+
+const plusEqual={
+  color: "#c66065" ,
+
+
+}
 
 const Stake = props => {
   const { showDropdown, setShowDropdown } = props;
@@ -255,12 +264,12 @@ const Stake = props => {
             sm={12}
             xs={12}
           >
-            <Grid container item className="tableHeader" md={2} sm={12} xs={12} justify="center" >
+            <Grid container item className="tableHeader" style={tableHeader} md={2} sm={4} xs={12} justify="center" >
               <Grid item xs={12} >
                 <p style={{ fontSize: "11px" }}>{amountXio}</p>
               </Grid>
 
-              <Grid item sm={12} xs={6} className="firstStakeSectionItem">
+              <Grid item sm={12} xs={6} className="firstStakeSectionItem" style={firstStakeSectionItem}>
                 <input className="inputText" placeholder="0.0" />
               </Grid>
             </Grid>
@@ -281,18 +290,19 @@ const Stake = props => {
                 sm={12}
                 xs={12}
                 className="plusEqual"
+                style={plusEqual}
                 align="center"
               >
                 +
               </Grid>
             </Grid>
 
-            <Grid container item className="tableHeader" md={2} sm={12} xs={12} justify="center">
+            <Grid container item className="tableHeader" style={tableHeader} md={2} sm={4} xs={12} justify="center">
               <Grid item sm={12} xs={12} >
                 <p style={{ fontSize: "11px" }}>{durationDays}</p>
               </Grid>
 
-              <Grid item sm={12} xs={6} className="firstStakeSectionItem">
+              <Grid item sm={12} xs={6} className="firstStakeSectionItem" style={firstStakeSectionItem}>
 
                 <input className="inputText" placeholder="0.0" xs={12} />
               </Grid>
@@ -308,12 +318,12 @@ const Stake = props => {
               justify="center"
               alignItems="flex-end"
             >
-              <Grid item md={12} className="plusEqual" align="center">
+              <Grid item md={12} className="plusEqual"  style={plusEqual} align="center">
                 +
               </Grid>
             </Grid>
 
-            <Grid container item className="tableHeader" md={2} sm={12} xs={12} justify="center">
+            <Grid container item className="tableHeader" style={tableHeader} md={2} sm={4} xs={12} justify="center">
               <Grid item sm={12} xs={12} >
                 <p style={{ fontSize: "11px" }}>{outputToken}</p>
               </Grid>
@@ -326,6 +336,7 @@ const Stake = props => {
               >
                 <Grid
                   className="firstStakeSectionItem"
+                  style={firstStakeSectionItem}
                   onClick={handleClickOpen}
                   style={{
                     display: "flex",
@@ -363,17 +374,17 @@ const Stake = props => {
               justify="center"
               alignItems="flex-end"
             >
-              <Grid item md={12} className="plusEqual" align="center">
+              <Grid item md={12} className="plusEqual"  style={plusEqual} align="center">
                 =
               </Grid>
             </Grid>
 
-            <Grid container item className="tableHeader" md={2} sm={12} xs={12} justify="center" >
+            <Grid container item className="tableHeader" style={tableHeader} md={2} sm={4} xs={12} justify="center" >
               <Grid item sm={12} xs={12} >
                 <p style={{ fontSize: "11px" }}>{instantInterest}</p>
               </Grid>
 
-              <Grid item sm={12} xs={6} className="firstStakeSectionItem" >
+              <Grid item sm={12} xs={6} className="firstStakeSectionItem" style={firstStakeSectionItem} >
                 <input className="inputText" placeholder="0.0" />
               </Grid>
             </Grid>
