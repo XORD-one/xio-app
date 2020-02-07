@@ -9,11 +9,12 @@
 .connectButton{
     order: 3;
     text-align: right;
+    cursor: pointer;
 }
 
 
 .layoutHeading{
-    color: white;
+    /* color: white; */
     
 }
 .tableHeader {

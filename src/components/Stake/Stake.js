@@ -97,6 +97,11 @@ const firstStakeSectionItem={
   backgroundColor: 'rgb(28, 28, 28)', 
 }
 
+const firstStakeSectionItemLight = {
+  border: "1px solid rgb(65, 65, 65)",
+  "background-color": "#d3d3d33d"
+}
+
 const plusEqual={
   color: "#c66065" ,
 
@@ -280,7 +285,7 @@ const Stake = props => {
                 <p style={{ fontSize: "11px" }}>{amountXio}</p>
               </Grid>
 
-              <Grid item sm={12} xs={6} className="firstStakeSectionItem" style={firstStakeSectionItem}>
+              <Grid item sm={12} xs={6} className="firstStakeSectionItem" style={themeDark ? firstStakeSectionItem : firstStakeSectionItemLight}>
                 <input className="inputText" placeholder="0.0" />
               </Grid>
             </Grid>
@@ -313,7 +318,7 @@ const Stake = props => {
                 <p style={{ fontSize: "11px" }}>{durationDays}</p>
               </Grid>
 
-              <Grid item sm={12} xs={6} className="firstStakeSectionItem" style={firstStakeSectionItem}>
+              <Grid item sm={12} xs={6} className="firstStakeSectionItem" style={themeDark ? firstStakeSectionItem : firstStakeSectionItemLight}>
 
                 <input className="inputText" placeholder="0.0" xs={12} />
               </Grid>
@@ -347,14 +352,14 @@ const Stake = props => {
               >
                 <Grid
                   className="firstStakeSectionItem"
-                  style={firstStakeSectionItem}
+                  style={themeDark ? {...firstStakeSectionItem, display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "space-around",
+                  cursor: "pointer"} : {...firstStakeSectionItemLight, display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "space-around",
+                  cursor: "pointer"}}
                   onClick={handleClickOpen}
-                  style={{
-                    display: "flex",
-                    flexDirection: "row",
-                    justifyContent: "space-around",
-                    cursor: "pointer"
-                  }}
                   item
                 >
                   <input
@@ -395,7 +400,7 @@ const Stake = props => {
                 <p style={{ fontSize: "11px" }}>{instantInterest}</p>
               </Grid>
 
-              <Grid item sm={12} xs={6} className="firstStakeSectionItem" style={firstStakeSectionItem} >
+              <Grid item sm={12} xs={6} className="firstStakeSectionItem" style={themeDark ? firstStakeSectionItem : firstStakeSectionItemLight} >
                 <input className="inputText" placeholder="0.0" />
               </Grid>
             </Grid>

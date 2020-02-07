@@ -5,7 +5,7 @@ import {ThemeProvider} from '../../config/index'
 
 
 function App() {
-  const [themeDark , setToggleTheme] = useState(JSON.parse(sessionStorage.getItem('theme')) ||true)
+  const [themeDark , setToggleTheme] = useState(JSON.parse(sessionStorage.getItem('theme')) || true)
   const isThemeDark = () => {
     let theme = themeDark
       sessionStorage.setItem("theme", !theme)

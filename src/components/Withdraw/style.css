@@ -4,9 +4,9 @@
   /* margin-top: 10px; */
 }
 
-.firstStakeSectionItem {
-  border: 1px solid rgb(65, 65, 65) !important;
-  background-color: rgb(28, 28, 28) !important;
+.firstWithdrawSectionItem {
+  /* border: 1px solid rgb(65, 65, 65) !important;
+  background-color: rgb(28, 28, 28) !important; */
   height:40px;
   border-radius: 3px !important;
   padding: 1px 5px !important;
@@ -22,13 +22,22 @@
   flex-wrap: nowrap !important;
 }
 
-.tableHeader {
-  /* font-weight: semi-bold !important; */
-  color: white !important;
+.tableWithdrawHeader {
+  font-weight: bold !important;
+  color: white;
   border: 0px !important;
   font-family: "Montserrat", sans-serif !important;
   letter-spacing: 2px !important;
-  /* padding-top: 0 !important; */
+  text-align: center;
+}
+
+.tableWithdrawHeaderLight {
+  font-weight: bold !important;
+  color: black;
+  border: 0px !important;
+  font-family: "Montserrat", sans-serif !important;
+  letter-spacing: 2px !important;
+  text-align: center;
 }
 
 .tableBody {

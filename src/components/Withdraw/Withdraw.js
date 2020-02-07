@@ -27,6 +27,7 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import InputLabel from "@material-ui/core/InputLabel";
 import MenuItem from "@material-ui/core/MenuItem";
 import Select from "@material-ui/core/Select";
+import {ThemeConsumer} from '../../config/index'
 
 const styles = theme => ({
   root: {
@@ -73,6 +74,17 @@ const tabBodyRow3 = {
   // alignItems: "center"
 };
 
+
+const firstWithdrawSectionItem={
+  border: '1px solid rgb(65, 65, 65)',
+  backgroundColor: 'rgb(28, 28, 28)', 
+}
+
+const firstWithdrawSectionItemLight = {
+  border: "1px solid rgb(65, 65, 65)",
+  "background-color": "#d3d3d33d"
+}
+
 const useStyles = makeStyles(theme => ({
   form: {
     display: "flex",
@@ -115,6 +127,11 @@ const Withdraw = props => {
 
   return (
     <>
+     <ThemeConsumer>
+     { ({ isThemeDark, themeDark }) => {
+       console.log(themeDark)
+        return(
+          <>
       {
 
         <React.Fragment>
@@ -256,7 +273,7 @@ const Withdraw = props => {
             xs={12}
           >
           
-            <Grid container item className="tableHeader" md={3} sm={4} xs={12} justify="center">
+            <Grid container item className={themeDark ? "tableWithdrawHeader" : "tableWithdrawHeaderLight"} md={3} sm={4} xs={12} justify="center">
               <Grid item sm={12} xs={12} >
                 <p style={{ fontSize: "11px" }}>{outputToken}</p>
               </Grid>
@@ -268,14 +285,15 @@ const Withdraw = props => {
                 justify="center"
               >
                 <Grid
-                  className="firstStakeSectionItem"
+                  className="firstWithdrawSectionItem"
                   onClick={handleClickOpen}
-                  style={{
-                    display: "flex",
-                    flexDirection: "row",
-                    justifyContent: "space-around",
-                    cursor: "pointer"
-                  }}
+                  style={themeDark ? {...firstWithdrawSectionItem, display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "space-around",
+                  cursor: "pointer"} : {...firstWithdrawSectionItemLight, display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "space-around",
+                  cursor: "pointer"}}
                   item
                 >
                   <input
@@ -311,18 +329,22 @@ const Withdraw = props => {
               </Grid>
             </Grid>
 
-            <Grid container item className="tableHeader" md={3} sm={4} xs={12} justify="center" >
+            <Grid container item className={themeDark ? "tableWithdrawHeader" : "tableWithdrawHeaderLight"} md={3} sm={4} xs={12} justify="center" >
               <Grid item sm={12} xs={12} >
                 <p style={{ fontSize: "11px" }}>{instantInterest}</p>
               </Grid>
 
-              <Grid item sm={12} xs={6} className="firstStakeSectionItem" >
+              <Grid item sm={12} xs={6} className="firstWithdrawSectionItem" style={themeDark ? firstWithdrawSectionItem : firstWithdrawSectionItemLight}  >
                 <input className="inputText" placeholder="0.0" />
               </Grid>
             </Grid>
           </Grid>
         </Grid>
       </Layout>
+      </>
+        )
+      }}
+      </ThemeConsumer>
     </>
   );
 };

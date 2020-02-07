@@ -74,14 +74,14 @@ const tabBodyLight = {
 
 const Index = ({ children, tabName }) => {
   const [completed, setCompleted] = useState(false)
-  const [walletConnected, setWalletConnected] = useState(true)
-  const [themeState , setThemeState] = useState(true)
+  const [walletConnected, setWalletConnected] = useState(false)
+  // const [themeState , setThemeState] = useState(true)
 
 
-const handleThemeState = (isThemeDark) => {
-    let currentThemeState = themeState
-   setThemeState(!currentThemeState)
-   isThemeDark(!currentThemeState)
+const handleThemeState = (isThemeDark,themeDark) => {
+    // let currentThemeState = themeState
+  //  setThemeState(!themeDark)
+   isThemeDark(!themeDark)
 }
 
   let history = useHistory();
@@ -155,14 +155,14 @@ const handleThemeState = (isThemeDark) => {
                 height="20px"
                 width="20px"
                 style={{
-                  margin: "0px 20px 0px 0px",
+                  margin: "0px 12px 0px 0px",
                   position: "relative",
                   top: 5
                 }}
               />
               <h4
                 style={{
-                  color: themeState ? "#b8b8b8" : "#545454",
+                  color: themeDark ? "#b8b8b8" : "#545454",
                   display: "inline-block",
                   fontFamily: "'Montserrat', sans-serif",
                   margin: 0,
@@ -179,7 +179,7 @@ const handleThemeState = (isThemeDark) => {
         </Grid>
 
         <Grid container style={headingDiv} md={12}>
-          <h1  style={themeState ? layoutHeadingDark : layoutHeadingLight} className="layoutHeading">Instant and Upfront Interest</h1>
+          <h1  style={themeDark ? layoutHeadingDark : layoutHeadingLight} className="layoutHeading">Instant and Upfront Interest</h1>
           <h3 className="layoutSubHeading" style={layoutSubHeading}>STAKE XIO. GET PAID. ZERO WAIT</h3>
         </Grid>
 
@@ -194,7 +194,12 @@ const handleThemeState = (isThemeDark) => {
             container
             item
             justify="space-around"
-            style={{
+            style={themeDark ? {
+              border: "1px solid #C66065",
+              borderRadius: "5px",
+              fontFamily: "'Montserrat', sans-serif"
+            } : {
+              backgroundColor:"#d3d3d33d",
               border: "1px solid #C66065",
               borderRadius: "5px",
               fontFamily: "'Montserrat', sans-serif"
@@ -290,7 +295,7 @@ const handleThemeState = (isThemeDark) => {
             {
               tabName === "withdraw" &&
               <>
-                <h6 style = {{color : themeDark ? " white" : "black" }}>
+                <h6 style = {{color : themeDark ? "white" : "black" }}>
                   <span style={{ color: "#C66065" }}>XIO </span>HAS A BALANCE OF
               <span style={{ color: "#C66065" }}> 1000 </span> AVAILABLE FOR
                       WITHDRAW
@@ -355,9 +360,14 @@ const handleThemeState = (isThemeDark) => {
       
         <FormControlLabel
           control={
-            <Switch checked={themeDark} onChange={()=>handleThemeState(isThemeDark)} value="checkedA" />
+            <Switch checked={themeDark} onChange={()=>handleThemeState(isThemeDark,themeDark)} value="checkedA" />
           }
           label={themeDark? 'DarkTheme' : 'LightTheme'}
+          style={themeDark ? {color:"white",position: "fixed",
+          bottom: 20,
+          right: 5} : {position: "fixed",
+            bottom: 20,
+            right: 5}}
         />
     </div>
         )}}
