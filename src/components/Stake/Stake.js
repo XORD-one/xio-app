@@ -126,7 +126,7 @@ const Stake = props => {
     setOpen(false);
   };
 
-  const uptrend = "UPTREND (1UP)";
+  const uptrend = "UPTRENND (1UP)";
   const binance = "BINANCE (BNB)";
   const bat = "BAT (BAT)";
   const ethereum = "ETHEREUM (ETH)";
