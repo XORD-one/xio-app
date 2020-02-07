@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Grid, Typography, Button } from "@material-ui/core";
+import { Grid, Typography, Button , Switch ,FormControlLabel} from "@material-ui/core";
 import RocketIcon from "@material-ui/icons/Delete";
 import Logo from "../components/assets/images/xio-logo.svg";
+import LogoLight from "../components/assets/images/xio-logo-light.svg";
 import Rocket from "../components/assets/images/rocket.svg";
+import {ThemeConsumer} from '../config/index'
 import "./style.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -20,7 +22,10 @@ const layoutSubHeading={
 
 }
 
-const layoutHeading={
+const layoutHeadingLight={
+  color:'black',
+}
+const layoutHeadingDark={
   color:'white',
 }
 
@@ -56,14 +61,28 @@ const tabBody = {
   borderBottom: "2px solid #2d2d2d"
 
 };
+const tabBodyLight = {
+  backgroundColor: "white",
+  margin: 0,
+  borderLeft: "2px solid #2d2d2d",
+  borderRight: "2px solid #2d2d2d",
+  borderBottom: "2px solid #2d2d2d"
+
+};
+
 
 
 const Index = ({ children, tabName }) => {
   const [completed, setCompleted] = useState(false)
   const [walletConnected, setWalletConnected] = useState(true)
+  const [themeState , setThemeState] = useState(true)
 
 
-
+const handleThemeState = (isThemeDark) => {
+    let currentThemeState = themeState
+   setThemeState(!currentThemeState)
+   isThemeDark(!currentThemeState)
+}
 
   let history = useHistory();
 
@@ -75,7 +94,11 @@ const Index = ({ children, tabName }) => {
   console.log("tabname====>", tabName)
 
   return (
-    <div style={{backgroundColor:'#1C1C1C', minHeight: '100vh'}}>
+    <ThemeConsumer>
+      {({ isThemeDark, themeDark }) => {
+        return(
+    <div style={{backgroundColor: themeDark ? '#1C1C1C' : 'white', minHeight: '100vh' }}>
+       
       <Grid  >
         <Grid
           container
@@ -114,7 +137,7 @@ const Index = ({ children, tabName }) => {
             xs={12}
             md={3}
           >
-            <img src={Logo} height="50px" width="50px" />
+            <img src={themeDark ? Logo : LogoLight} height="50px" width="50px" />
           </Grid>
 
           <Grid className="connectButton" item md={3} xs={12}>
@@ -139,7 +162,7 @@ const Index = ({ children, tabName }) => {
               />
               <h4
                 style={{
-                  color: "#b8b8b8",
+                  color: themeState ? "#b8b8b8" : "#545454",
                   display: "inline-block",
                   fontFamily: "'Montserrat', sans-serif",
                   margin: 0,
@@ -147,7 +170,7 @@ const Index = ({ children, tabName }) => {
                 }}
               >
                 {walletConnected ?
-
+                  
                  "0X123...DAYZ":"CONNECT WALLET "
                 }
               </h4>
@@ -156,7 +179,7 @@ const Index = ({ children, tabName }) => {
         </Grid>
 
         <Grid container style={headingDiv} md={12}>
-          <h1  style={layoutHeading} className="layoutHeading">Instant and Upfront Interest</h1>
+          <h1  style={themeState ? layoutHeadingDark : layoutHeadingLight} className="layoutHeading">Instant and Upfront Interest</h1>
           <h3 className="layoutSubHeading" style={layoutSubHeading}>STAKE XIO. GET PAID. ZERO WAIT</h3>
         </Grid>
 
@@ -180,7 +203,7 @@ const Index = ({ children, tabName }) => {
           >
             <h4
               style={{
-                color: tabName === "dashboard" ? "white" : "#545454",
+                color: tabName === "dashboard" ? (themeDark) ? "white" : "black" : "#545454",
                 justifyContent: "flex-start",
                 letterSpacing: "2px",
                 cursor:'pointer',
@@ -192,7 +215,7 @@ const Index = ({ children, tabName }) => {
             </h4>
             <h4
               style={{
-                color: tabName === "stake" ? "white" : "#545454",
+                color: tabName === "stake" ? (themeDark) ? "white" : "black": "#545454",
                 // color: "#545454",
                 justifyContent: "center",
                 letterSpacing: "2px",
@@ -207,7 +230,7 @@ const Index = ({ children, tabName }) => {
             </h4>
             <h4
               style={{
-                color: tabName === "withdraw" ? "white" : "#545454",
+                color: tabName === "withdraw" ?(themeDark) ? "white" : "black" : "#545454",
                 // color: "#545454",
                 justifyContent: "flex-end",
                 letterSpacing: "2px",
@@ -226,7 +249,7 @@ const Index = ({ children, tabName }) => {
             className="childContainer"
             container
             item
-            style={tabBody}
+            style={themeDark ? tabBody : tabBodyLight}
             md={8}
           >
 
@@ -258,7 +281,7 @@ const Index = ({ children, tabName }) => {
             {
               tabName === "stake" &&
               <>
-                <h6>IF YOU STAKE <span style={{ color: '#C66065' }}>X</span> TOKENS FOR <span style={{ color: '#C66065' }}>X</span> DAYS , YOU WILL IMMEDIATELY RECEIVE <span style={{ color: '#C66065' }}>X TOKENS</span></h6>
+                <h6 style = {{color : themeDark ? " white" : "black" }}>IF YOU STAKE <span style={{ color: '#C66065' }}>X</span> TOKENS FOR <span style={{ color: '#C66065' }}>X</span> DAYS , YOU WILL IMMEDIATELY RECEIVE <span style={{ color: '#C66065' }}>X TOKENS</span></h6>
                 <div style={{ backgroundColor: '#C66065', border: "1px solid #414141", display: "inline-block", padding: 10, borderRadius: 5 }} >
                   <h4 style={{ color: "#b8b8b8", display: "inline-block", fontFamily: "'Montserrat', sans-serif", margin: 0 }} >CONFIRM STAKE</h4>
                 </div>
@@ -267,7 +290,7 @@ const Index = ({ children, tabName }) => {
             {
               tabName === "withdraw" &&
               <>
-                <h6>
+                <h6 style = {{color : themeDark ? " white" : "black" }}>
                   <span style={{ color: "#C66065" }}>XIO </span>HAS A BALANCE OF
               <span style={{ color: "#C66065" }}> 1000 </span> AVAILABLE FOR
                       WITHDRAW
@@ -327,8 +350,18 @@ const Index = ({ children, tabName }) => {
             }
           </Grid>
         </Grid>
+       
       </Grid>
+      
+        <FormControlLabel
+          control={
+            <Switch checked={themeDark} onChange={()=>handleThemeState(isThemeDark)} value="checkedA" />
+          }
+          label={themeDark? 'DarkTheme' : 'LightTheme'}
+        />
     </div>
+        )}}
+  </ThemeConsumer>
   );
 }
 

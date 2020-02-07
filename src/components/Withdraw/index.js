@@ -1,5 +1,5 @@
 import React from 'react';
-import Navbar from '../common/Navbar'
+// import Navbar from '../common/Navbar'
 import WithdrawContainer from "./WithdrawContainer"
 
 const index = () => {

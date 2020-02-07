@@ -12,6 +12,7 @@ import { withStyles } from "@material-ui/core/styles";
 import "./style.css";
 import Layout from "../../layout";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {ThemeConsumer} from '../../config/index'
 
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import SearchIcon from "@material-ui/icons/Search";
@@ -86,6 +87,10 @@ const tableHeader={
 color:'white',
 }
 
+const tableHeaderLight={
+  color:'black' ,
+  }
+
 
 const firstStakeSectionItem={
   border: '1px solid rgb(65, 65, 65)',
@@ -123,10 +128,16 @@ const Stake = props => {
   const opacit = "OPACITY (OPQ)";
 
   return (
+    
     <>
-      {
+ <ThemeConsumer>
+     { ({ isThemeDark, themeDark }) => {
+       console.log(themeDark)
+        return(
+      <>
 
         <React.Fragment>
+
           <Dialog
             style={{ borderRadius: "5px" }}
             fullWidth={true}
@@ -249,7 +260,7 @@ const Stake = props => {
 
           </Dialog>
         </React.Fragment>
-      }
+              
 
       <Layout tabName="stake">
         <Grid container item className="firstSectionContainer " md={12}>
@@ -264,7 +275,7 @@ const Stake = props => {
             sm={12}
             xs={12}
           >
-            <Grid container item className="tableHeader" style={tableHeader} md={2} sm={4} xs={12} justify="center" >
+            <Grid container item className="stakeTableHeader" style={themeDark ? tableHeader : tableHeaderLight} md={2} sm={4} xs={12} justify="center" >
               <Grid item xs={12} >
                 <p style={{ fontSize: "11px" }}>{amountXio}</p>
               </Grid>
@@ -297,7 +308,7 @@ const Stake = props => {
               </Grid>
             </Grid>
 
-            <Grid container item className="tableHeader" style={tableHeader} md={2} sm={4} xs={12} justify="center">
+            <Grid container item className="stakeTableHeader"  style={themeDark ? tableHeader : tableHeaderLight} md={2} sm={4} xs={12} justify="center">
               <Grid item sm={12} xs={12} >
                 <p style={{ fontSize: "11px" }}>{durationDays}</p>
               </Grid>
@@ -323,7 +334,7 @@ const Stake = props => {
               </Grid>
             </Grid>
 
-            <Grid container item className="tableHeader" style={tableHeader} md={2} sm={4} xs={12} justify="center">
+            <Grid container item className="stakeTableHeader"  style={themeDark ? tableHeader : tableHeaderLight} md={2} sm={4} xs={12} justify="center">
               <Grid item sm={12} xs={12} >
                 <p style={{ fontSize: "11px" }}>{outputToken}</p>
               </Grid>
@@ -379,7 +390,7 @@ const Stake = props => {
               </Grid>
             </Grid>
 
-            <Grid container item className="tableHeader" style={tableHeader} md={2} sm={4} xs={12} justify="center" >
+            <Grid container item className="stakeTableHeader"  style={themeDark ? tableHeader : tableHeaderLight} md={2} sm={4} xs={12} justify="center" >
               <Grid item sm={12} xs={12} >
                 <p style={{ fontSize: "11px" }}>{instantInterest}</p>
               </Grid>
@@ -391,8 +402,12 @@ const Stake = props => {
           </Grid>
         </Grid>
       </Layout>
+      </>
+       )
+      }}
+        </ThemeConsumer>
     </>
-  );
+    );
 };
 
 Stake.propTypes = {

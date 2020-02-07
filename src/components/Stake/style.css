@@ -22,13 +22,14 @@
   flex-wrap: nowrap !important;
 }
 
-.tableHeader {
-  /* font-weight: semi-bold !important; */
-  /* color: white !important; */
+.stakeTableHeader {
+
+  font-weight: bold !important;
   border: 0px !important;
   font-family: "Montserrat", sans-serif !important;
   letter-spacing: 2px !important;
-  /* padding-top: 0 !important; */
+  text-align: center !important;
+  padding-top: 0 !important;
 }
 
 .tableBody {
@@ -89,7 +90,7 @@
   .firstSectionHeadings {
     /* font-size: 9px; */
   }
-  .tableHeader {
+  .stakeTableHeader {
     /* padding: 0 !important; */
   }
   .tableBody {

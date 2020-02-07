@@ -6,6 +6,7 @@ import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
+import {ThemeConsumer} from '../../config/index'
 import Paper from "@material-ui/core/Paper";
 import PropTypes from "prop-types";
 import { withStyles } from "@material-ui/core/styles";
@@ -143,6 +144,14 @@ const tabBodyRow3_1 = {
   backgroundColor: "#1C1C1C",
   borderRadius: "3px"
 };
+const tabBodyRow3_1_Light = {
+  flexDirection: "row",
+  alignItems: "center",
+  justifyContent: "center",
+  border: "1px solid #414141",
+  backgroundColor: "#d3d3d33d",
+  borderRadius: "3px"
+};
 const tabBodyRow3_1_1 = {
   flexDirection: "row",
   justifyContent: "center"
@@ -158,12 +167,18 @@ const XordId = props => {
 
   return (
     <>
+      <ThemeConsumer>
+      {({ isThemeDark, themeDark }) => {
+        {console.log(themeDark)}
+        return(
+       
       <Layout tabName="dashboard">
         <Grid container item className="firstSectionContainer" md={12} xs={12} >
+      
           <Grid
         
             item
-            className="firstSectionItem"
+            className={themeDark ? "firstSectionItemDark" : "firstSectionItemLight"}
             md={3}
             xs={4}
           
@@ -184,7 +199,7 @@ const XordId = props => {
             <h2
               style={{
                 fontFamily: "'Montserrat', sans-serif",
-                color: "white",
+                color: themeDark ? "white" : "black",
                 fontWeight: "bold",
                 textAlign: "center",
                 padding:'0px',
@@ -196,7 +211,7 @@ const XordId = props => {
 
           <Grid
             item
-            className="firstSectionItem"
+            className={themeDark ? "firstSectionItemDark" : "firstSectionItemLight"}
             md={3}
             xs={4}
 
@@ -216,7 +231,7 @@ const XordId = props => {
             <h2
               style={{
                 fontFamily: "'Montserrat', sans-serif",
-                color: "white",
+                color: themeDark ? "white" : "black",
                 fontWeight: "bold",
                 textAlign: "center",
                 padding:'0px',
@@ -229,7 +244,7 @@ const XordId = props => {
 
           <Grid
             item
-            className="firstSectionItem"
+            className={themeDark ? "firstSectionItemDark" : "firstSectionItemLight"}
             md={3}
             xs={4}
 
@@ -249,7 +264,7 @@ const XordId = props => {
             <h2
               style={{
                 fontFamily: "'Montserrat', sans-serif",
-                color: "white",
+                color: themeDark ? "white" : "black",
                 fontWeight: "bold",
                 textAlign: "center",
                 padding:'0px',
@@ -265,7 +280,7 @@ const XordId = props => {
 {/* ///////////// */}
 
         <Grid container item style={tabBodyRow3} md={12} className="section" >
-          <Grid container item style={tabBodyRow3_1} md={11}>
+          <Grid container item style={themeDark ? tabBodyRow3_1 : tabBodyRow3_1_Light} md={11}>
             <Grid container item style={tabBodyRow3_1_1} md={12}>
               <h6
                 style={{
@@ -283,24 +298,24 @@ const XordId = props => {
                 <Table className={classes.table} align="center">
                   <TableHead>
                     <TableRow>
-                      <TableCell className="tableHeader" ><h6 style={{ margin: 0 }} >PORTAL ID</h6></TableCell>
-                      <TableCell className="tableHeader" align="center">
+                      <TableCell className={themeDark ? "tableHeader" : "tableHeaderLight"} ><h6 style={{ margin: 0 }} >PORTAL ID</h6></TableCell>
+                      <TableCell className={themeDark ? "tableHeader" : "tableHeaderLight"} align="center">
                         <h6 style={{ margin: 0 }} >STAKED XIO</h6>
                       </TableCell>
-                      <TableCell className="tableHeader" align="center">
+                      <TableCell className={themeDark ? "tableHeader" : "tableHeaderLight"} align="center">
                         <h6 style={{ margin: 0 }} >OUTPUT TOKEN</h6>
                       </TableCell>
-                      <TableCell className="tableHeader" align="center">
+                      <TableCell className={themeDark ? "tableHeader" : "tableHeaderLight"} align="center">
                         <h6 style={{ margin: 0 }} >REMAINING DAYS</h6>
                       </TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody style={{paddingBottom:"20px"}}>
                     <TableRow style={{ cursor: "pointer" }}>
-                      <TableCell className="tableBody" >3626</TableCell>
-                      <TableCell className="tableBody">1000</TableCell>
-                      <TableCell className="tableBody">BAT</TableCell>
-                      <TableCell className="tableBody">100</TableCell>
+                      <TableCell className={themeDark ? "tableBody" : "tableBodyLight"} >3626</TableCell>
+                      <TableCell className={themeDark ? "tableBody" : "tableBodyLight"}>1000</TableCell>
+                      <TableCell className={themeDark ? "tableBody" : "tableBodyLight"}>BAT</TableCell>
+                      <TableCell className={themeDark ? "tableBody" : "tableBodyLight"}>100</TableCell>
                     </TableRow>
                 
 
@@ -312,7 +327,7 @@ const XordId = props => {
           </Grid>
 {/* ///////////////// */}
         <Grid container item style={tabBodyRow3} md={12} className="section" >
-          <Grid container item style={tabBodyRow3_1} md={11}>
+          <Grid container item style={themeDark ? tabBodyRow3_1 : tabBodyRow3_1_Light} md={11}>
             <Grid container item style={tabBodyRow3_1_1} md={12}>
               <h6
                 style={{
@@ -331,30 +346,30 @@ const XordId = props => {
                 <Table className={classes.table} align="center">
                   <TableHead>
                     <TableRow>
-                      <TableCell className="tableHeader" ><h6 style={{ margin: 0 }} >TOKEN</h6></TableCell>
-                      <TableCell className="tableHeader" align="center">
+                      <TableCell className={themeDark ? "tableHeader" : "tableHeaderLight"} ><h6 style={{ margin: 0 }} >TOKEN</h6></TableCell>
+                      <TableCell className={themeDark ? "tableHeader" : "tableHeaderLight"} align="center">
                         <h6 style={{ margin: 0 }} >COLLATERAL</h6>
                       </TableCell>
-                      <TableCell className="tableHeader" align="center">
+                      <TableCell className={themeDark ? "tableHeader" : "tableHeaderLight"} align="center">
                         <h6 style={{ margin: 0 }} >STAKED XIO</h6>
                       </TableCell>
-                      <TableCell className="tableHeader" align="center">
+                      <TableCell className={themeDark ? "tableHeader" : "tableHeaderLight"} align="center">
                         <h6 style={{ margin: 0 }} >INTEREST</h6>
                       </TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
                     <TableRow style={{ cursor: "pointer" }}>
-                      <TableCell className="tableBody" style={{ latterSpacing: '2px' }}>1UP</TableCell>
-                      <TableCell className="tableBody">500,362</TableCell>
-                      <TableCell className="tableBody">23,643</TableCell>
-                      <TableCell className="tableBody">48% </TableCell>
+                      <TableCell className={themeDark ? "tableBody" : "tableBodyLight"} style={{ latterSpacing: '2px' }}>1UP</TableCell>
+                      <TableCell className={themeDark ? "tableBody" : "tableBodyLight"}>500,362</TableCell>
+                      <TableCell className={themeDark ? "tableBody" : "tableBodyLight"}>23,643</TableCell>
+                      <TableCell className={themeDark ? "tableBody" : "tableBodyLight"}>48% </TableCell>
                     </TableRow>
                     <TableRow style={{ cursor: "pointer",marginTop:'0px' }}>
-                      <TableCell className="tableBody" style={{ latterSpacing: '2px' }}>1UP</TableCell>
-                      <TableCell className="tableBody">500,362</TableCell>
-                      <TableCell className="tableBody">23,643</TableCell>
-                      <TableCell className="tableBody">48%</TableCell>
+                      <TableCell className={themeDark ? "tableBody" : "tableBodyLight"} style={{ latterSpacing: '2px' }}>1UP</TableCell>
+                      <TableCell className={themeDark ? "tableBody" : "tableBodyLight"}>500,362</TableCell>
+                      <TableCell className={themeDark ? "tableBody" : "tableBodyLight"}>23,643</TableCell>
+                      <TableCell className={themeDark ? "tableBody" : "tableBodyLight"}>48%</TableCell>
                     </TableRow>
                   </TableBody>
                 </Table>
@@ -366,6 +381,9 @@ const XordId = props => {
 
         </Grid>
       </Layout>
+       )
+      }}
+        </ThemeConsumer>
     </>
   );
 };
