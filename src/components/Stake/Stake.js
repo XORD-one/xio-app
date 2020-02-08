@@ -286,7 +286,7 @@ const Stake = props => {
               </Grid>
 
               <Grid item sm={12} xs={6} className="firstStakeSectionItem" style={themeDark ? firstStakeSectionItem : firstStakeSectionItemLight}>
-                <input className="inputText" placeholder="0.0" />
+                <input className={themeDark ? "inputText" : "inputTextLight"} placeholder="0.0" />
               </Grid>
             </Grid>
 
@@ -320,7 +320,7 @@ const Stake = props => {
 
               <Grid item sm={12} xs={6} className="firstStakeSectionItem" style={themeDark ? firstStakeSectionItem : firstStakeSectionItemLight}>
 
-                <input className="inputText" placeholder="0.0" xs={12} />
+                <input className={themeDark ? "inputText" : "inputTextLight"} placeholder="0.0" xs={12} />
               </Grid>
             </Grid>
 
@@ -401,7 +401,7 @@ const Stake = props => {
               </Grid>
 
               <Grid item sm={12} xs={6} className="firstStakeSectionItem" style={themeDark ? firstStakeSectionItem : firstStakeSectionItemLight} >
-                <input className="inputText" placeholder="0.0" />
+                <input className={themeDark ? "inputText" : "inputTextLight"} disabled = "true" placeholder="0.0" />
               </Grid>
             </Grid>
           </Grid>

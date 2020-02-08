@@ -64,9 +64,9 @@ const tabBody = {
 const tabBodyLight = {
   backgroundColor: "white",
   margin: 0,
-  borderLeft: "2px solid #2d2d2d",
-  borderRight: "2px solid #2d2d2d",
-  borderBottom: "2px solid #2d2d2d"
+  borderLeft: "1px solid #DADADA",
+  borderRight: "1px solid #DADADA",
+  borderBottom: "1px solid #DADADA"
 
 };
 
@@ -143,10 +143,9 @@ const handleThemeState = (isThemeDark,themeDark) => {
           <Grid className="connectButton" item md={3} xs={12}>
             <div
               style={{
-                border: "1px solid #414141",
+                border: themeDark ? "1px solid #414141" : "1px solid #DADADA" ,
                 display: "inline-block",
-                padding: 10,
-                paddingRight:15,
+                padding: "8px 15px 10px 10px",
                 borderRadius: 5
               }}
             >
@@ -166,6 +165,7 @@ const handleThemeState = (isThemeDark,themeDark) => {
                   display: "inline-block",
                   fontFamily: "'Montserrat', sans-serif",
                   margin: 0,
+                  height : '20px',
                   letterSpacing:'2px',
                 }}
               >
@@ -199,7 +199,7 @@ const handleThemeState = (isThemeDark,themeDark) => {
               borderRadius: "5px",
               fontFamily: "'Montserrat', sans-serif"
             } : {
-              backgroundColor:"#d3d3d33d",
+              backgroundColor:"#FCFCFC",
               border: "1px solid #C66065",
               borderRadius: "5px",
               fontFamily: "'Montserrat', sans-serif"
@@ -208,7 +208,7 @@ const handleThemeState = (isThemeDark,themeDark) => {
           >
             <h4
               style={{
-                color: tabName === "dashboard" ? (themeDark) ? "white" : "black" : "#545454",
+                color: tabName === "dashboard" ?  ((themeDark) ? "white" : "black"): ((themeDark) ? "#545454" : "#DADADA"),
                 justifyContent: "flex-start",
                 letterSpacing: "2px",
                 cursor:'pointer',
@@ -220,7 +220,7 @@ const handleThemeState = (isThemeDark,themeDark) => {
             </h4>
             <h4
               style={{
-                color: tabName === "stake" ? (themeDark) ? "white" : "black": "#545454",
+                color: tabName === "stake" ? ((themeDark) ? "white" : "black"): ((themeDark) ? "#545454" : "#DADADA") ,
                 // color: "#545454",
                 justifyContent: "center",
                 letterSpacing: "2px",
@@ -235,7 +235,7 @@ const handleThemeState = (isThemeDark,themeDark) => {
             </h4>
             <h4
               style={{
-                color: tabName === "withdraw" ?(themeDark) ? "white" : "black" : "#545454",
+                color: tabName === "withdraw" ? ((themeDark) ? "white" : "black"): ((themeDark) ? "#545454" : "#DADADA"),
                 // color: "#545454",
                 justifyContent: "flex-end",
                 letterSpacing: "2px",
@@ -287,8 +287,8 @@ const handleThemeState = (isThemeDark,themeDark) => {
               tabName === "stake" &&
               <>
                 <h6 style = {{color : themeDark ? " white" : "black" }}>IF YOU STAKE <span style={{ color: '#C66065' }}>X</span> TOKENS FOR <span style={{ color: '#C66065' }}>X</span> DAYS , YOU WILL IMMEDIATELY RECEIVE <span style={{ color: '#C66065' }}>X TOKENS</span></h6>
-                <div style={{ backgroundColor: '#C66065', border: "1px solid #414141", display: "inline-block", padding: 10, borderRadius: 5 }} >
-                  <h4 style={{ color: "#b8b8b8", display: "inline-block", fontFamily: "'Montserrat', sans-serif", margin: 0 }} >CONFIRM STAKE</h4>
+                <div style={{ backgroundColor: '#C66065', border: themeDark ? "1px solid #414141" : "1px solid #DADADA", display: "inline-block", padding: 10, borderRadius: 5 }} >
+                  <h4 style={{ color: themeDark? "#b8b8b8" : "white", display: "inline-block", fontFamily: "'Montserrat', sans-serif", margin: 0 }} >CONFIRM STAKE</h4>
                 </div>
               </>
             }
@@ -303,7 +303,7 @@ const handleThemeState = (isThemeDark,themeDark) => {
                 <div
                   style={{
                     backgroundColor: "#C66065",
-                    border: "1px solid #414141",
+                    border:  themeDark ? "1px solid #414141" : "1px solid #DADADA",
                     display: "inline-block",
                     padding: 10,
                     borderRadius: 5
@@ -311,7 +311,7 @@ const handleThemeState = (isThemeDark,themeDark) => {
                 >
                   <h4
                     style={{
-                      color: "#b8b8b8",
+                      color: themeDark? "#b8b8b8" : "white",
                       display: "inline-block",
                       fontFamily: "'Montserrat', sans-serif",
                       margin: 0

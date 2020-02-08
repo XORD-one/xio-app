@@ -148,8 +148,8 @@ const tabBodyRow3_1_Light = {
   flexDirection: "row",
   alignItems: "center",
   justifyContent: "center",
-  border: "1px solid #414141",
-  backgroundColor: "#d3d3d33d",
+  border: "1px solid #DADADA",
+  backgroundColor: "#FCFCFC",
   borderRadius: "3px"
 };
 const tabBodyRow3_1_1 = {

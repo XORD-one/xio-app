@@ -335,7 +335,7 @@ const Withdraw = props => {
               </Grid>
 
               <Grid item sm={12} xs={6} className="firstWithdrawSectionItem" style={themeDark ? firstWithdrawSectionItem : firstWithdrawSectionItemLight}  >
-                <input className="inputText" placeholder="0.0" />
+                <input className={themeDark ? "inputText" : "inputTextLight" } disabled = "true" placeholder="0.0" />
               </Grid>
             </Grid>
           </Grid>
