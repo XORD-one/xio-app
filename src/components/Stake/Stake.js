@@ -12,7 +12,7 @@ import { withStyles } from "@material-ui/core/styles";
 import "./style.css";
 import Layout from "../../layout";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {ThemeConsumer} from '../../config/index'
+import { ThemeConsumer } from '../../config/index'
 
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import SearchIcon from "@material-ui/icons/Search";
@@ -28,6 +28,8 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import InputLabel from "@material-ui/core/InputLabel";
 import MenuItem from "@material-ui/core/MenuItem";
 import Select from "@material-ui/core/Select";
+import TextField from '@material-ui/core/TextField';
+
 
 const styles = theme => ({
   root: {
@@ -68,6 +70,16 @@ const styles = theme => ({
 });
 
 const useStyles = makeStyles(theme => ({
+  searchBarInput: {
+    border: "none",
+  },
+  searchBar: {
+    '& > *': {
+      margin: theme.spacing(1),
+      width: 200,
+      border: "none",
+    },
+  },
   form: {
     display: "flex",
     flexDirection: "column",
@@ -83,18 +95,18 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const tableHeader={
-color:'white',
+const tableHeader = {
+  color: 'white',
 }
 
-const tableHeaderLight={
-  color:'black' ,
-  }
+const tableHeaderLight = {
+  color: 'black',
+}
 
 
-const firstStakeSectionItem={
+const firstStakeSectionItem = {
   border: '1px solid rgb(65, 65, 65)',
-  backgroundColor: 'rgb(28, 28, 28)', 
+  backgroundColor: 'rgb(28, 28, 28)',
 }
 
 const firstStakeSectionItemLight = {
@@ -102,47 +114,47 @@ const firstStakeSectionItemLight = {
   "background-color": "#d3d3d33d"
 }
 
-const plusEqual={
-  color: "#c66065" ,
+const plusEqual = {
+  color: "#c66065",
 
 
 }
 
 const Stake = props => {
   const { showDropdown, setShowDropdown } = props;
-  const amountXio = "AMOUNT (XIO)";
-  const durationDays = "DURATION (DAYS)";
-  const outputToken = "OUTPUT (TOKEN)";
-  const instantInterest = "INSTANT INTEREST";
+  const amountXio = '(XIO)';
+  const durationDays = '(DAYS)';
+  const outputToken = '(TOKEN)';
+  const instantInterest = 'INTEREST';
   const classes = useStyles();
 
   const [open, setOpen] = React.useState(false);
-  const [durationDaysInput , setDurationDays] = React.useState("")
-  const [amountXioInput , setAmountXIO] = React.useState("")
+  const [durationDaysInput, setDurationDays] = React.useState("")
+  const [amountXioInput, setAmountXIO] = React.useState("")
 
-  const onChangeAmount = (e) =>{
-      console.log(e.target.value)
-      var reg = new RegExp('^\\d+$');
-      console.log(reg.test(e.target.value))
-      if (reg.test(e.target.value) || e.target.value == '') {
-        setAmountXIO(e.target.value)
-      }
-      else{
-        console.log("nothing")
-      }
-  }
-
-  const onChangeDurationDays = (e) =>{
+  const onChangeAmount = (e) => {
     console.log(e.target.value)
     var reg = new RegExp('^\\d+$');
-      if (reg.test(e.target.value) || e.target.value == '') {
-        setDurationDays(e.target.value)
-      }
-      else {
-        console.log("nothing")
-      }
-    
-}
+    console.log(reg.test(e.target.value))
+    if (reg.test(e.target.value) || e.target.value == '') {
+      setAmountXIO(e.target.value)
+    }
+    else {
+      console.log("nothing")
+    }
+  }
+
+  const onChangeDurationDays = (e) => {
+    console.log(e.target.value)
+    var reg = new RegExp('^\\d+$');
+    if (reg.test(e.target.value) || e.target.value == '') {
+      setDurationDays(e.target.value)
+    }
+    else {
+      console.log("nothing")
+    }
+
+  }
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -158,298 +170,330 @@ const Stake = props => {
   const opacit = "OPACITY (OPQ)";
 
   return (
-    
+
     <>
- <ThemeConsumer>
-     { ({ isThemeDark, themeDark }) => {
-       console.log(themeDark)
-        return(
-      <>
+      <ThemeConsumer>
+        {({ isThemeDark, themeDark }) => {
+          console.log(themeDark)
+          return (
+            <>
 
-        <React.Fragment>
+              <React.Fragment>
 
-          <Dialog
-            style={{ borderRadius: "5px" }}
-            fullWidth={true}
-            maxWidth={"xs"}
-            // md={1}
-            open={open}
-            onClose={handleClose}
-            // aria-labelledby="max-width-dialog-title"
-          >
-            <DialogTitle
-              style={{
-                border: "2px solid #3E3E3E",
-                backgroundColor: "#363636",
-                color: "#030303",
-                padding: "0px 50px"
-              }}
-              justify="center"
-            >
-
-              <DialogContentText
-                style={{
-                  fontFamily: "'Montserrat', sans-serif",
-                  letterSpacing: "2px",
-                  fontWeight: "bolder",
-                  color: "#030303",
-                  cursor: "pointer",
-                  textAlign: "center",
-                  
-                  padding: '0px',
-                  marginTop:'18px'
-                }}
-              >
-                <Grid container  justify="center">
-
-                  <SearchIcon
-                    style={{
-
-                      color: "#DADADA",
-                      cursor: "pointer",
-                      fontSize: "24px",
-                      marginRight: '18px',
-                      // display:'inline !important',
-                      // marginTop: "10px",
-
-                    }}
-                  // fontSize="large"
-                  // viewBox="0 0 50 20"
-                  />
-
-
-                  <span style={{ fontSize: '12px', letterSpacing: '3px' }}>SEARCH TOKEN NAME</span>
-                </Grid>
-              </DialogContentText>
-            </DialogTitle>
-
-            <DialogContent
-              style={{
-                backgroundColor: "#1C1C1C",
-                color: "#D4D4D4",
-                textAlign: "center",
-                border: "2px solid #3E3E3E",
-                borderTop: "0px",
-                paddingTop:'25px'
-              }}
-            >
-              <DialogContentText
-                style={{
-                  fontFamily: "'Montserrat', sans-serif",
-                  fontWeight: "bolder",
-                  backgroundColor: "#1C1C1C",
-                  color: "#D4D4D4"
-                }}
-              >
-                {uptrend}
-              </DialogContentText>
-
-              <DialogContentText
-                style={{
-                  fontFamily: "'Montserrat', sans-serif",
-                  fontWeight: "bolder",
-                  backgroundColor: "#1C1C1C",
-                  color: "#D4D4D4"
-                }}
-              >
-                {bat}
-              </DialogContentText>
-              <DialogContentText
-                style={{
-                  fontFamily: "'Montserrat', sans-serif",
-                  fontWeight: "bolder",
-                  backgroundColor: "#1C1C1C",
-                  color: "#D4D4D4"
-                }}
-              >
-                {binance}
-              </DialogContentText>
-              <DialogContentText
-                style={{
-                  fontFamily: "'Montserrat', sans-serif",
-                  fontWeight: "bolder",
-                  backgroundColor: "#1C1C1C",
-                  color: "#D4D4D4"
-                }}
-              >
-                {ethereum}
-              </DialogContentText>
-              <DialogContentText
-                style={{
-                  fontFamily: "'Montserrat', sans-serif",
-                  fontWeight: "bolder",
-                  backgroundColor: "#1C1C1C",
-                  color: "#D4D4D4"
-                }}
-              >
-                {opacit}
-              </DialogContentText>
-            </DialogContent>
-
-
-
-          </Dialog>
-        </React.Fragment>
-              
-
-      <Layout tabName="stake">
-        <Grid container item className="firstSectionContainer " md={12}>
-          <Grid
-            style={{
-              paddingBottom: "10px"
-            }}
-            container
-            item
-            justify="center"
-            md={12}
-            sm={12}
-            xs={12}
-          >
-            <Grid container item className="stakeTableHeader" style={themeDark ? tableHeader : tableHeaderLight} md={2} sm={4} xs={12} justify="center" >
-              <Grid item xs={12} >
-                <p style={{ fontSize: "11px" }}>{amountXio}</p>
-              </Grid>
-
-              <Grid item sm={12} xs={6} className="firstStakeSectionItem" style={themeDark ? firstStakeSectionItem : firstStakeSectionItemLight}>
-                <input 
-                onChange = {onChangeAmount} 
-                className={themeDark ? "inputText" : "inputTextLight"} 
-                placeholder="0.0" 
-                value = {amountXioInput}/>
-              </Grid>
-            </Grid>
-
-            <Grid
-              container
-              item
-              md={1}
-              sm={12}
-              xs={12}
-              direction="row"
-              justify="center"
-              alignItems="flex-end"
-            >
-              <Grid
-                item
-                md={12}
-                sm={12}
-                xs={12}
-                className="plusEqual"
-                style={plusEqual}
-                align="center"
-              >
-                +
-              </Grid>
-            </Grid>
-
-            <Grid container item className="stakeTableHeader"  style={themeDark ? tableHeader : tableHeaderLight} md={2} sm={4} xs={12} justify="center">
-              <Grid item sm={12} xs={12} >
-                <p style={{ fontSize: "11px" }}>{durationDays}</p>
-              </Grid>
-
-              <Grid item sm={12} xs={6} className="firstStakeSectionItem" style={themeDark ? firstStakeSectionItem : firstStakeSectionItemLight}>
-
-                <input 
-                onChange = {onChangeDurationDays}
-                className={themeDark ? "inputText" : "inputTextLight"} 
-                value = {durationDaysInput}
-                placeholder = "0.0"
-                xs={12} />
-              </Grid>
-            </Grid>
-
-            <Grid
-              container
-              item
-              md={1}
-              sm={12}
-              xs={12}
-              direction="row"
-              justify="center"
-              alignItems="flex-end"
-            >
-              <Grid item md={12} className="plusEqual"  style={plusEqual} align="center">
-                +
-              </Grid>
-            </Grid>
-
-            <Grid container item className="stakeTableHeader"  style={themeDark ? tableHeader : tableHeaderLight} md={2} sm={4} xs={12} justify="center">
-              <Grid item sm={12} xs={12} >
-                <p style={{ fontSize: "11px" }}>{outputToken}</p>
-              </Grid>
-
-              <Grid
-                sm={12}
-                xs={6}
-                container
-                justify="center"
-              >
-                <Grid
-                  className="firstStakeSectionItem"
-                  style={themeDark ? {...firstStakeSectionItem, display: "flex",
-                  flexDirection: "row",
-                  justifyContent: "space-around",
-                  cursor: "pointer"} : {...firstStakeSectionItemLight, display: "flex",
-                  flexDirection: "row",
-                  justifyContent: "space-around",
-                  cursor: "pointer"}}
-                  onClick={handleClickOpen}
-                  item
+                <Dialog
+                  style={{ borderRadius: "5px" }}
+                  fullWidth={true}
+                  maxWidth={"xs"}
+                  // md={1}
+                  open={open}
+                  onClose={handleClose}
+                // aria-labelledby="max-width-dialog-title"
                 >
-                  <input
-                    className={themeDark ? "inputText" : "inputTextLight"}
-                    placeholder="XIO"
-                    disabled={true}
-                    style={{ cursor: "pointer" }}
-                    xs={12}
-                  />
-                  <ExpandMoreIcon
+                  <DialogTitle
                     style={{
-                      fontSize: 40,
-                      color: "#C66065",
-                      cursor: "pointer"
+                      border: "2px solid #3E3E3E",
+                      backgroundColor: "#363636",
+                      color: "#030303",
+                      padding: "0px 50px"
                     }}
-                  />
+                    justify="center"
+                  >
+
+                    <DialogContentText
+                      style={{
+                        fontFamily: "'Montserrat', sans-serif",
+                        letterSpacing: "2px",
+                        fontWeight: "bold",
+                        color: "#030303",
+                        cursor: "pointer",
+                        textAlign: "center",
+
+                        padding: '0px',
+                        marginTop: '18px'
+                      }}
+                    >
+                      <Grid container direction="row" justify="center" >
+
+                        <SearchIcon
+
+                        item
+                          style={{
+
+                            color: "#DADADA",
+                            cursor: "pointer",
+                            fontSize: "24px",
+                            // marginRight: '18px',
+
+
+                          }}
+
+                        />
+
+                        <Grid item>
+
+                          <input
+
+                            className="searchText" 
+                            placeholder="SEARCH TOKEN NAME"
+                          />
+                        </Grid>
+
+                      </Grid>
+                    </DialogContentText>
+                  </DialogTitle>
+
+                  <DialogContent
+                    style={{
+                      backgroundColor: "#1C1C1C",
+                      color: "#D4D4D4",
+                      textAlign: "center",
+                      border: "2px solid #3E3E3E",
+                      borderTop: "0px",
+                      paddingTop: '25px'
+                    }}
+                  >
+                    <DialogContentText
+                      style={{
+                        fontFamily: "'Montserrat', sans-serif",
+                        fontWeight: "bolder",
+                        backgroundColor: "#1C1C1C",
+                        color: "#D4D4D4"
+                      }}
+                    >
+                      {uptrend}
+                    </DialogContentText>
+
+                    <DialogContentText
+                      style={{
+                        fontFamily: "'Montserrat', sans-serif",
+                        fontWeight: "bolder",
+                        backgroundColor: "#1C1C1C",
+                        color: "#D4D4D4"
+                      }}
+                    >
+                      {bat}
+                    </DialogContentText>
+                    <DialogContentText
+                      style={{
+                        fontFamily: "'Montserrat', sans-serif",
+                        fontWeight: "bolder",
+                        backgroundColor: "#1C1C1C",
+                        color: "#D4D4D4"
+                      }}
+                    >
+                      {binance}
+                    </DialogContentText>
+                    <DialogContentText
+                      style={{
+                        fontFamily: "'Montserrat', sans-serif",
+                        fontWeight: "bolder",
+                        backgroundColor: "#1C1C1C",
+                        color: "#D4D4D4"
+                      }}
+                    >
+                      {ethereum}
+                    </DialogContentText>
+                    <DialogContentText
+                      style={{
+                        fontFamily: "'Montserrat', sans-serif",
+                        fontWeight: "bolder",
+                        backgroundColor: "#1C1C1C",
+                        color: "#D4D4D4"
+                      }}
+                    >
+                      {opacit}
+                    </DialogContentText>
+                  </DialogContent>
+
+
+
+                </Dialog>
+              </React.Fragment>
+
+
+              <Layout tabName="stake">
+                <Grid container item className="firstSectionContainer " md={12}>
+                  <Grid
+                    style={{
+                      paddingBottom: "10px"
+                    }}
+                    container
+                    item
+                    justify="center"
+                    md={12}
+                    sm={12}
+                    xs={12}
+                  >
+                    <Grid container item className="stakeTableHeader" style={themeDark ? tableHeader : tableHeaderLight} md={2} sm={4} xs={12} justify="center" >
+                      <Grid item xs={12} >
+                        {/* <p style={{ fontSize: "11px" }}>{amountXio}</p> */}
+                        <p className="toggleHeadText_1" style={{ fontSize: "11px" }}>AMOUNT</p>
+                        <p className="toggleHeadText_1" style={{ fontSize: "11px" }}>{amountXio}</p>
+                        <p className="toggleHeadText_2" style={{ fontSize: "11px" }}>{"DURATION (DAYS)"}</p>
+
+
+                      </Grid>
+
+                      <Grid item sm={12} xs={6} className="firstStakeSectionItem" style={themeDark ? firstStakeSectionItem : firstStakeSectionItemLight}>
+                        <input
+                          onChange={onChangeAmount}
+                          className={themeDark ? "inputText" : "inputTextLight"}
+                          placeholder="0.0"
+                          value={amountXioInput} />
+                      </Grid>
+                    </Grid>
+
+                    <Grid
+                      container
+                      item
+                      md={1}
+                      sm={12}
+                      xs={12}
+                      direction="row"
+                      justify="center"
+                      alignItems="flex-end"
+                    >
+                      <Grid
+                        item
+                        md={12}
+                        sm={12}
+                        xs={12}
+                        className="plusEqual"
+                        style={plusEqual}
+                        align="center"
+                      >
+                        +
+              </Grid>
+                    </Grid>
+
+                    <Grid container item className="stakeTableHeader" style={themeDark ? tableHeader : tableHeaderLight} md={2} sm={4} xs={12} justify="center">
+                      <Grid item sm={12} xs={12} >
+
+                        <p className="toggleHeadText_1" style={{ fontSize: "11px" }}>DURATION</p>
+                        <p className="toggleHeadText_1" style={{ fontSize: "11px" }}>{durationDays}</p>
+                        <p className="toggleHeadText_2" style={{ fontSize: "11px" }}>{"DURATION (DAYS)"}</p>
+
+
+                      </Grid>
+
+                      <Grid item sm={12} xs={6} className="firstStakeSectionItem" style={themeDark ? firstStakeSectionItem : firstStakeSectionItemLight}>
+
+                        <input
+                          onChange={onChangeDurationDays}
+                          className={themeDark ? "inputText" : "inputTextLight"}
+                          value={durationDaysInput}
+                          placeholder="0.0"
+                          xs={12} />
+                      </Grid>
+                    </Grid>
+
+                    <Grid
+                      container
+                      item
+                      md={1}
+                      sm={12}
+                      xs={12}
+                      direction="row"
+                      justify="center"
+                      alignItems="flex-end"
+                    >
+                      <Grid item md={12} className="plusEqual" style={plusEqual} align="center">
+                        +
+              </Grid>
+                    </Grid>
+
+                    <Grid container item className="stakeTableHeader" style={themeDark ? tableHeader : tableHeaderLight} md={2} sm={4} xs={12} justify="center">
+                      <Grid item sm={12} xs={12} >
+                        <p className="toggleHeadText_1" style={{ fontSize: "11px" }}>OUTPUT</p>
+                        <p className="toggleHeadText_1" style={{ fontSize: "11px" }}>{outputToken}</p>
+                        <p className="toggleHeadText_2" style={{ fontSize: "11px" }}>{"OUTPUT (TOKEN)"}</p>
+
+
+                      </Grid>
+
+                      <Grid
+                        sm={12}
+                        xs={6}
+                        container
+                        justify="center"
+                      >
+                        <Grid
+                          className="firstStakeSectionItem"
+                          style={themeDark ? {
+                            ...firstStakeSectionItem, display: "flex",
+                            flexDirection: "row",
+                            justifyContent: "space-around",
+                            cursor: "pointer"
+                          } : {
+                            ...firstStakeSectionItemLight, display: "flex",
+                              flexDirection: "row",
+                              justifyContent: "space-around",
+                              cursor: "pointer"
+                            }}
+                          onClick={handleClickOpen}
+                          item
+                        >
+                          <input
+                            className={themeDark ? "inputText" : "inputTextLight"}
+                            placeholder="XIO"
+                            disabled={true}
+                            style={{ cursor: "pointer" }}
+                            xs={12}
+                          />
+                          <ExpandMoreIcon
+                            style={{
+                              fontSize: 40,
+                              color: "#C66065",
+                              cursor: "pointer"
+                            }}
+                          />
+                        </Grid>
+                      </Grid>
+                    </Grid>
+
+                    <Grid
+                      container
+                      item
+                      md={1}
+                      sm={12}
+                      xs={12}
+                      direction="row"
+                      justify="center"
+                      alignItems="flex-end"
+                    >
+                      <Grid item md={12} className="plusEqual" style={plusEqual} align="center">
+                        =
+              </Grid>
+                    </Grid>
+
+                    <Grid container item className="stakeTableHeader" style={themeDark ? tableHeader : tableHeaderLight} md={2} sm={4} xs={12} justify="center" >
+                      <Grid item sm={12} xs={12} >
+                        <p className="toggleHeadText_1" style={{ fontSize: "11px" }}>INSTANT</p>
+                        <p className="toggleHeadText_1" style={{ fontSize: "11px" }}>{instantInterest}</p>
+                        <p className="toggleHeadText_2" style={{ fontSize: "11px" }}>{"INSTANT INTEREST"}</p>
+
+
+
+
+
+                      </Grid>
+
+                      <Grid item sm={12} xs={6} className="firstStakeSectionItem" style={themeDark ? firstStakeSectionItem : firstStakeSectionItemLight} >
+                        <input className={themeDark ? "inputText" : "inputTextLight"} disabled="true" placeholder="0.0" />
+                      </Grid>
+                    </Grid>
+                  </Grid>
                 </Grid>
-              </Grid>
-            </Grid>
-
-            <Grid
-              container
-              item
-              md={1}
-              sm={12}
-              xs={12}
-              direction="row"
-              justify="center"
-              alignItems="flex-end"
-            >
-              <Grid item md={12} className="plusEqual"  style={plusEqual} align="center">
-                =
-              </Grid>
-            </Grid>
-
-            <Grid container item className="stakeTableHeader"  style={themeDark ? tableHeader : tableHeaderLight} md={2} sm={4} xs={12} justify="center" >
-              <Grid item sm={12} xs={12} >
-                <p style={{ fontSize: "11px" }}>{instantInterest}</p>
-              </Grid>
-
-              <Grid item sm={12} xs={6} className="firstStakeSectionItem" style={themeDark ? firstStakeSectionItem : firstStakeSectionItemLight} >
-                <input className={themeDark ? "inputText" : "inputTextLight"} disabled = "true" placeholder="0.0" />
-              </Grid>
-            </Grid>
-          </Grid>
-        </Grid>
-      </Layout>
-      </>
-       )
-      }}
-        </ThemeConsumer>
+              </Layout>
+            </>
+          )
+        }}
+      </ThemeConsumer>
     </>
-    );
+  );
 };
 
 Stake.propTypes = {
-  // classes: PropTypes.object.isRequired
+  classes: PropTypes.object.isRequired
 };
 export default withStyles(styles)(Stake);
