@@ -16,22 +16,16 @@ import Layout from "../../layout";
 const styles = theme => ({
   root: {
     width: "100%",
-    // marginTop: theme.spacing.unit * 3,
-    // overflowX: 'auto',
     backgroundColor: "transparent",
     alignSelf: "cenetr"
-    // boxShadow: 'none'
   },
   table: {
-    // minWidth: 700,
-    // border: '1px solid lightgrey',
     backgroundColor: "transparent",
     alignSelf: "cenetr",
 
     color: "white"
   },
   header: {
-    // fontSize: 12,
     fontWeight: "bold",
     color: "white",
     border: "0px",
@@ -52,90 +46,12 @@ const styles = theme => ({
     marginBottom:'40px'
   }
 });
-const getDateFormatted = time => {
-  const formatDate = new Date(time);
-  // console.log(formatDate)
-  const date = formatDate.getDate();
-  let month = formatDate.getMonth() + 1;
-  let year = formatDate.getFullYear().toString();
-  return `${date}/${month < 10 ? "0" + month : month}/${year.slice(2)}`;
-};
-
-const tabBodyRow1 = {
-  display: "flex",
-  flexDirection: "row",
-  justifyContent: "space-around"
-};
-
-const tabBodyRow1_1 = {
-  flexDirection: "row",
-  justifyContent: "center",
-  // alignItems: "center",
-  border: "1px solid #2a2a2a",
-  backgroundColor: "#1C1C1C",
-  borderRadius: "3px",
-  // height:'100px'
-  padding: "0"
-};
-
-const tabBodyRow1_2 = {
-  flexDirection: "column",
-  alignItems: "center",
-  border: "1px solid #2a2a2a",
-  backgroundColor: "#1C1C1C",
-  borderRadius: "3px"
-};
-
-const tabBodyRow1_3 = {
-  flexDirection: "column",
-  alignItems: "center",
-  border: "1px solid #2a2a2a",
-  backgroundColor: "#1C1C1C",
-  borderRadius: "3px"
-};
-
-const tabBodyRow2 = {
-  display: "flex",
-  flexDirection: "column",
-  // border: "1px solid #d6cbcb",
-  alignItems: "center"
-};
 
 const tabBodyRow3 = {
   display: "flex",
   flexDirection: "column",
-  //   border: "1px solid #d6cbcb",
   alignItems: "center"
 };
-const tabBodyRow2_1 = {
-  // border: '1px solid #2a2a2a',
-  // backgroundColor: '#1C1C1C',
-  // borderRadius: '3px',
-
-  flexDirection: "row",
-  // alignItems: "center",
-  border: "1px solid #414141",
-  backgroundColor: "#1C1C1C",
-  borderRadius: "3px"
-};
-
-const tabBodyRow2_1_1 = {
-  flexDirection: "row",
-  justifyContent: "center"
-};
-const tabBodyRow2_1_2 = {
-  flexDirection: "row",
-  justifyContent: "space-around",
-  flexWrap: "no-wrap"
-  // alignItems:"center",
-};
-
-const tabBodyRow2_1_3 = {
-  flexDirection: "row",
-
-  justifyContent: "space-between"
-};
-
 const tabBodyRow3_1 = {
   flexDirection: "row",
   alignItems: "center",
@@ -162,14 +78,13 @@ const tabBodyRow3_1_2 = {
 }
 
 
-const XordId = props => {
+const Dashboard = props => {
   const { classes } = props;
 
   return (
     <>
       <ThemeConsumer>
       {({ isThemeDark, themeDark }) => {
-        {console.log(themeDark)}
         return(
        
       <Layout tabName="dashboard">
@@ -277,7 +192,6 @@ const XordId = props => {
         </Grid>
 
 
-{/* ///////////// */}
 
         <Grid container item style={tabBodyRow3} md={12} className="section" >
           <Grid container item style={themeDark ? tabBodyRow3_1 : tabBodyRow3_1_Light} md={11}>
@@ -325,7 +239,6 @@ const XordId = props => {
             </Grid>
           </Grid>
           </Grid>
-{/* ///////////////// */}
         <Grid container item style={tabBodyRow3} md={12} className="section" >
           <Grid container item style={themeDark ? tabBodyRow3_1 : tabBodyRow3_1_Light} md={11}>
             <Grid container item style={tabBodyRow3_1_1} md={12}>
@@ -388,7 +301,7 @@ const XordId = props => {
   );
 };
 
-XordId.propTypes = {
+Dashboard.propTypes = {
   classes: PropTypes.object.isRequired
 };
-export default withStyles(styles)(XordId);
+export default withStyles(styles)(Dashboard);

@@ -75,24 +75,12 @@ const tabBodyLight = {
 const Index = ({ children, tabName }) => {
   const [completed, setCompleted] = useState(false)
   const [walletConnected, setWalletConnected] = useState(false)
-  // const [themeState , setThemeState] = useState(true)
 
 
 const handleThemeState = (isThemeDark,themeDark) => {
-    // let currentThemeState = themeState
-  //  setThemeState(!themeDark)
    isThemeDark(!themeDark)
 }
-
   let history = useHistory();
-
-  
-    
-
-  console.log("hiostory prtop in layout",history)
-
-  console.log("tabname====>", tabName)
-
   return (
     <ThemeConsumer>
       {({ isThemeDark, themeDark }) => {
@@ -108,7 +96,6 @@ const handleThemeState = (isThemeDark,themeDark) => {
         >
           <Grid
             className="socialIcons"
-            // style={iconDiv}
             item
             md={3}
             xs={12}
@@ -221,7 +208,6 @@ const handleThemeState = (isThemeDark,themeDark) => {
             <h4
               style={{
                 color: tabName === "stake" ? ((themeDark) ? "white" : "black"): ((themeDark) ? "#545454" : "#DADADA") ,
-                // color: "#545454",
                 justifyContent: "center",
                 letterSpacing: "2px",
                 cursor:'pointer',
@@ -236,7 +222,6 @@ const handleThemeState = (isThemeDark,themeDark) => {
             <h4
               style={{
                 color: tabName === "withdraw" ? ((themeDark) ? "white" : "black"): ((themeDark) ? "#545454" : "#DADADA"),
-                // color: "#545454",
                 justifyContent: "flex-end",
                 letterSpacing: "2px",
                 cursor:'pointer',

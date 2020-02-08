@@ -1,0 +1,30 @@
+
+.searchText{
+    font-weight: bold !important;
+    color: #030303 !important;
+    border: 0px !important;
+    font-family: "Montserrat", sans-serif !important;
+    letter-spacing: 2px !important;
+    padding: 5px !important;
+    font-size: 14px;
+    font-weight: bolder;
+    background-color: transparent;
+    border: transparent;
+    outline: transparent;
+  }
+  
+  .searchText::placeholder{
+    color: #030303 !important;
+    font-size: 0.9em;
+  }
+  
+
+
+@media screen and (max-width: 500px) {
+    .searchText::placeholder{
+      color: #030303 !important;
+      font-size: 0.7em;
+    
+    
+    }
+}

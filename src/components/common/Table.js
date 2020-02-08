@@ -16,7 +16,6 @@ const styles = theme => ({
         boxShadow: 'none'
     },
     table: {
-        // minWidth: 700,
         border: '1px solid lightgrey'
     },
 });
