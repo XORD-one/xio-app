@@ -297,7 +297,7 @@ const Withdraw = props => {
                   item
                 >
                   <input
-                    className="inputText"
+                    className={themeDark ? "inputText" : "inputTextLight"}
                     placeholder="XIO"
                     disabled={true}
                     style={{ cursor: "pointer" }}

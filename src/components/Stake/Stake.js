@@ -117,7 +117,32 @@ const Stake = props => {
   const classes = useStyles();
 
   const [open, setOpen] = React.useState(false);
+  const [durationDaysInput , setDurationDays] = React.useState("")
+  const [amountXioInput , setAmountXIO] = React.useState("")
 
+  const onChangeAmount = (e) =>{
+      console.log(e.target.value)
+      var reg = new RegExp('^\\d+$');
+      console.log(reg.test(e.target.value))
+      if (reg.test(e.target.value) || e.target.value == '') {
+        setAmountXIO(e.target.value)
+      }
+      else{
+        console.log("nothing")
+      }
+  }
+
+  const onChangeDurationDays = (e) =>{
+    console.log(e.target.value)
+    var reg = new RegExp('^\\d+$');
+      if (reg.test(e.target.value) || e.target.value == '') {
+        setDurationDays(e.target.value)
+      }
+      else {
+        console.log("nothing")
+      }
+    
+}
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -286,7 +311,11 @@ const Stake = props => {
               </Grid>
 
               <Grid item sm={12} xs={6} className="firstStakeSectionItem" style={themeDark ? firstStakeSectionItem : firstStakeSectionItemLight}>
-                <input className={themeDark ? "inputText" : "inputTextLight"} placeholder="0.0" />
+                <input 
+                onChange = {onChangeAmount} 
+                className={themeDark ? "inputText" : "inputTextLight"} 
+                placeholder="0.0" 
+                value = {amountXioInput}/>
               </Grid>
             </Grid>
 
@@ -320,7 +349,12 @@ const Stake = props => {
 
               <Grid item sm={12} xs={6} className="firstStakeSectionItem" style={themeDark ? firstStakeSectionItem : firstStakeSectionItemLight}>
 
-                <input className={themeDark ? "inputText" : "inputTextLight"} placeholder="0.0" xs={12} />
+                <input 
+                onChange = {onChangeDurationDays}
+                className={themeDark ? "inputText" : "inputTextLight"} 
+                value = {durationDaysInput}
+                placeholder = "0.0"
+                xs={12} />
               </Grid>
             </Grid>
 
@@ -363,7 +397,7 @@ const Stake = props => {
                   item
                 >
                   <input
-                    className="inputText"
+                    className={themeDark ? "inputText" : "inputTextLight"}
                     placeholder="XIO"
                     disabled={true}
                     style={{ cursor: "pointer" }}
