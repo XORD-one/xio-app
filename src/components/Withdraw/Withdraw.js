@@ -69,7 +69,7 @@ const Withdraw = props => {
   const { showDropdown, setShowDropdown } = props;
   const amountXio = "AMOUNT (XIO)";
   const durationDays = "DURATION (DAYS)";
-  const outputToken = "SELECT TOKEN";
+  const outputToken = "WITHDRAW TOKEN";
   const instantInterest = "WITHDRAW AMOUNT";
   const classes = useStyles();
 
@@ -123,13 +123,13 @@ const Withdraw = props => {
                       justify="center"
                     >
                       <Grid item sm={12} xs={12}>
-                        <p style={{ fontSize: "11px" }}>{outputToken}</p>
+                        <p className="colHeading" style={{ fontSize: "11px" }}>{outputToken}</p>
                       </Grid>
 
                       <Grid sm={12} xs={6} container justify="center">
                         <Grid
                           className="firstWithdrawSectionItem"
-                          onClick={handleClickOpen}
+                          // onClick={handleClickOpen}
                           style={
                             themeDark
                               ? {
@@ -158,13 +158,7 @@ const Withdraw = props => {
                             style={{ cursor: "pointer" }}
                             xs={12}
                           />
-                          <ExpandMoreIcon
-                            style={{
-                              fontSize: 40,
-                              color: "#C66065",
-                              cursor: "pointer"
-                            }}
-                          />
+                          
                         </Grid>
                       </Grid>
                     </Grid>
@@ -198,7 +192,7 @@ const Withdraw = props => {
                       justify="center"
                     >
                       <Grid item sm={12} xs={12}>
-                        <p style={{ fontSize: "11px" }}>{instantInterest}</p>
+                        <p className="colHeading" style={{ fontSize: "11px" }}>{instantInterest}</p>
                       </Grid>
 
                       <Grid

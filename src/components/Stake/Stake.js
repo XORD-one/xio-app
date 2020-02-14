@@ -163,7 +163,7 @@ const Stake = props => {
                     >
                       <Grid item xs={12}>
                         {/* <p style={{ fontSize: "11px" }}>{amountXio}</p> */}
-                        <p
+                        {/* <p
                           className="toggleHeadText_1"
                           style={{ fontSize: "11px" }}
                         >
@@ -174,10 +174,10 @@ const Stake = props => {
                           style={{ fontSize: "11px" }}
                         >
                           {amountXio}
-                        </p>
+                        </p> */}
                         <p
                           className="toggleHeadText_2"
-                          style={{ fontSize: "11px" }}
+                          style={{ fontSize: "10px",height:26 }}
                         >
                           {"DURATION (DAYS)"}
                         </p>
@@ -196,7 +196,7 @@ const Stake = props => {
                       >
                         <input
                           onChange={onChangeAmount}
-                          className={themeDark ? "inputText" : "inputTextLight"}
+                          className={themeDark ? "inputTextStake" : "inputTextStakeLight"}
                           placeholder="0.0"
                           value={amountXioInput}
                         />
@@ -237,7 +237,7 @@ const Stake = props => {
                       justify="center"
                     >
                       <Grid item sm={12} xs={12}>
-                        <p
+                        {/* <p
                           className="toggleHeadText_1"
                           style={{ fontSize: "11px" }}
                         >
@@ -248,10 +248,10 @@ const Stake = props => {
                           style={{ fontSize: "11px" }}
                         >
                           {durationDays}
-                        </p>
+                        </p> */}
                         <p
                           className="toggleHeadText_2"
-                          style={{ fontSize: "11px" }}
+                          style={{ fontSize: "10px",height:26 }}
                         >
                           {"DURATION (DAYS)"}
                         </p>
@@ -270,7 +270,7 @@ const Stake = props => {
                       >
                         <input
                           onChange={onChangeDurationDays}
-                          className={themeDark ? "inputText" : "inputTextLight"}
+                          className={themeDark ? "inputTextStake" : "inputTextStakeLight"}
                           value={durationDaysInput}
                           placeholder="0.0"
                           xs={12}
@@ -310,7 +310,7 @@ const Stake = props => {
                       justify="center"
                     >
                       <Grid item sm={12} xs={12}>
-                        <p
+                        {/* <p
                           className="toggleHeadText_1"
                           style={{ fontSize: "11px" }}
                         >
@@ -321,10 +321,10 @@ const Stake = props => {
                           style={{ fontSize: "11px" }}
                         >
                           {outputToken}
-                        </p>
+                        </p> */}
                         <p
                           className="toggleHeadText_2"
-                          style={{ fontSize: "11px" }}
+                          style={{ fontSize: "10px",height:26 }}
                         >
                           {"OUTPUT (TOKEN)"}
                         </p>
@@ -355,7 +355,7 @@ const Stake = props => {
                         >
                           <input
                             className={
-                              themeDark ? "inputText" : "inputTextLight"
+                              themeDark ? "inputTextStake" : "inputTextStakeLight"
                             }
                             placeholder="XIO"
                             disabled={true}
@@ -405,7 +405,7 @@ const Stake = props => {
                       justify="center"
                     >
                       <Grid item sm={12} xs={12}>
-                        <p
+                        {/* <p
                           className="toggleHeadText_1"
                           style={{ fontSize: "11px" }}
                         >
@@ -416,10 +416,10 @@ const Stake = props => {
                           style={{ fontSize: "11px" }}
                         >
                           {instantInterest}
-                        </p>
+                        </p> */}
                         <p
                           className="toggleHeadText_2"
-                          style={{ fontSize: "11px" }}
+                          style={{ fontSize: "10px",height:26 }}
                         >
                           {"INSTANT INTEREST"}
                         </p>
@@ -437,7 +437,7 @@ const Stake = props => {
                         }
                       >
                         <input
-                          className={themeDark ? "inputText" : "inputTextLight"}
+                          className={themeDark ? "inputTextStake" : "inputTextStakeLight"}
                           disabled="true"
                           placeholder="0.0"
                         />

@@ -24,9 +24,11 @@ const layoutSubHeading={
 
 const layoutHeadingLight={
   color:'black',
+  letterSpacing:6
 }
 const layoutHeadingDark={
   color:'white',
+  letterSpacing:6
 }
 
 const tableHeader={
@@ -166,8 +168,8 @@ const handleThemeState = (isThemeDark,themeDark) => {
         </Grid>
 
         <Grid container style={headingDiv} md={12}>
-          <h1  style={themeDark ? layoutHeadingDark : layoutHeadingLight} className="layoutHeading">Instant and Upfront Interest</h1>
-          <h3 className="layoutSubHeading" style={layoutSubHeading}>STAKE XIO. GET PAID. ZERO WAIT</h3>
+          <h3  style={themeDark ? layoutHeadingDark : layoutHeadingLight} className="layoutHeading">STAKE XIO. EARN ALTS. ZERO LOSS.</h3>
+          {/* <h3 className="layoutSubHeading" style={layoutSubHeading}>STAKE XIO. GET PAID. ZERO WAIT</h3> */}
         </Grid>
 
         <Grid
@@ -271,9 +273,9 @@ const handleThemeState = (isThemeDark,themeDark) => {
             {
               tabName === "stake" &&
               <>
-                <h6 style = {{color : themeDark ? " white" : "black" }}>IF YOU STAKE <span style={{ color: '#C66065' }}>X</span> TOKENS FOR <span style={{ color: '#C66065' }}>X</span> DAYS , YOU WILL IMMEDIATELY RECEIVE <span style={{ color: '#C66065' }}>X TOKENS</span></h6>
+                <h6 style = {{color : themeDark ? "white" : "black" }}>IF YOU STAKE <span style={{ color: '#C66065' }}>X</span> TOKENS FOR <span style={{ color: '#C66065' }}>X</span> DAYS , YOU WILL IMMEDIATELY RECEIVE <span style={{ color: '#C66065' }}>X TOKENS</span></h6>
                 <div style={{ backgroundColor: '#C66065', border: themeDark ? "1px solid #414141" : "1px solid #DADADA", display: "inline-block", padding: 10, borderRadius: 5 }} >
-                  <h4 style={{ color: themeDark? "#b8b8b8" : "white", display: "inline-block", fontFamily: "'Montserrat', sans-serif", margin: 0 }} >CONFIRM STAKE</h4>
+                  <h4 style={{ color:"white", display: "inline-block", fontFamily: "'Montserrat', sans-serif", margin: 0 }} >CONFIRM STAKE</h4>
                 </div>
               </>
             }
@@ -296,7 +298,7 @@ const handleThemeState = (isThemeDark,themeDark) => {
                 >
                   <h4
                     style={{
-                      color: themeDark? "#b8b8b8" : "white",
+                      color: "white",
                       display: "inline-block",
                       fontFamily: "'Montserrat', sans-serif",
                       margin: 0
@@ -343,17 +345,7 @@ const handleThemeState = (isThemeDark,themeDark) => {
        
       </Grid>
       
-        <FormControlLabel
-          control={
-            <Switch checked={themeDark} onChange={()=>handleThemeState(isThemeDark,themeDark)} value="checkedA" />
-          }
-          label={themeDark? 'DarkTheme' : 'LightTheme'}
-          style={themeDark ? {color:"white",position: "fixed",
-          bottom: 20,
-          right: 5} : {position: "fixed",
-            bottom: 20,
-            right: 5}}
-        />
+      <Switch style={{color:"#c66065"}} className="MuiSwitch-root" checked={themeDark} onChange={()=>handleThemeState(isThemeDark,themeDark)} value="checkedA" />
     </div>
         )}}
   </ThemeConsumer>

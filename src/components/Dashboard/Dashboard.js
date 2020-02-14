@@ -96,7 +96,7 @@ const Dashboard = props => {
             className={themeDark ? "firstSectionItemDark" : "firstSectionItemLight"}
             md={3}
             xs={4}
-          
+            style={{flexBasis: "calc(33% - 10px)"}}
           >
             <h6
               style={{
@@ -105,7 +105,7 @@ const Dashboard = props => {
                 fontStyle: "italic",
                 letterSpacing: "2px",
                 textAlign: "center",
-              
+                height:22
               }}
               className="firstSectionHeadings"
             >
@@ -129,7 +129,7 @@ const Dashboard = props => {
             className={themeDark ? "firstSectionItemDark" : "firstSectionItemLight"}
             md={3}
             xs={4}
-
+            style={{flexBasis: "calc(33% - 10px)"}}
           >
             <h6
               style={{
@@ -138,6 +138,7 @@ const Dashboard = props => {
                 fontStyle: "italic",
                 letterSpacing: "2px",
                 textAlign: "center",
+                height:22
               }}
               className="firstSectionHeadings"
             >
@@ -162,7 +163,7 @@ const Dashboard = props => {
             className={themeDark ? "firstSectionItemDark" : "firstSectionItemLight"}
             md={3}
             xs={4}
-
+            style={{flexBasis: "calc(33% - 10px)"}}
           >
             <h6
               style={{
@@ -171,10 +172,11 @@ const Dashboard = props => {
                 fontStyle: "italic",
                 letterSpacing: "2px",
                 textAlign: "center",
+                height:22
               }}
               className="firstSectionHeadings"
             >
-              ACTIVE PORTALS
+              INTEREST RATE
             </h6>
             <h2
               style={{
@@ -186,7 +188,7 @@ const Dashboard = props => {
 
               }}
             >
-              0
+              25%
             </h2>
           </Grid>
         </Grid>
@@ -212,24 +214,21 @@ const Dashboard = props => {
                 <Table className={classes.table} align="center">
                   <TableHead>
                     <TableRow>
-                      <TableCell className={themeDark ? "tableHeader" : "tableHeaderLight"} ><h6 style={{ margin: 0 }} >PORTAL ID</h6></TableCell>
+                      <TableCell style={{width:"33%"}} className={themeDark ? "tableHeader" : "tableHeaderLight"} ><h6 style={{ margin: 0 ,fontSize:10}} >PORTAL ID</h6></TableCell>
                       <TableCell className={themeDark ? "tableHeader" : "tableHeaderLight"} align="center">
-                        <h6 style={{ margin: 0 }} >STAKED XIO</h6>
+                        <h6 style={{ margin: 0,fontSize:10 }} >STAKED XIO</h6>
                       </TableCell>
+                      
                       <TableCell className={themeDark ? "tableHeader" : "tableHeaderLight"} align="center">
-                        <h6 style={{ margin: 0 }} >OUTPUT TOKEN</h6>
-                      </TableCell>
-                      <TableCell className={themeDark ? "tableHeader" : "tableHeaderLight"} align="center">
-                        <h6 style={{ margin: 0 }} >REMAINING DAYS</h6>
+                        <h6 style={{ margin: 0,fontSize:10 }} >REMAINING DAYS</h6>
                       </TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody style={{paddingBottom:"20px"}}>
                     <TableRow style={{ cursor: "pointer" }}>
-                      <TableCell className={themeDark ? "tableBody" : "tableBodyLight"} >3626</TableCell>
-                      <TableCell className={themeDark ? "tableBody" : "tableBodyLight"}>1000</TableCell>
-                      <TableCell className={themeDark ? "tableBody" : "tableBodyLight"}>BAT</TableCell>
-                      <TableCell className={themeDark ? "tableBody" : "tableBodyLight"}>100</TableCell>
+                      <TableCell style={{fontSize:10}} className={themeDark ? "tableBody" : "tableBodyLight"} >3626</TableCell>
+                      <TableCell style={{fontSize:10}} className={themeDark ? "tableBody" : "tableBodyLight"}>1000</TableCell>
+                      <TableCell style={{fontSize:10}} className={themeDark ? "tableBody" : "tableBodyLight"}>100</TableCell>
                     </TableRow>
                 
 
@@ -259,30 +258,26 @@ const Dashboard = props => {
                 <Table className={classes.table} align="center">
                   <TableHead>
                     <TableRow>
-                      <TableCell className={themeDark ? "tableHeader" : "tableHeaderLight"} ><h6 style={{ margin: 0 }} >TOKEN</h6></TableCell>
+                      <TableCell style={{width:"33%"}} className={themeDark ? "tableHeader" : "tableHeaderLight"} ><h6 style={{ margin: 0,fontSize:10 }} >TOKEN</h6></TableCell>
                       <TableCell className={themeDark ? "tableHeader" : "tableHeaderLight"} align="center">
-                        <h6 style={{ margin: 0 }} >COLLATERAL</h6>
+                        <h6 style={{ margin: 0,fontSize:10 }} >STAKED XIO</h6>
                       </TableCell>
                       <TableCell className={themeDark ? "tableHeader" : "tableHeaderLight"} align="center">
-                        <h6 style={{ margin: 0 }} >STAKED XIO</h6>
+                        <h6 style={{ margin: 0,fontSize:10 }} >ETH LIQUIDITY</h6>
                       </TableCell>
-                      <TableCell className={themeDark ? "tableHeader" : "tableHeaderLight"} align="center">
-                        <h6 style={{ margin: 0 }} >INTEREST</h6>
-                      </TableCell>
+                      
                     </TableRow>
                   </TableHead>
                   <TableBody>
                     <TableRow style={{ cursor: "pointer" }}>
-                      <TableCell className={themeDark ? "tableBody" : "tableBodyLight"} style={{ latterSpacing: '2px' }}>1UP</TableCell>
-                      <TableCell className={themeDark ? "tableBody" : "tableBodyLight"}>500,362</TableCell>
-                      <TableCell className={themeDark ? "tableBody" : "tableBodyLight"}>23,643</TableCell>
-                      <TableCell className={themeDark ? "tableBody" : "tableBodyLight"}>48% </TableCell>
+                      <TableCell style={{fontSize:10}} className={themeDark ? "tableBody" : "tableBodyLight"} style={{ latterSpacing: '2px' }}>1UP</TableCell>
+                      <TableCell style={{fontSize:10}} className={themeDark ? "tableBody" : "tableBodyLight"}>500,362</TableCell>
+                      <TableCell style={{fontSize:10}} className={themeDark ? "tableBody" : "tableBodyLight"}>23,643</TableCell>
                     </TableRow>
                     <TableRow style={{ cursor: "pointer",marginTop:'0px' }}>
-                      <TableCell className={themeDark ? "tableBody" : "tableBodyLight"} style={{ latterSpacing: '2px' }}>1UP</TableCell>
-                      <TableCell className={themeDark ? "tableBody" : "tableBodyLight"}>500,362</TableCell>
-                      <TableCell className={themeDark ? "tableBody" : "tableBodyLight"}>23,643</TableCell>
-                      <TableCell className={themeDark ? "tableBody" : "tableBodyLight"}>48%</TableCell>
+                      <TableCell style={{fontSize:10}} className={themeDark ? "tableBody" : "tableBodyLight"} style={{ latterSpacing: '2px' }}>1UP</TableCell>
+                      <TableCell style={{fontSize:10}} className={themeDark ? "tableBody" : "tableBodyLight"}>500,362</TableCell>
+                      <TableCell style={{fontSize:10}} className={themeDark ? "tableBody" : "tableBodyLight"}>23,643</TableCell>
                     </TableRow>
                   </TableBody>
                 </Table>

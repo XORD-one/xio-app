@@ -12,6 +12,11 @@
     cursor: pointer;
 }
 
+.MuiSwitch-root{
+    position: fixed!important;
+    right: 5px;
+    bottom: 13px;
+}
 
 .layoutHeading{
     /* color: white; */
