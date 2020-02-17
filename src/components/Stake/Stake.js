@@ -179,7 +179,7 @@ const Stake = props => {
                           className="toggleHeadText_2"
                           style={{ fontSize: "10px",height:26 }}
                         >
-                          {"DURATION (DAYS)"}
+                          {"STAKE AMOUNT"}
                         </p>
                       </Grid>
 
