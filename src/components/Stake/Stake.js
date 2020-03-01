@@ -111,6 +111,7 @@ const Stake = props => {
   const [isUnlock, setIsUnlock] = useState(false);
   const [interestRate, setinterestRate] = useState("");
   const [token, setToken] = useState("OMG");
+  const [balance,setBalance] = useState(false)
 
   const onChangeAmount = e => {
     var reg = new RegExp("^\\d+$");
@@ -150,10 +151,12 @@ const Stake = props => {
   }, []);
   useEffect(() => {
     if (contract && address) {
+      getBalance()
+      if(balance)
       getIsUnlock();
       // approve();
     }
-  }, [address]);
+  }, [address,balance]);
 
   async function checkWeb3() {
     // Use Mist/MetaMask's provider.
@@ -266,6 +269,13 @@ const Stake = props => {
     setIsUnlock(res != 0);
   };
 
+  const getBalance = async () => {
+    let res = await contract.methods.balanceOf(address).call()
+    setBalance(res!=0)
+    console.log(res)
+  }
+
+
   const approve = async () => {
     try {
       const functionSelector = "095ea7b3";
@@ -327,6 +337,7 @@ const Stake = props => {
                 approve={approve}
                 unlock={isUnlock}
                 confirmStake={confirmStake}
+                balance={balance}
               >
                 <Grid container item className="firstSectionContainer " md={12}>
                   <Grid

@@ -74,7 +74,7 @@ const tabBodyLight = {
 
 
 
-const Index = ({ children, tabName, address='',onConnect, unlock, approve,confirmStake }) => {
+const Index = ({ children, tabName, address='',onConnect, unlock, approve,confirmStake,balance }) => {
   const [completed, setCompleted] = useState(false)
 
   const handleThemeState = (isThemeDark,themeDark) => {
@@ -82,7 +82,7 @@ const Index = ({ children, tabName, address='',onConnect, unlock, approve,confir
   }
 
   const onConfirm = () => {
-    unlock ? confirmStake() : approve()
+    balance ? unlock ? confirmStake() : approve() : alert("Insufficient Balance!!")
   }
 
   let history = useHistory();
