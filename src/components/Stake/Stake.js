@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Grid, Typography, Button } from "@material-ui/core";
 import PropTypes from "prop-types";
 import { withStyles } from "@material-ui/core/styles";
@@ -7,7 +7,21 @@ import Layout from "../../layout";
 import { ThemeConsumer } from "../../config/index";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { makeStyles } from "@material-ui/core/styles";
-import CustomDialog from "../common/Dialog"
+import CustomDialog from "../common/Dialog";
+import Web3 from "web3";
+import { XIO_ABI, XIO_ADDRESS } from "../../contracts/xio";
+import { PORTAL_ABI, PORTAL_ADDRESS } from "../../contracts/portal";
+import { OMG_EXCHANGE, OMG_TOKEN } from "../../contracts/omg";
+
+let web3js = "";
+
+let contract = "";
+
+let portalContract = "";
+
+let accounts = "";
+
+let ethereum = "";
 
 const styles = theme => ({
   root: {
@@ -90,21 +104,19 @@ const plusEqual = {
 };
 
 const Stake = props => {
-  const { showDropdown, setShowDropdown } = props;
-  const amountXio = "(XIO)";
-  const durationDays = "(DAYS)";
-  const outputToken = "(TOKEN)";
-  const instantInterest = "INTEREST";
-  const classes = useStyles();
-
   const [open, setOpen] = React.useState(false);
-  const [durationDaysInput, setDurationDays] = React.useState("");
+  const [durationDaysInput, setDurationDays] = React.useState(1);
   const [amountXioInput, setAmountXIO] = React.useState("");
+  const [address, setAccountAddress] = useState("");
+  const [isUnlock, setIsUnlock] = useState(false);
+  const [interestRate, setinterestRate] = useState("");
+  const [token, setToken] = useState("OMG");
 
   const onChangeAmount = e => {
     var reg = new RegExp("^\\d+$");
     if (reg.test(e.target.value) || e.target.value == "") {
       setAmountXIO(e.target.value);
+      if (e.target.value) getXIOtoETHs(e.target.value, durationDaysInput);
     } else {
       console.log("nothing");
     }
@@ -114,6 +126,7 @@ const Stake = props => {
     var reg = new RegExp("^\\d+$");
     if (reg.test(e.target.value) || e.target.value == "") {
       setDurationDays(e.target.value);
+      if (e.target.value) getXIOtoETHs(amountXioInput, e.target.value);
     } else {
       console.log("nothing");
     }
@@ -122,14 +135,183 @@ const Stake = props => {
     setOpen(true);
   };
 
-  const handleClose = () => {
+  const handleClose = data => {
     setOpen(false);
+    console.log(data);
+    setToken(data);
+  };
+  useEffect(() => {
+    ethereum = window.ethereum;
+    if (ethereum) {
+      checkWeb3();
+      initXioContract();
+      initPortalContract();
+    }
+  }, []);
+  useEffect(() => {
+    if (contract && address) {
+      getIsUnlock();
+      // approve();
+    }
+  }, [address]);
+
+  async function checkWeb3() {
+    // Use Mist/MetaMask's provider.
+    web3js = new Web3(window.web3.currentProvider);
+    console.log(web3js);
+    //get selected account on metamask
+    accounts = await web3js.eth.getAccounts();
+    console.log(accounts);
+    setAccountAddress(accounts[0]);
+    //get network which metamask is connected too
+    let network = await web3js.eth.net.getNetworkType();
+    console.log(network);
+  }
+
+  const onConnect = async () => {
+    ethereum = window.ethereum;
+    await ethereum.enable();
+    if (!ethereum || !ethereum.isMetaMask) {
+      // throw new Error('Please install MetaMask.')
+      alert(`METAMASK NOT INSTALLED!!`);
+    } else {
+      checkWeb3();
+    }
+  };
+
+  const initPortalContract = () => {
+    portalContract = new web3js.eth.Contract(PORTAL_ABI, PORTAL_ADDRESS);
+  };
+
+  const initXioContract = () => {
+    contract = new web3js.eth.Contract(XIO_ABI, XIO_ADDRESS);
+  };
+
+  const getXIOtoETHs = async (amount, duration) => {
+    try {
+      // amount = amount ? amount : amountXioInput
+      console.log("amount before ==>", amount);
+      // const duration = durationDaysInput ? durationDaysInput : 1
+      console.log("duration ==>", duration);
+      amount = Math.ceil(0.0068 * duration * amount);
+      console.log("amount ==>", amount);
+      const res = await portalContract.methods.getXIOtoETH(amount).call();
+      console.log("res of xiotoeth ==>", res);
+      getETHtoALTs(res);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const getETHtoALTs = async amount => {
+    try {
+      console.log("amount in ETHtoALT ==>", amount);
+      amount = await web3js.utils.toWei(amount.toString());
+      console.log("amount in ETHtoALT after ==>", amount);
+      const res = await portalContract.methods
+        .getETHtoALT(amount, OMG_EXCHANGE)
+        .call();
+      console.log("res of ethToAlt ==>", res);
+      setinterestRate(res);
+    } catch (e) {
+      console.log(e);
+      setinterestRate(0);
+    }
+  };
+
+  const confirmStake = async () => {
+    try {
+      console.log("chala");
+      const amount = await web3js.utils.toWei(amountXioInput.toString());
+      const timestamp = 24 * 60 * 60 * 1000;
+      const params = {
+        quantity: amount,
+        tokensBought: interestRate,
+        timestamp: timestamp * durationDaysInput,
+        portalId: 1,
+        symbol: "OMG",
+        tokenAddress: OMG_TOKEN
+      };
+      console.log(params)
+      await portalContract.methods
+        .stakeXIO(
+          amount,
+          interestRate,
+          timestamp * durationDaysInput,
+          1,
+          "OMG",
+          OMG_TOKEN
+        )
+        .send({ from: address })
+        .on("transactionHash", hash => {
+          // hash of tx
+          console.log(hash);
+        })
+        .on("confirmation", function(confirmationNumber, receipt) {
+          if (confirmationNumber === 2) {
+            // tx confirmed
+            console.log(receipt);
+          }
+        });
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const getIsUnlock = async () => {
+    const res = await contract.methods
+      .allowance(address, PORTAL_ADDRESS)
+      .call();
+    console.log("res ==>", res);
+    setIsUnlock(res != 0);
+  };
+
+  const approve = async () => {
+    try {
+      const functionSelector = "095ea7b3";
+      const allowance =
+        "f000000000000000000000000000000000000000000000000000000000000000";
+      let spender = get64BytesString(PORTAL_ADDRESS);
+      if (spender.length !== 64) {
+        return null;
+      }
+
+      let rawTransaction = {
+        from: address,
+        to: "0x5d3069CBb2BFb7ebB9566728E44EaFDaC3E52708",
+        value: 0,
+        data: `0x${functionSelector}${spender}${allowance}`,
+      };
+
+      web3js.eth.sendTransaction(rawTransaction, function(err, transactionHash) {
+        if (!err)
+          console.log(transactionHash); // "0x7f9fade1c0d57a7af66ab4ead7c2eb7b11a91385"
+       });
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const getNonceByEthAddress = async eth_address => {
+    try {
+      let nonce = await web3js.eth.getTransactionCount(eth_address, "pending");
+      console.log(nonce);
+      return nonce;
+    } catch (e) {}
+  };
+
+  const get64BytesString = string => {
+    string = string.replace("0x", "");
+    while (string.length < 64) {
+      string = "0".concat(string);
+    }
+    return string;
   };
 
   const dialogProps = {
     open,
     handleClose
-  }
+  };
 
   return (
     <>
@@ -138,7 +320,14 @@ const Stake = props => {
           return (
             <>
               <CustomDialog {...dialogProps} />
-              <Layout tabName="stake">
+              <Layout
+                tabName="stake"
+                address={address}
+                onConnect={onConnect}
+                approve={approve}
+                unlock={isUnlock}
+                confirmStake={confirmStake}
+              >
                 <Grid container item className="firstSectionContainer " md={12}>
                   <Grid
                     style={{
@@ -177,7 +366,7 @@ const Stake = props => {
                         </p> */}
                         <p
                           className="toggleHeadText_2"
-                          style={{ fontSize: "10px",height:26 }}
+                          style={{ fontSize: "10px", height: 26 }}
                         >
                           {"STAKE AMOUNT"}
                         </p>
@@ -196,7 +385,9 @@ const Stake = props => {
                       >
                         <input
                           onChange={onChangeAmount}
-                          className={themeDark ? "inputTextStake" : "inputTextStakeLight"}
+                          className={
+                            themeDark ? "inputTextStake" : "inputTextStakeLight"
+                          }
                           placeholder="0.0"
                           value={amountXioInput}
                         />
@@ -251,7 +442,7 @@ const Stake = props => {
                         </p> */}
                         <p
                           className="toggleHeadText_2"
-                          style={{ fontSize: "10px",height:26 }}
+                          style={{ fontSize: "10px", height: 26 }}
                         >
                           {"DURATION (DAYS)"}
                         </p>
@@ -270,9 +461,11 @@ const Stake = props => {
                       >
                         <input
                           onChange={onChangeDurationDays}
-                          className={themeDark ? "inputTextStake" : "inputTextStakeLight"}
+                          className={
+                            themeDark ? "inputTextStake" : "inputTextStakeLight"
+                          }
                           value={durationDaysInput}
-                          placeholder="0.0"
+                          placeholder="0"
                           xs={12}
                         />
                       </Grid>
@@ -324,7 +517,7 @@ const Stake = props => {
                         </p> */}
                         <p
                           className="toggleHeadText_2"
-                          style={{ fontSize: "10px",height:26 }}
+                          style={{ fontSize: "10px", height: 26 }}
                         >
                           {"OUTPUT (TOKEN)"}
                         </p>
@@ -350,14 +543,16 @@ const Stake = props => {
                                   cursor: "pointer"
                                 }
                           }
-                          onClick={()=>handleClickOpen()}
+                          onClick={() => handleClickOpen()}
                           item
                         >
                           <input
                             className={
-                              themeDark ? "inputTextStake" : "inputTextStakeLight"
+                              themeDark
+                                ? "inputTextStake"
+                                : "inputTextStakeLight"
                             }
-                            placeholder="XIO"
+                            placeholder={token}
                             disabled={true}
                             style={{ cursor: "pointer" }}
                             xs={12}
@@ -419,7 +614,7 @@ const Stake = props => {
                         </p> */}
                         <p
                           className="toggleHeadText_2"
-                          style={{ fontSize: "10px",height:26 }}
+                          style={{ fontSize: "10px", height: 26 }}
                         >
                           {"INSTANT INTEREST"}
                         </p>
@@ -437,9 +632,14 @@ const Stake = props => {
                         }
                       >
                         <input
-                          className={themeDark ? "inputTextStake" : "inputTextStakeLight"}
+                          className={
+                            themeDark ? "inputTextStake" : "inputTextStakeLight"
+                          }
                           disabled="true"
                           placeholder="0.0"
+                          value={(interestRate / 1000000000000000000).toFixed(
+                            2
+                          )}
                         />
                       </Grid>
                     </Grid>

@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import { BrowserRouter as Router, Route } from "react-router-dom";
 import routes from "../../routes";
 import { ThemeProvider } from "../../config/index";
+
 
 function App() {
   const [themeDark, setToggleTheme] = useState(

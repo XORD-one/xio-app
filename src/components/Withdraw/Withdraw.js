@@ -1,4 +1,4 @@
-import React from "react";
+import React,{useState,useEffect} from "react";
 import { Grid, Typography, Button } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
 import "./style.css";
@@ -7,6 +7,19 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { makeStyles } from "@material-ui/core/styles";
 import { ThemeConsumer } from "../../config/index";
 import CustomDialog from "../common/Dialog";
+import Web3 from "web3";
+import { XIO_ABI, XIO_ADDRESS } from "../../contracts/xio";
+import { PORTAL_ABI, PORTAL_ADDRESS } from "../../contracts/portal";
+
+let web3js = "";
+
+let contract = "";
+
+let portalContract = "";
+
+let accounts = "";
+
+let ethereum = "";
 
 const styles = theme => ({
   root: {
@@ -74,6 +87,48 @@ const Withdraw = props => {
   const classes = useStyles();
 
   const [open, setOpen] = React.useState(false);
+  const [address,setAccountAddress] = useState('')
+
+  useEffect(()=>{
+    ethereum = window.ethereum;
+    if (ethereum) {
+      checkWeb3();
+      initXioContract()
+      initPortalContract()
+    }
+  },[])
+
+  async function checkWeb3() {
+    // Use Mist/MetaMask's provider.
+    web3js = new Web3(window.web3.currentProvider);
+    console.log(web3js);
+    //get selected account on metamask
+    accounts = await web3js.eth.getAccounts();
+    console.log(accounts);
+    setAccountAddress(accounts[0]);
+    //get network which metamask is connected too
+    let network = await web3js.eth.net.getNetworkType();
+    console.log(network);
+  }
+
+  const onConnect = async () => {
+    ethereum = window.ethereum;
+    await ethereum.enable();
+    if (!ethereum || !ethereum.isMetaMask) {
+      // throw new Error('Please install MetaMask.')
+      alert(`METAMASK NOT INSTALLED!!`);
+    } else {
+      checkWeb3();
+    }
+  }
+
+  const initPortalContract = () => {
+    portalContract = new web3js.eth.Contract(PORTAL_ABI, PORTAL_ADDRESS);
+  }
+
+  const initXioContract = () => {
+    contract = new web3js.eth.Contract(XIO_ABI, XIO_ADDRESS);
+  };
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -96,7 +151,7 @@ const Withdraw = props => {
             <>
               <CustomDialog {...dialogProps} />
 
-              <Layout tabName="withdraw">
+              <Layout tabName="withdraw" address={address} onConnect={onConnect}>
                 <Grid container item className="firstSectionContainer " md={12}>
                   <Grid
                     style={{

@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState, useEffect} from "react";
 import { Grid, Typography, Button } from "@material-ui/core";
 
 import Table from "@material-ui/core/Table";
@@ -12,6 +12,19 @@ import PropTypes from "prop-types";
 import { withStyles } from "@material-ui/core/styles";
 import "./style.css"
 import Layout from "../../layout";
+import Web3 from "web3";
+import { XIO_ABI, XIO_ADDRESS } from "../../contracts/xio";
+import { PORTAL_ABI, PORTAL_ADDRESS } from "../../contracts/portal";
+
+let web3js = "";
+
+let contract = "";
+
+let portalContract = "";
+
+let accounts = "";
+
+let ethereum = "";
 
 const styles = theme => ({
   root: {
@@ -80,6 +93,74 @@ const tabBodyRow3_1_2 = {
 
 const Dashboard = props => {
   const { classes } = props;
+  const [address,setAccountAddress] = useState('')
+  const [balance,setBalance] = useState(0)
+
+
+  const getBalance = async () => {
+    let res = await contract.methods.balanceOf(address).call()
+    setBalance(res)
+    console.log(res)
+  }
+
+  const getActivePortalInfo = async () => {
+    const res = await portalContract.methods.portalData(address).call()
+    console.log(res)
+  }
+
+  const getStakerData = async () => {
+    // const res = await portalContract.methods.stakerData(address).call()
+    // console.log('res ==>',res)
+  }
+
+  useEffect(()=>{
+    ethereum = window.ethereum;
+    if (ethereum) {
+      checkWeb3();
+      initXioContract()
+      initPortalContract()
+    }
+  },[])
+
+  useEffect(()=>{
+    if(contract && address){
+      getBalance()
+      getActivePortalInfo()
+      getStakerData()
+    }
+  },[address])
+
+  async function checkWeb3() {
+    // Use Mist/MetaMask's provider.
+    web3js = new Web3(window.web3.currentProvider);
+    console.log(web3js);
+    //get selected account on metamask
+    accounts = await web3js.eth.getAccounts();
+    console.log(accounts);
+    setAccountAddress(accounts[0]);
+    //get network which metamask is connected too
+    let network = await web3js.eth.net.getNetworkType();
+    console.log(network);
+  }
+
+  const onConnect = async () => {
+    ethereum = window.ethereum;
+    await ethereum.enable();
+    if (!ethereum || !ethereum.isMetaMask) {
+      // throw new Error('Please install MetaMask.')
+      alert(`METAMASK NOT INSTALLED!!`);
+    } else {
+      checkWeb3();
+    }
+  }
+
+  const initPortalContract = () => {
+    portalContract = new web3js.eth.Contract(PORTAL_ABI, PORTAL_ADDRESS);
+  }
+
+  const initXioContract = () => {
+    contract = new web3js.eth.Contract(XIO_ABI, XIO_ADDRESS);
+  };
 
   return (
     <>
@@ -87,7 +168,7 @@ const Dashboard = props => {
       {({ isThemeDark, themeDark }) => {
         return(
        
-      <Layout tabName="dashboard">
+      <Layout tabName="dashboard" address={address} onConnect={onConnect} >
         <Grid container item className="firstSectionContainer" md={12} xs={12} >
       
           <Grid
@@ -118,9 +199,10 @@ const Dashboard = props => {
                 fontWeight: "bold",
                 textAlign: "center",
                 padding:'0px',
+                overflowWrap:"break-word"
               }}
             >
-              0
+              {balance/1000000000000000000}
             </h2>
           </Grid>
 

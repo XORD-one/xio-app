@@ -9,11 +9,11 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 
 const CustomDialog = (props) => {
   const list = [
-    "UPTRENND (1UP)",
-    "BINANCE (BNB)",
-    "BAT (BAT)",
-    "ETHEREUM (ETH)",
-    "OPACITY (OPQ)"
+    // "UPTRENND (1UP)",
+    // "BINANCE (BNB)",
+    // "BAT (BAT)",
+    // "ETHEREUM (ETH)",
+    "OMG"
   ];
   return (
     <React.Fragment>
@@ -86,7 +86,7 @@ const CustomDialog = (props) => {
                   color: "#D4D4D4",
                   cursor:"pointer"
                 }}
-                onClick={()=>props.handleClose()}
+                onClick={()=>props.handleClose(item)}
                 key={i}
               >
                 {item}

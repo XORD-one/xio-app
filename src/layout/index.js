@@ -74,18 +74,22 @@ const tabBodyLight = {
 
 
 
-const Index = ({ children, tabName }) => {
+const Index = ({ children, tabName, address='',onConnect, unlock, approve,confirmStake }) => {
   const [completed, setCompleted] = useState(false)
-  const [walletConnected, setWalletConnected] = useState(false)
 
+  const handleThemeState = (isThemeDark,themeDark) => {
+    isThemeDark(!themeDark)
+  }
 
-const handleThemeState = (isThemeDark,themeDark) => {
-   isThemeDark(!themeDark)
-}
+  const onConfirm = () => {
+    unlock ? confirmStake() : approve()
+  }
+
   let history = useHistory();
   return (
     <ThemeConsumer>
       {({ isThemeDark, themeDark }) => {
+        const addressToShow = address && address.slice(0,6) + "...." + address.slice((address.length)-4)
         return(
     <div style={{backgroundColor: themeDark ? '#1C1C1C' : 'white', minHeight: '100vh' }}>
        
@@ -137,6 +141,7 @@ const handleThemeState = (isThemeDark,themeDark) => {
                 padding: "8px 15px 10px 10px",
                 borderRadius: 5
               }}
+              onClick={()=>onConnect()}
             >
               <img
                 src={Rocket}
@@ -158,9 +163,9 @@ const handleThemeState = (isThemeDark,themeDark) => {
                   letterSpacing:'2px',
                 }}
               >
-                {walletConnected ?
+                {address ?
                   
-                 "0X123...DAYZ":"CONNECT WALLET "
+                  addressToShow : "CONNECT WALLET"
                 }
               </h4>
             </div>
@@ -274,8 +279,8 @@ const handleThemeState = (isThemeDark,themeDark) => {
               tabName === "stake" &&
               <>
                 <h6 style = {{color : themeDark ? "white" : "black" }}>IF YOU STAKE <span style={{ color: '#C66065' }}>X</span> TOKENS FOR <span style={{ color: '#C66065' }}>X</span> DAYS , YOU WILL IMMEDIATELY RECEIVE <span style={{ color: '#C66065' }}>X TOKENS</span></h6>
-                <div style={{ backgroundColor: '#C66065', border: themeDark ? "1px solid #414141" : "1px solid #DADADA", display: "inline-block", padding: 10, borderRadius: 5 }} >
-                  <h4 style={{ color:"white", display: "inline-block", fontFamily: "'Montserrat', sans-serif", margin: 0 }} >CONFIRM STAKE</h4>
+                <div onClick={()=>onConfirm()} style={{ backgroundColor: '#C66065', cursor:"pointer" ,border: themeDark ? "1px solid #414141" : "1px solid #DADADA", display: "inline-block", padding: 10, borderRadius: 5 }} >
+                  <h4 style={{ color:"white", display: "inline-block", fontFamily: "'Montserrat', sans-serif", margin: 0 }} >{unlock ? "CONFIRM STAKE" : "UNLOCK"}</h4>
                 </div>
               </>
             }
