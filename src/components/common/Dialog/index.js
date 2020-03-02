@@ -86,7 +86,7 @@ const CustomDialog = (props) => {
                   color: "#D4D4D4",
                   cursor:"pointer"
                 }}
-                onClick={()=>props.handleClose(item)}
+                onClick={()=>props.onTokenSelect(item)}
                 key={i}
               >
                 {item}

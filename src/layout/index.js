@@ -82,7 +82,7 @@ const Index = ({ children, tabName, address='',onConnect, unlock, approve,confir
   }
 
   const onConfirm = () => {
-    balance ? unlock ? confirmStake() : approve() : alert("Insufficient Balance!!")
+   unlock ? confirmStake() : approve() 
   }
 
   let history = useHistory();
@@ -279,8 +279,8 @@ const Index = ({ children, tabName, address='',onConnect, unlock, approve,confir
               tabName === "stake" &&
               <>
                 <h6 style = {{color : themeDark ? "white" : "black" }}>IF YOU STAKE <span style={{ color: '#C66065' }}>X</span> TOKENS FOR <span style={{ color: '#C66065' }}>X</span> DAYS , YOU WILL IMMEDIATELY RECEIVE <span style={{ color: '#C66065' }}>X TOKENS</span></h6>
-                <div onClick={()=>onConfirm()} style={{ backgroundColor: '#C66065', cursor:"pointer" ,border: themeDark ? "1px solid #414141" : "1px solid #DADADA", display: "inline-block", padding: 10, borderRadius: 5 }} >
-                  <h4 style={{ color:"white", display: "inline-block", fontFamily: "'Montserrat', sans-serif", margin: 0 }} >{unlock ? "CONFIRM STAKE" : "UNLOCK"}</h4>
+                <div onClick={()=>onConfirm()} style={{ backgroundColor: address ? '#C66065' : '#757474', cursor:"pointer" ,border: themeDark ? "1px solid #414141" : "1px solid #DADADA", display: "inline-block", padding: 10, borderRadius: 5 }} >
+                  <h4 style={{ color:"white", display: "inline-block", fontFamily: "'Montserrat', sans-serif", margin: 0 }} >{"CONFIRM STAKE"}</h4>
                 </div>
               </>
             }

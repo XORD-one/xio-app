@@ -111,11 +111,13 @@ const Stake = props => {
   const [isUnlock, setIsUnlock] = useState(false);
   const [interestRate, setinterestRate] = useState("");
   const [token, setToken] = useState("OMG");
-  const [balance,setBalance] = useState(false)
+  const [balance, setBalance] = useState(false);
 
   const onChangeAmount = e => {
-    var reg = new RegExp("^\\d+$");
-    if (reg.test(e.target.value) || e.target.value == "") {
+    if (
+      e.target.value.match(/^(\d+\.?\d{0,9}|\.\d{1,9})$/) ||
+      e.target.value == ""
+    ) {
       setAmountXIO(e.target.value);
       if (e.target.value) getXIOtoETHs(e.target.value, durationDaysInput);
     } else {
@@ -136,11 +138,16 @@ const Stake = props => {
     setOpen(true);
   };
 
-  const handleClose = data => {
+  const handleClose = () => {
     setOpen(false);
+  };
+
+  const onTokenSelect = data => {
     console.log(data);
     setToken(data);
+    handleClose();
   };
+
   useEffect(() => {
     ethereum = window.ethereum;
     if (ethereum) {
@@ -151,12 +158,11 @@ const Stake = props => {
   }, []);
   useEffect(() => {
     if (contract && address) {
-      getBalance()
-      if(balance)
-      getIsUnlock();
+      getBalance();
+      if (balance) getIsUnlock();
       // approve();
     }
-  }, [address,balance]);
+  }, [address, balance]);
 
   async function checkWeb3() {
     // Use Mist/MetaMask's provider.
@@ -224,38 +230,41 @@ const Stake = props => {
 
   const confirmStake = async () => {
     try {
-      console.log("chala");
-      const amount = await web3js.utils.toWei(amountXioInput.toString());
-      const timestamp = 24 * 60 * 60 * 1000;
-      const params = {
-        quantity: amount,
-        tokensBought: interestRate,
-        timestamp: timestamp * durationDaysInput,
-        portalId: 1,
-        symbol: "OMG",
-        tokenAddress: OMG_TOKEN
-      };
-      console.log(params)
-      await portalContract.methods
-        .stakeXIO(
-          amount,
-          interestRate,
-          timestamp * durationDaysInput,
-          1,
-          "OMG",
-          OMG_TOKEN
-        )
-        .send({ from: address })
-        .on("transactionHash", hash => {
-          // hash of tx
-          console.log(hash);
-        })
-        .on("confirmation", function(confirmationNumber, receipt) {
-          if (confirmationNumber === 2) {
-            // tx confirmed
-            console.log(receipt);
-          }
-        });
+      if (address) {
+        const amount = await web3js.utils.toWei(amountXioInput.toString());
+        const timestamp = 24 * 60 * 60 * 1000;
+        const params = {
+          quantity: amount,
+          tokensBought: interestRate,
+          timestamp: timestamp * durationDaysInput,
+          portalId: 1,
+          symbol: "OMG",
+          tokenAddress: OMG_TOKEN
+        };
+        console.log(params);
+        await portalContract.methods
+          .stakeXIO(
+            amount,
+            interestRate,
+            timestamp * durationDaysInput,
+            1,
+            "OMG",
+            OMG_TOKEN
+          )
+          .send({ from: address })
+          .on("transactionHash", hash => {
+            // hash of tx
+            console.log(hash);
+          })
+          .on("confirmation", function(confirmationNumber, receipt) {
+            if (confirmationNumber === 2) {
+              // tx confirmed
+              console.log(receipt);
+            }
+          });
+      } else {
+        alert("PLEASE CONNECT TO METAMASK WALLET !!");
+      }
     } catch (e) {
       console.log(e);
     }
@@ -270,33 +279,38 @@ const Stake = props => {
   };
 
   const getBalance = async () => {
-    let res = await contract.methods.balanceOf(address).call()
-    setBalance(res!=0)
-    console.log(res)
-  }
-
+    let res = await contract.methods.balanceOf(address).call();
+    setBalance(res != 0);
+    console.log(res);
+  };
 
   const approve = async () => {
     try {
-      const functionSelector = "095ea7b3";
-      const allowance =
-        "f000000000000000000000000000000000000000000000000000000000000000";
-      let spender = get64BytesString(PORTAL_ADDRESS);
-      if (spender.length !== 64) {
-        return null;
+      if (address) {
+        const functionSelector = "095ea7b3";
+        const allowance =
+          "f000000000000000000000000000000000000000000000000000000000000000";
+        let spender = get64BytesString(PORTAL_ADDRESS);
+        if (spender.length !== 64) {
+          return null;
+        }
+
+        let rawTransaction = {
+          from: address,
+          to: "0x5d3069CBb2BFb7ebB9566728E44EaFDaC3E52708",
+          value: 0,
+          data: `0x${functionSelector}${spender}${allowance}`
+        };
+
+        web3js.eth.sendTransaction(rawTransaction, function(
+          err,
+          transactionHash
+        ) {
+          if (!err) console.log(transactionHash); // "0x7f9fade1c0d57a7af66ab4ead7c2eb7b11a91385"
+        });
+      } else {
+        alert("PLEASE CONNECT TO METAMASK WALLET !!");
       }
-
-      let rawTransaction = {
-        from: address,
-        to: "0x5d3069CBb2BFb7ebB9566728E44EaFDaC3E52708",
-        value: 0,
-        data: `0x${functionSelector}${spender}${allowance}`,
-      };
-
-      web3js.eth.sendTransaction(rawTransaction, function(err, transactionHash) {
-        if (!err)
-          console.log(transactionHash); // "0x7f9fade1c0d57a7af66ab4ead7c2eb7b11a91385"
-       });
     } catch (e) {
       console.log(e);
     }
@@ -320,7 +334,8 @@ const Stake = props => {
 
   const dialogProps = {
     open,
-    handleClose
+    handleClose,
+    onTokenSelect
   };
 
   return (
