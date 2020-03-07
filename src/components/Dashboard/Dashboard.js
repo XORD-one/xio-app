@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import { Grid, Typography, Button } from "@material-ui/core";
 
 import Table from "@material-ui/core/Table";
@@ -6,15 +6,16 @@ import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
-import {ThemeConsumer} from '../../config/index'
+import { ThemeConsumer } from "../../config/index";
 import Paper from "@material-ui/core/Paper";
 import PropTypes from "prop-types";
 import { withStyles } from "@material-ui/core/styles";
-import "./style.css"
+import "./style.css";
 import Layout from "../../layout";
 import Web3 from "web3";
 import { XIO_ABI, XIO_ADDRESS } from "../../contracts/xio";
 import { PORTAL_ABI, PORTAL_ADDRESS } from "../../contracts/portal";
+import { OMG_EXCHANGE } from "../../contracts/omg";
 
 let web3js = "";
 
@@ -55,8 +56,8 @@ const styles = theme => ({
     textAlign: "center",
     fontFamily: "'Montserrat', sans-serif",
     fontWeight: 400,
-    paddingBottom:'20px',
-    marginBottom:'40px'
+    paddingBottom: "20px",
+    marginBottom: "40px"
   }
 });
 
@@ -87,48 +88,75 @@ const tabBodyRow3_1_1 = {
 };
 
 const tabBodyRow3_1_2 = {
-  paddingBottom:"20px",
-}
-
+  paddingBottom: "20px"
+};
 
 const Dashboard = props => {
   const { classes } = props;
-  const [address,setAccountAddress] = useState('')
-  const [balance,setBalance] = useState(0)
-
+  const [address, setAccountAddress] = useState("");
+  const [balance, setBalance] = useState(0);
+  const [portalInterestList, setInterestList] = useState([]);
+  const [stakedXio,setStakedXio] = useState(0)
+  const [activePortal,setActivePortal] = useState([])
 
   const getBalance = async () => {
-    let res = await contract.methods.balanceOf(address).call()
-    setBalance(res)
-    console.log(res)
-  }
+    let res = await contract.methods.balanceOf(address).call();
+    setBalance(res);
+    console.log(res);
+  };
 
   const getActivePortalInfo = async () => {
-    const res = await portalContract.methods.portalData(address).call()
-    console.log(res)
-  }
+    const res = await portalContract.methods.portalData(address).call();
+    console.log(res);
+  };
 
-  const getStakerData = async () => {
-    // const res = await portalContract.methods.stakerData(address).call()
-    // console.log('res ==>',res)
-  }
+  const getPortalInterest = async () => {
+    try {
+      const amount = await web3js.utils.toWei("1");
+      const interestList = [];
+      let i = 0;
+      while (true) {
+        const res = await portalContract.methods.portalData(i).call();
+        console.log(res);
+        if (res.tokenAddress === "0x0000000000000000000000000000000000000000") {
+          break;
+        }
+        let res1 = await portalContract.methods
+          .getETHtoALT(amount, res.tokenExchangeAddress)
+          .call();
+        res1 = await web3js.utils.fromWei(res1.toString())
+        res.xioStaked = await web3js.utils.fromWei((res.xioStaked).toString())
+        console.log(res, res1);
+        const obj = {
+          ...res,
+          liquidity: Number(res1).toFixed(2)
+        };
+        interestList.push(obj);
+        setInterestList(interestList);
+        i++;
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  };
 
-  useEffect(()=>{
+  useEffect(() => {
     ethereum = window.ethereum;
     if (ethereum) {
       checkWeb3();
-      initXioContract()
-      initPortalContract()
+      initXioContract();
+      initPortalContract();
+      getPortalInterest();
     }
-  },[])
+  }, []);
 
-  useEffect(()=>{
-    if(contract && address){
-      getBalance()
-      getActivePortalInfo()
-      getStakerData()
+  useEffect(() => {
+    if (contract && address) {
+      getBalance();
+      getActivePortalInfo();
+      onGetLengthOfStakerData()
     }
-  },[address])
+  }, [address]);
 
   async function checkWeb3() {
     // Use Mist/MetaMask's provider.
@@ -152,228 +180,368 @@ const Dashboard = props => {
     } else {
       checkWeb3();
     }
-  }
+  };
 
   const initPortalContract = () => {
     portalContract = new web3js.eth.Contract(PORTAL_ABI, PORTAL_ADDRESS);
-  }
+  };
 
   const initXioContract = () => {
     contract = new web3js.eth.Contract(XIO_ABI, XIO_ADDRESS);
   };
 
+  const onGetLengthOfStakerData = async () => {
+    const res = await portalContract.methods.getArrayLengthOfStakerData(address).call()
+    console.log('res ==>',res)
+    getStakerData(res)
+  }
+
+  const getStakerData = async (data) => {
+    try{
+      let amount = 0;
+      const portalInfo = []
+      for(let i=0;i<data ;i++){
+        const res = await portalContract.methods.stakerData(address,i).call()
+        console.log(res)
+        amount = amount + res.stakeQuantity;
+        res.Days = Math.round(new Date()/1000) - res.stakeDurationTimestamp
+        res.Days = Math.floor(res.Days / (1000 * 1000 * 60 *  24)) 
+        res.stakeQuantity = await web3js.utils.fromWei((res.stakeQuantity).toString())
+        if (res.publicKey !== "0x0000000000000000000000000000000000000000"){
+          portalInfo.push(res)
+        }
+      }
+      amount = await web3js.utils.fromWei(amount.toString())
+      setStakedXio(amount)
+      setActivePortal(portalInfo)
+    }
+    catch(e){
+      console.log(e)
+    }
+  }
+
   return (
     <>
       <ThemeConsumer>
-      {({ isThemeDark, themeDark }) => {
-        return(
-       
-      <Layout tabName="dashboard" address={address} onConnect={onConnect} >
-        <Grid container item className="firstSectionContainer" md={12} xs={12} >
-      
-          <Grid
-        
-            item
-            className={themeDark ? "firstSectionItemDark" : "firstSectionItemLight"}
-            md={3}
-            xs={4}
-            style={{flexBasis: "calc(33% - 10px)"}}
-          >
-            <h6
-              style={{
-                color: "#C66065",
-                fontFamily: "'Montserrat', sans-serif",
-                fontStyle: "italic",
-                letterSpacing: "2px",
-                textAlign: "center",
-                height:22
-              }}
-              className="firstSectionHeadings"
-            >
-              AVAILABLE XIO
-            </h6>
-            <h2
-              style={{
-                fontFamily: "'Montserrat', sans-serif",
-                color: themeDark ? "white" : "black",
-                fontWeight: "bold",
-                textAlign: "center",
-                padding:'0px',
-                overflowWrap:"break-word"
-              }}
-            >
-              {balance/1000000000000000000}
-            </h2>
-          </Grid>
-
-          <Grid
-            item
-            className={themeDark ? "firstSectionItemDark" : "firstSectionItemLight"}
-            md={3}
-            xs={4}
-            style={{flexBasis: "calc(33% - 10px)"}}
-          >
-            <h6
-              style={{
-                color: "#C66065",
-                fontFamily: "'Montserrat', sans-serif",
-                fontStyle: "italic",
-                letterSpacing: "2px",
-                textAlign: "center",
-                height:22
-              }}
-              className="firstSectionHeadings"
-            >
-              STAKED XIO
-            </h6>
-            <h2
-              style={{
-                fontFamily: "'Montserrat', sans-serif",
-                color: themeDark ? "white" : "black",
-                fontWeight: "bold",
-                textAlign: "center",
-                padding:'0px',
-
-              }}
-            >
-              0
-            </h2>
-          </Grid>
-
-          <Grid
-            item
-            className={themeDark ? "firstSectionItemDark" : "firstSectionItemLight"}
-            md={3}
-            xs={4}
-            style={{flexBasis: "calc(33% - 10px)"}}
-          >
-            <h6
-              style={{
-                color: "#C66065",
-                fontFamily: "'Montserrat', sans-serif",
-                fontStyle: "italic",
-                letterSpacing: "2px",
-                textAlign: "center",
-                height:22
-              }}
-              className="firstSectionHeadings"
-            >
-              INTEREST RATE
-            </h6>
-            <h2
-              style={{
-                fontFamily: "'Montserrat', sans-serif",
-                color: themeDark ? "white" : "black",
-                fontWeight: "bold",
-                textAlign: "center",
-                padding:'0px',
-
-              }}
-            >
-              25%
-            </h2>
-          </Grid>
-        </Grid>
-
-
-
-        <Grid container item style={tabBodyRow3} md={12} className="section" >
-          <Grid container item style={themeDark ? tabBodyRow3_1 : tabBodyRow3_1_Light} md={11}>
-            <Grid container item style={tabBodyRow3_1_1} md={12}>
-              <h6
-                style={{
-                  color: "#C66065",
-                  fontFamily: "'Montserrat', sans-serif",
-                  fontStyle: "italic",
-                  letterSpacing: "2px"
-                }}
+        {({ isThemeDark, themeDark }) => {
+          return (
+            <Layout tabName="dashboard" address={address} onConnect={onConnect}>
+              <Grid
+                container
+                item
+                className="firstSectionContainer"
+                md={12}
+                xs={12}
               >
-                ACTIVE PORTAL INFORMATION
-              </h6>
-            </Grid>
+                <Grid
+                  item
+                  className={
+                    themeDark ? "firstSectionItemDark" : "firstSectionItemLight"
+                  }
+                  md={3}
+                  xs={4}
+                  style={{ flexBasis: "calc(33% - 10px)" }}
+                >
+                  <h6
+                    style={{
+                      color: "#C66065",
+                      fontFamily: "'Montserrat', sans-serif",
+                      fontStyle: "italic",
+                      letterSpacing: "2px",
+                      textAlign: "center",
+                      height: 22
+                    }}
+                    className="firstSectionHeadings"
+                  >
+                    AVAILABLE XIO
+                  </h6>
+                  <h2
+                    style={{
+                      fontFamily: "'Montserrat', sans-serif",
+                      color: themeDark ? "white" : "black",
+                      fontWeight: "bold",
+                      textAlign: "center",
+                      padding: "0px",
+                      overflowWrap: "break-word"
+                    }}
+                  >
+                    {balance / 1000000000000000000}
+                  </h2>
+                </Grid>
 
-            <Grid container item style={tabBodyRow3_1_2} md={10}>
-                <Table className={classes.table} align="center">
-                  <TableHead>
-                    <TableRow>
-                      <TableCell style={{width:"33%"}} className={themeDark ? "tableHeader" : "tableHeaderLight"} ><h6 style={{ margin: 0 ,fontSize:10}} >PORTAL ID</h6></TableCell>
-                      <TableCell className={themeDark ? "tableHeader" : "tableHeaderLight"} align="center">
-                        <h6 style={{ margin: 0,fontSize:10 }} >STAKED XIO</h6>
-                      </TableCell>
-                      
-                      <TableCell className={themeDark ? "tableHeader" : "tableHeaderLight"} align="center">
-                        <h6 style={{ margin: 0,fontSize:10 }} >REMAINING DAYS</h6>
-                      </TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody style={{paddingBottom:"20px"}}>
-                    <TableRow style={{ cursor: "pointer" }}>
-                      <TableCell style={{fontSize:10}} className={themeDark ? "tableBody" : "tableBodyLight"} >3626</TableCell>
-                      <TableCell style={{fontSize:10}} className={themeDark ? "tableBody" : "tableBodyLight"}>1000</TableCell>
-                      <TableCell style={{fontSize:10}} className={themeDark ? "tableBody" : "tableBodyLight"}>100</TableCell>
-                    </TableRow>
-                
+                <Grid
+                  item
+                  className={
+                    themeDark ? "firstSectionItemDark" : "firstSectionItemLight"
+                  }
+                  md={3}
+                  xs={4}
+                  style={{ flexBasis: "calc(33% - 10px)" }}
+                >
+                  <h6
+                    style={{
+                      color: "#C66065",
+                      fontFamily: "'Montserrat', sans-serif",
+                      fontStyle: "italic",
+                      letterSpacing: "2px",
+                      textAlign: "center",
+                      height: 22
+                    }}
+                    className="firstSectionHeadings"
+                  >
+                    STAKED XIO
+                  </h6>
+                  <h2
+                    style={{
+                      fontFamily: "'Montserrat', sans-serif",
+                      color: themeDark ? "white" : "black",
+                      fontWeight: "bold",
+                      textAlign: "center",
+                      padding: "0px"
+                    }}
+                  >
+                    {stakedXio}
+                  </h2>
+                </Grid>
 
-                   
-                  </TableBody>
-                </Table>
-            </Grid>
-          </Grid>
-          </Grid>
-        <Grid container item style={tabBodyRow3} md={12} className="section" >
-          <Grid container item style={themeDark ? tabBodyRow3_1 : tabBodyRow3_1_Light} md={11}>
-            <Grid container item style={tabBodyRow3_1_1} md={12}>
-              <h6
-                style={{
-                  color: "#C66065",
-                  fontFamily: "'Montserrat', sans-serif",
-                  fontStyle: "italic",
-                  letterSpacing: "2px"
-                }}
+                <Grid
+                  item
+                  className={
+                    themeDark ? "firstSectionItemDark" : "firstSectionItemLight"
+                  }
+                  md={3}
+                  xs={4}
+                  style={{ flexBasis: "calc(33% - 10px)" }}
+                >
+                  <h6
+                    style={{
+                      color: "#C66065",
+                      fontFamily: "'Montserrat', sans-serif",
+                      fontStyle: "italic",
+                      letterSpacing: "2px",
+                      textAlign: "center",
+                      height: 22
+                    }}
+                    className="firstSectionHeadings"
+                  >
+                    INTEREST RATE
+                  </h6>
+                  <h2
+                    style={{
+                      fontFamily: "'Montserrat', sans-serif",
+                      color: themeDark ? "white" : "black",
+                      fontWeight: "bold",
+                      textAlign: "center",
+                      padding: "0px"
+                    }}
+                  >
+                    25%
+                  </h2>
+                </Grid>
+              </Grid>
+
+              <Grid
+                container
+                item
+                style={tabBodyRow3}
+                md={12}
+                className="section"
               >
-                PORTAL INTEREST RATE
-              </h6>
-            </Grid>
+                <Grid
+                  container
+                  item
+                  style={themeDark ? tabBodyRow3_1 : tabBodyRow3_1_Light}
+                  md={11}
+                >
+                  <Grid container item style={tabBodyRow3_1_1} md={12}>
+                    <h6
+                      style={{
+                        color: "#C66065",
+                        fontFamily: "'Montserrat', sans-serif",
+                        fontStyle: "italic",
+                        letterSpacing: "2px"
+                      }}
+                    >
+                      ACTIVE PORTAL INFORMATION
+                    </h6>
+                  </Grid>
 
-            <Grid container item style={tabBodyRow3_1_2} md={10}>
-              {/* <Paper className={classes.root} align="center"> */}
-                <Table className={classes.table} align="center">
-                  <TableHead>
-                    <TableRow>
-                      <TableCell style={{width:"33%"}} className={themeDark ? "tableHeader" : "tableHeaderLight"} ><h6 style={{ margin: 0,fontSize:10 }} >TOKEN</h6></TableCell>
-                      <TableCell className={themeDark ? "tableHeader" : "tableHeaderLight"} align="center">
-                        <h6 style={{ margin: 0,fontSize:10 }} >STAKED XIO</h6>
-                      </TableCell>
-                      <TableCell className={themeDark ? "tableHeader" : "tableHeaderLight"} align="center">
-                        <h6 style={{ margin: 0,fontSize:10 }} >ETH LIQUIDITY</h6>
-                      </TableCell>
-                      
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    <TableRow style={{ cursor: "pointer" }}>
-                      <TableCell style={{fontSize:10}} className={themeDark ? "tableBody" : "tableBodyLight"} style={{ latterSpacing: '2px' }}>1UP</TableCell>
-                      <TableCell style={{fontSize:10}} className={themeDark ? "tableBody" : "tableBodyLight"}>500,362</TableCell>
-                      <TableCell style={{fontSize:10}} className={themeDark ? "tableBody" : "tableBodyLight"}>23,643</TableCell>
-                    </TableRow>
-                    <TableRow style={{ cursor: "pointer",marginTop:'0px' }}>
-                      <TableCell style={{fontSize:10}} className={themeDark ? "tableBody" : "tableBodyLight"} style={{ latterSpacing: '2px' }}>1UP</TableCell>
-                      <TableCell style={{fontSize:10}} className={themeDark ? "tableBody" : "tableBodyLight"}>500,362</TableCell>
-                      <TableCell style={{fontSize:10}} className={themeDark ? "tableBody" : "tableBodyLight"}>23,643</TableCell>
-                    </TableRow>
-                  </TableBody>
-                </Table>
-              {/* </Paper> */}
-            </Grid>
-          </Grid>
+                  <Grid container item style={tabBodyRow3_1_2} md={10}>
+                    <Table className={classes.table} align="center">
+                      <TableHead>
+                        <TableRow>
+                          <TableCell
+                            style={{ width: "33%" }}
+                            className={
+                              themeDark ? "tableHeader" : "tableHeaderLight"
+                            }
+                          >
+                            <h6 style={{ margin: 0, fontSize: 10 }}>
+                              PORTAL ID
+                            </h6>
+                          </TableCell>
+                          <TableCell
+                            className={
+                              themeDark ? "tableHeader" : "tableHeaderLight"
+                            }
+                            align="center"
+                          >
+                            <h6 style={{ margin: 0, fontSize: 10 }}>
+                              STAKED XIO
+                            </h6>
+                          </TableCell>
 
+                          <TableCell
+                            className={
+                              themeDark ? "tableHeader" : "tableHeaderLight"
+                            }
+                            align="center"
+                          >
+                            <h6 style={{ margin: 0, fontSize: 10 }}>
+                              REMAINING DAYS
+                            </h6>
+                          </TableCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody style={{ paddingBottom: "20px" }}>
+                        { !!activePortal.length && activePortal.map((item)=>{
+                            return <TableRow style={{ cursor: "pointer" }}>
+                            <TableCell
+                              style={{ fontSize: 10 }}
+                              className={
+                                themeDark ? "tableBody" : "tableBodyLight"
+                              }
+                            >
+                              {item.portalId}
+                            </TableCell>
+                            <TableCell
+                              style={{ fontSize: 10 }}
+                              className={
+                                themeDark ? "tableBody" : "tableBodyLight"
+                              }
+                            >
+                              {item.stakeQuantity}
+                            </TableCell>
+                            <TableCell
+                              style={{ fontSize: 10 }}
+                              className={
+                                themeDark ? "tableBody" : "tableBodyLight"
+                              }
+                            >
+                              {item.Days}
+                            </TableCell>
+                          </TableRow>
+                        }) 
+                        }
+                      </TableBody>
+                    </Table>
+                  </Grid>
+                </Grid>
+              </Grid>
+              <Grid
+                container
+                item
+                style={tabBodyRow3}
+                md={12}
+                className="section"
+              >
+                <Grid
+                  container
+                  item
+                  style={themeDark ? tabBodyRow3_1 : tabBodyRow3_1_Light}
+                  md={11}
+                >
+                  <Grid container item style={tabBodyRow3_1_1} md={12}>
+                    <h6
+                      style={{
+                        color: "#C66065",
+                        fontFamily: "'Montserrat', sans-serif",
+                        fontStyle: "italic",
+                        letterSpacing: "2px"
+                      }}
+                    >
+                      PORTAL INTEREST RATE
+                    </h6>
+                  </Grid>
 
-
-        </Grid>
-      </Layout>
-       )
-      }}
-        </ThemeConsumer>
+                  <Grid container item style={tabBodyRow3_1_2} md={10}>
+                    {/* <Paper className={classes.root} align="center"> */}
+                    <Table className={classes.table} align="center">
+                      <TableHead>
+                        <TableRow>
+                          <TableCell
+                            style={{ width: "33%" }}
+                            className={
+                              themeDark ? "tableHeader" : "tableHeaderLight"
+                            }
+                          >
+                            <h6 style={{ margin: 0, fontSize: 10 }}>TOKEN</h6>
+                          </TableCell>
+                          <TableCell
+                            className={
+                              themeDark ? "tableHeader" : "tableHeaderLight"
+                            }
+                            align="center"
+                          >
+                            <h6 style={{ margin: 0, fontSize: 10 }}>
+                              STAKED XIO
+                            </h6>
+                          </TableCell>
+                          <TableCell
+                            className={
+                              themeDark ? "tableHeader" : "tableHeaderLight"
+                            }
+                            align="center"
+                          >
+                            <h6 style={{ margin: 0, fontSize: 10 }}>
+                              ETH LIQUIDITY
+                            </h6>
+                          </TableCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {!!portalInterestList.length &&
+                          portalInterestList.map(item => {
+                            return (
+                              <TableRow style={{ cursor: "pointer" }}>
+                                <TableCell
+                                  style={{ fontSize: 10 }}
+                                  className={
+                                    themeDark ? "tableBody" : "tableBodyLight"
+                                  }
+                                  style={{ latterSpacing: "2px" }}
+                                >
+                                  {item.outputTokenSymbol}
+                                </TableCell>
+                                <TableCell
+                                  style={{ fontSize: 10 }}
+                                  className={
+                                    themeDark ? "tableBody" : "tableBodyLight"
+                                  }
+                                >
+                                  {item.xioStaked}
+                                </TableCell>
+                                <TableCell
+                                  style={{ fontSize: 10 }}
+                                  className={
+                                    themeDark ? "tableBody" : "tableBodyLight"
+                                  }
+                                >
+                                  {item.liquidity}
+                                </TableCell>
+                              </TableRow>
+                            );
+                          })}
+                      </TableBody>
+                    </Table>
+                    {/* </Paper> */}
+                  </Grid>
+                </Grid>
+              </Grid>
+            </Layout>
+          );
+        }}
+      </ThemeConsumer>
     </>
   );
 };

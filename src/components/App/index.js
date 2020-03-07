@@ -1,7 +1,8 @@
 import React, { useState,useEffect } from "react";
-import { BrowserRouter as Router, Route } from "react-router-dom";
+import { BrowserRouter as Router, Route,Switch } from "react-router-dom";
 import routes from "../../routes";
 import { ThemeProvider } from "../../config/index";
+
 
 
 function App() {
@@ -22,6 +23,7 @@ function App() {
     <>
       <ThemeProvider value={themeState}>
         <Router>
+          <Switch>
           {routes.map(item => {
             return (
               <Route
@@ -31,6 +33,8 @@ function App() {
               />
             );
           })}
+          <Route><h6>404 Not Found</h6></Route>
+          </Switch>
         </Router>
       </ThemeProvider>
     </>

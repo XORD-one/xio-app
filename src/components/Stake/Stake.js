@@ -15,13 +15,19 @@ import { OMG_EXCHANGE, OMG_TOKEN } from "../../contracts/omg";
 
 let web3js = "";
 
+let web3 = "";
+
 let contract = "";
 
 let portalContract = "";
 
+let infuraPortal = "";
+
 let accounts = "";
 
 let ethereum = "";
+
+let initialRate = "";
 
 const styles = theme => ({
   root: {
@@ -106,12 +112,13 @@ const plusEqual = {
 const Stake = props => {
   const [open, setOpen] = React.useState(false);
   const [durationDaysInput, setDurationDays] = React.useState(1);
-  const [amountXioInput, setAmountXIO] = React.useState("");
+  const [amountXioInput, setAmountXIO] = React.useState(1);
   const [address, setAccountAddress] = useState("");
   const [isUnlock, setIsUnlock] = useState(false);
   const [interestRate, setinterestRate] = useState("");
   const [token, setToken] = useState("OMG");
   const [balance, setBalance] = useState(false);
+  const [unitRate,setUnitRate] = useState(0)
 
   const onChangeAmount = e => {
     if (
@@ -119,7 +126,9 @@ const Stake = props => {
       e.target.value == ""
     ) {
       setAmountXIO(e.target.value);
-      if (e.target.value) getXIOtoETHs(e.target.value, durationDaysInput);
+      const rate = Number(e.target.value) * Number(durationDaysInput) * unitRate
+      setinterestRate(rate)
+      // if (e.target.value) getXIOtoETHs(e.target.value, durationDaysInput);
     } else {
       console.log("nothing");
     }
@@ -129,7 +138,9 @@ const Stake = props => {
     var reg = new RegExp("^\\d+$");
     if (reg.test(e.target.value) || e.target.value == "") {
       setDurationDays(e.target.value);
-      if (e.target.value) getXIOtoETHs(amountXioInput, e.target.value);
+      const rate = Number(e.target.value) * Number(amountXioInput) * unitRate
+      setinterestRate(rate)
+      // if (e.target.value) getXIOtoETHs(amountXioInput, e.target.value);
     } else {
       console.log("nothing");
     }
@@ -149,6 +160,9 @@ const Stake = props => {
   };
 
   useEffect(() => {
+    initInfura()
+    initPortalWithInfura()
+    onGetInterestRate()
     ethereum = window.ethereum;
     if (ethereum) {
       checkWeb3();
@@ -159,7 +173,7 @@ const Stake = props => {
   useEffect(() => {
     if (contract && address) {
       getBalance();
-      if (balance) getIsUnlock();
+      // if (balance) getIsUnlock();
       // approve();
     }
   }, [address, balance]);
@@ -196,15 +210,23 @@ const Stake = props => {
     contract = new web3js.eth.Contract(XIO_ABI, XIO_ADDRESS);
   };
 
-  const getXIOtoETHs = async (amount, duration) => {
+  const initInfura = () => {
+    const OPTIONS = {
+      // defaultBlock: "latest",
+      transactionConfirmationBlocks: 1,
+      transactionBlockTimeout: 5
+    };
+    web3 = new Web3("https://rinkeby.infura.io/v3/ff4d778692ad42f7966a456564283e9d", null, OPTIONS)
+    console.log('web3 ==>',web3)
+  }
+
+  const initPortalWithInfura = () => {
+    infuraPortal = new web3.eth.Contract(PORTAL_ABI, PORTAL_ADDRESS);
+  }
+
+  const getXIOtoETHs = async (amount) => {
     try {
-      // amount = amount ? amount : amountXioInput
-      console.log("amount before ==>", amount);
-      // const duration = durationDaysInput ? durationDaysInput : 1
-      console.log("duration ==>", duration);
-      amount = Math.ceil(0.0068 * duration * amount);
-      console.log("amount ==>", amount);
-      const res = await portalContract.methods.getXIOtoETH(amount).call();
+      const res = await infuraPortal.methods.getXIOtoETH(amount).call();
       console.log("res of xiotoeth ==>", res);
       getETHtoALTs(res);
     } catch (e) {
@@ -214,42 +236,60 @@ const Stake = props => {
 
   const getETHtoALTs = async amount => {
     try {
-      console.log("amount in ETHtoALT ==>", amount);
-      amount = await web3js.utils.toWei(amount.toString());
-      console.log("amount in ETHtoALT after ==>", amount);
-      const res = await portalContract.methods
+      const res = await infuraPortal.methods
         .getETHtoALT(amount, OMG_EXCHANGE)
         .call();
       console.log("res of ethToAlt ==>", res);
-      setinterestRate(res);
+      setUnitRate(res/1000000000000000000);
+      setinterestRate(res/1000000000000000000)
     } catch (e) {
       console.log(e);
-      setinterestRate(0);
+      setUnitRate(0);
+      setinterestRate(0)
     }
   };
+
+  const onGetInterestRate = async () => {
+    try {
+      const res = await infuraPortal.methods.getInterestRate().call();
+      console.log('res ==>',res)
+      initialRate = res;
+      getXIOtoETHs(res)
+    }
+    catch(e){
+      console.log(e)
+    }
+  }
 
   const confirmStake = async () => {
     try {
       if (address) {
         const amount = await web3js.utils.toWei(amountXioInput.toString());
+        const soldxio = (Number(amountXioInput) * initialRate)
         const timestamp = 24 * 60 * 60 * 1000;
+        const tokensBought = await web3js.utils.toWei(interestRate.toString());
         const params = {
           quantity: amount,
-          tokensBought: interestRate,
+          soldxio,
+          tokensBought,
           timestamp: timestamp * durationDaysInput,
-          portalId: 1,
+          portalId: 0,
           symbol: "OMG",
           tokenAddress: OMG_TOKEN
         };
-        console.log(params);
+        console.log('params ==>',params);
         await portalContract.methods
           .stakeXIO(
             amount,
-            interestRate,
+            soldxio,
+            tokensBought,
             timestamp * durationDaysInput,
-            1,
+            0,
             "OMG",
-            OMG_TOKEN
+            OMG_TOKEN,
+            durationDaysInput,
+            initialRate,
+            OMG_EXCHANGE
           )
           .send({ from: address })
           .on("transactionHash", hash => {
@@ -287,26 +327,24 @@ const Stake = props => {
   const approve = async () => {
     try {
       if (address) {
-        const functionSelector = "095ea7b3";
-        const allowance =
-          "f000000000000000000000000000000000000000000000000000000000000000";
-        let spender = get64BytesString(PORTAL_ADDRESS);
-        if (spender.length !== 64) {
-          return null;
-        }
+        let contract = new web3.eth.Contract(XIO_ABI,XIO_ADDRESS)
+        const amount = await web3js.utils.toWei(amountXioInput.toString());
 
         let rawTransaction = {
           from: address,
           to: "0x5d3069CBb2BFb7ebB9566728E44EaFDaC3E52708",
           value: 0,
-          data: `0x${functionSelector}${spender}${allowance}`
+          data: contract.methods.transfer(PORTAL_ADDRESS,amount).encodeABI()
         };
 
         web3js.eth.sendTransaction(rawTransaction, function(
           err,
           transactionHash
         ) {
-          if (!err) console.log(transactionHash); // "0x7f9fade1c0d57a7af66ab4ead7c2eb7b11a91385"
+          if (!err){
+            console.log(transactionHash);
+            confirmStake()
+          } // "0x7f9fade1c0d57a7af66ab4ead7c2eb7b11a91385"
         });
       } else {
         alert("PLEASE CONNECT TO METAMASK WALLET !!");
@@ -663,9 +701,7 @@ const Stake = props => {
                           }
                           disabled="true"
                           placeholder="0.0"
-                          value={(interestRate / 1000000000000000000).toFixed(
-                            2
-                          )}
+                          value={Number(interestRate).toFixed(2)}
                         />
                       </Grid>
                     </Grid>

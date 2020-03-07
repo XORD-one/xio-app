@@ -86,8 +86,10 @@ const Withdraw = props => {
   const instantInterest = "WITHDRAW AMOUNT";
   const classes = useStyles();
 
+  const [token, setToken] = useState("OMG");
   const [open, setOpen] = React.useState(false);
   const [address,setAccountAddress] = useState('')
+  const [amount,setAmount] = useState(1)
 
   useEffect(()=>{
     ethereum = window.ethereum;
@@ -130,6 +132,43 @@ const Withdraw = props => {
     contract = new web3js.eth.Contract(XIO_ABI, XIO_ADDRESS);
   };
 
+  const onCanWidthdrawXio = async () => {
+    try{
+      let weiAmount = await web3js.utils.toWei(amount.toString());
+      const res = await portalContract.methods.canWithdrawXIO(weiAmount,address).call()
+      console.log(res)
+      if(res){
+        onWithdrawXio()
+      }
+    }
+    catch(e){
+      console.log(e)
+    }
+  }
+
+  const onWithdrawXio = async () => {
+    try{
+      let weiAmount = await web3js.utils.toWei(amount.toString());
+      const res = await portalContract.methods.withdrawXIO(weiAmount).call()
+      console.log(res)
+    }
+    catch(e){
+      console.log(e)
+    }
+  }
+
+  const onChangeAmount = e => {
+    if (
+      e.target.value.match(/^(\d+\.?\d{0,9}|\.\d{1,9})$/) ||
+      e.target.value == ""
+    ) {
+      setAmount(e.target.value);
+    } else {
+      console.log("nothing");
+    }
+  };
+
+
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -138,9 +177,16 @@ const Withdraw = props => {
     setOpen(false);
   };
 
+  const onTokenSelect = data => {
+    console.log(data);
+    setToken(data);
+    handleClose();
+  };
+
   const dialogProps = {
     open,
-    handleClose
+    handleClose,
+    onTokenSelect
   };
 
   return (
@@ -151,7 +197,7 @@ const Withdraw = props => {
             <>
               <CustomDialog {...dialogProps} />
 
-              <Layout tabName="withdraw" address={address} onConnect={onConnect}>
+              <Layout tabName="withdraw" address={address} onConnect={onConnect} onWithdraw={onCanWidthdrawXio} >
                 <Grid container item className="firstSectionContainer " md={12}>
                   <Grid
                     style={{
@@ -176,6 +222,7 @@ const Withdraw = props => {
                       sm={4}
                       xs={12}
                       justify="center"
+                      onClick={()=>handleClickOpen()}
                     >
                       <Grid item sm={12} xs={12}>
                         <p className="colHeading" style={{ fontSize: "11px" }}>{outputToken}</p>
@@ -208,7 +255,7 @@ const Withdraw = props => {
                             className={
                               themeDark ? "inputText" : "inputTextLight"
                             }
-                            placeholder="XIO"
+                            placeholder={token}
                             disabled={true}
                             style={{ cursor: "pointer" }}
                             xs={12}
@@ -263,8 +310,9 @@ const Withdraw = props => {
                       >
                         <input
                           className={themeDark ? "inputText" : "inputTextLight"}
-                          disabled="true"
                           placeholder="0.0"
+                          value={amount}
+                          onChange={(e)=>onChangeAmount(e)}
                         />
                       </Grid>
                     </Grid>
