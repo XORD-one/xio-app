@@ -410,9 +410,9 @@ const Index = ({
                 
               </Grid>
             </Grid>
-              <div style={{textAlign : "center" , padding:"40px 0px"}}>
+              {/* <div style={{textAlign : "center" , padding:"40px 0px"}}>
   <span style = {{color : (themeDark) ? ("white") : ("#000000") , fontFamily : "'Montserrat', sans-serif" , fontSize : "12px",letterSpacing : "2px" , fontWeight : "bold"}}>
-    POWERED BY</span> <img width = {80} style = {{verticalAlign : 'middle'}} src= {(themeDark)? (xordLogoDark): (xordLogoLight)}/></div>
+    POWERED BY</span> <img width = {80} style = {{verticalAlign : 'middle'}} src= {(themeDark)? (xordLogoDark): (xordLogoLight)}/></div> */}
 
             <Switch
               style={{ color: "#c66065" }}
