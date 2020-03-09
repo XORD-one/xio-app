@@ -21,8 +21,8 @@ import {
   faLinkedinIn
 } from "@fortawesome/free-brands-svg-icons";
 import { useHistory } from "react-router-dom";
-import xordLogoLight from '../components/assets/images/xord-logo-black.png'
-import xordLogoDark from '../components/assets/images/xord-logo-white.png'
+import xordLogoLight from "../components/assets/images/xord-logo-black.png";
+import xordLogoDark from "../components/assets/images/xord-logo-white.png";
 
 const layoutSubHeading = {
   color: "rgb(198, 96, 101)"
@@ -102,7 +102,10 @@ const Index = ({
           <div
             style={{
               backgroundColor: themeDark ? "#1C1C1C" : "white",
-              minHeight: "100vh"
+              minHeight: "100vh",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "space-between"
             }}
           >
             <Grid>
@@ -407,13 +410,30 @@ const Index = ({
                     </>
                   )}
                 </Grid>
-                
               </Grid>
             </Grid>
-              {/* <div style={{textAlign : "center" , padding:"40px 0px"}}>
-  <span style = {{color : (themeDark) ? ("white") : ("#000000") , fontFamily : "'Montserrat', sans-serif" , fontSize : "12px",letterSpacing : "2px" , fontWeight : "bold"}}>
-    POWERED BY</span> <img width = {80} style = {{verticalAlign : 'middle'}} src= {(themeDark)? (xordLogoDark): (xordLogoLight)}/></div> */}
-
+            <div style={{ display: "flex" }}>
+              <div
+                style={{ textAlign: "center", flex: 1, padding: "10px 0px 15px" }}
+              >
+                <span
+                  style={{
+                    color: themeDark ? "white" : "#000000",
+                    fontFamily: "'Montserrat', sans-serif",
+                    fontSize: "12px",
+                    letterSpacing: "2px",
+                    fontWeight: "bold"
+                  }}
+                >
+                  POWERED BY
+                </span>{" "}
+                <img
+                  width={80}
+                  style={{ verticalAlign: "middle" }}
+                  src={themeDark ? xordLogoDark : xordLogoLight}
+                />
+              </div>
+            </div>
             <Switch
               style={{ color: "#c66065" }}
               className="MuiSwitch-root"
