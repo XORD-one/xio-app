@@ -76,7 +76,7 @@ const CustomDialog = (props) => {
             paddingTop: "25px"
           }}
         >
-          {list.map((item,i) => {
+          {props.tokensList.map((item,i) => {
             return (
               <DialogContentText
                 style={{
@@ -89,7 +89,7 @@ const CustomDialog = (props) => {
                 onClick={()=>props.onTokenSelect(item)}
                 key={i}
               >
-                {item}
+                {item.outputTokenSymbol}
               </DialogContentText>
             );
           })}

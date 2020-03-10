@@ -79,7 +79,8 @@ const Index = ({
   unlock,
   approve,
   onWithdraw,
-  balance
+  balance,
+  onConfirmClick
 }) => {
   const [completed, setCompleted] = useState(false);
 
@@ -324,7 +325,7 @@ const Index = ({
                         <span style={{ color: "#C66065" }}>X TOKENS</span>
                       </h6>
                       <div
-                        onClick={() => onConfirm()}
+                        onClick={() => onConfirmClick()}
                         style={{
                           backgroundColor: address ? "#C66065" : "#757474",
                           cursor: "pointer",

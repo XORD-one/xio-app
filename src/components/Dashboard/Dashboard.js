@@ -203,9 +203,15 @@ const Dashboard = props => {
       for(let i=0;i<data ;i++){
         const res = await portalContract.methods.stakerData(address,i).call()
         console.log(res)
-        amount = amount + res.stakeQuantity;
-        res.Days = Math.round(new Date()/1000) - res.stakeDurationTimestamp
-        res.Days = Math.floor(res.Days / (1000 * 1000 * 60 *  24)) 
+        amount = amount + Number(res.stakeQuantity);
+        res.Days = res.stakeDurationTimestamp - (Math.round(new Date()/1000) - res.stakeInitiationTimestamp)
+        console.log("Days ===>",res.Days)
+        if(res.Days <=  0){
+          res.Days = 0
+        }
+        else{
+          res.Days = Math.ceil(res.Days / (60 * 60 *  24)) 
+        }
         res.stakeQuantity = await web3js.utils.fromWei((res.stakeQuantity).toString())
         if (res.publicKey !== "0x0000000000000000000000000000000000000000"){
           portalInfo.push(res)
