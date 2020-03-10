@@ -90,6 +90,7 @@ const Withdraw = props => {
   const [open, setOpen] = React.useState(false);
   const [address,setAccountAddress] = useState('')
   const [amount,setAmount] = useState(1)
+  const [tokensList,setTokensList] = useState([])
 
   useEffect(()=>{
     ethereum = window.ethereum;
@@ -97,8 +98,34 @@ const Withdraw = props => {
       checkWeb3();
       initXioContract()
       initPortalContract()
+      getTokensData()
     }
   },[])
+
+  const getTokensData = async () => {
+    try{
+      const tokenList = [];
+      const tokens = {}
+      let index = 0;
+      while(true){
+        const res = await portalContract.methods.portalData(index).call()
+        console.log(res)
+        if(res.tokenAddress == "0x0000000000000000000000000000000000000000"){
+          break;
+        }
+        if(tokens[res.outputTokenSymbol]){}
+        else{
+          tokens[res.outputTokenSymbol] = 1
+          tokenList.push(res)
+        }
+        index++;
+      }
+      setTokensList(tokenList)
+    }
+    catch(e){
+      console.log(e)
+    }
+  }
 
   async function checkWeb3() {
     // Use Mist/MetaMask's provider.
@@ -186,7 +213,8 @@ const Withdraw = props => {
   const dialogProps = {
     open,
     handleClose,
-    onTokenSelect
+    onTokenSelect,
+    tokensList
   };
 
   return (
@@ -255,7 +283,7 @@ const Withdraw = props => {
                             className={
                               themeDark ? "inputText" : "inputTextLight"
                             }
-                            placeholder={token}
+                            placeholder={token.outputTokenSymbol}
                             disabled={true}
                             style={{ cursor: "pointer" }}
                             xs={12}
