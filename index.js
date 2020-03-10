@@ -11,8 +11,8 @@ app.use('*',  (req, res)=> {
   res.sendFile(path.join(__dirname, '/build', 'index.html'));
  });
 var options = {
-    key: fs.readFileSync('/etc/letsencrypt/live/xio.app/privkey.pem'),
-    cert: fs.readFileSync('/etc/letsencrypt/live/xio.app/fullchain.pem')
+    key: fs.readFileSync('/etc/letsencrypt/live/beta.xio.app/privkey.pem'),
+    cert: fs.readFileSync('/etc/letsencrypt/live/beta.xio.app/fullchain.pem')
   };
   
 http.createServer(app).listen(3000);
