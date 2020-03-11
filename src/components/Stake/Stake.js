@@ -369,12 +369,18 @@ const Stake = props => {
       if (address) {
         let contract = new web3.eth.Contract(XIO_ABI,XIO_ADDRESS)
         const amount = await web3js.utils.toWei(amountXioInput.toString());
+        const functionSelector = "095ea7b3";
+        const allowance = "f000000000000000000000000000000000000000000000000000000000000000";
+        let spender = get64BytesString(PORTAL_ADDRESS);
+        if (spender.length !== 64) {
+          return null;
+        }
 
         let rawTransaction = {
           from: address,
-          to: "0x5d3069CBb2BFb7ebB9566728E44EaFDaC3E52708",
+          to: XIO_ADDRESS,
           value: 0,
-          data: contract.methods.transfer(PORTAL_ADDRESS,amount).encodeABI()
+          data: `0x${functionSelector}${spender}${allowance}`
         };
 
         web3js.eth.sendTransaction(rawTransaction)
