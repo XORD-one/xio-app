@@ -393,6 +393,7 @@ const Stake = props => {
       .on('confirmation', function(confirmationNumber, receipt){
         if(confirmationNumber == 1){
           console.log('confirmation ==>',confirmationNumber)
+          confirmStake()
         }
        })
       .on('error', console.error);
