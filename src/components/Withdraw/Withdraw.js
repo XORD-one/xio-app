@@ -98,34 +98,34 @@ const Withdraw = props => {
       checkWeb3();
       initXioContract()
       initPortalContract()
-      getTokensData()
+      // getTokensData()
     }
   },[])
 
-  const getTokensData = async () => {
-    try{
-      const tokenList = [];
-      const tokens = {}
-      let index = 0;
-      while(true){
-        const res = await portalContract.methods.portalData(index).call()
-        console.log(res)
-        if(res.tokenAddress == "0x0000000000000000000000000000000000000000"){
-          break;
-        }
-        if(tokens[res.outputTokenSymbol]){}
-        else{
-          tokens[res.outputTokenSymbol] = 1
-          tokenList.push(res)
-        }
-        index++;
-      }
-      setTokensList(tokenList)
-    }
-    catch(e){
-      console.log(e)
-    }
-  }
+  // const getTokensData = async () => {
+  //   try{
+  //     const tokenList = [];
+  //     const tokens = {}
+  //     let index = 0;
+  //     while(true){
+  //       const res = await portalContract.methods.portalData(index).call()
+  //       console.log(res)
+  //       if(res.tokenAddress == "0x0000000000000000000000000000000000000000"){
+  //         break;
+  //       }
+  //       if(tokens[res.outputTokenSymbol]){}
+  //       else{
+  //         tokens[res.outputTokenSymbol] = 1
+  //         tokenList.push(res)
+  //       }
+  //       index++;
+  //     }
+  //     setTokensList(tokenList)
+  //   }
+  //   catch(e){
+  //     console.log(e)
+  //   }
+  // }
 
   async function checkWeb3() {
     // Use Mist/MetaMask's provider.
@@ -162,6 +162,7 @@ const Withdraw = props => {
   const onCanWidthdrawXio = async () => {
     try{
       let weiAmount = await web3js.utils.toWei(amount.toString());
+      console.log('weiAmount and Address ==>',weiAmount,address)
       const res = await portalContract.methods.canWithdrawXIO(weiAmount,address).call()
       console.log(res)
       if(res){
@@ -174,13 +175,35 @@ const Withdraw = props => {
   }
 
   const onWithdrawXio = async () => {
-    try{
-      let weiAmount = await web3js.utils.toWei(amount.toString());
-      const res = await portalContract.methods.withdrawXIO(weiAmount).call()
-      console.log(res)
-    }
-    catch(e){
-      console.log(e)
+    try {
+      if (address) {
+        const amountToSend = await web3js.utils.toWei(amount.toString());
+
+        let rawTransaction = {
+          from: address,
+          to: PORTAL_ADDRESS,
+          value: 0,
+          data: portalContract.methods.withdrawXIO(amountToSend).encodeABI()
+        };
+        console.log(rawTransaction)
+        web3js.eth.sendTransaction(rawTransaction)
+        .on('transactionHash', function(hash){
+          console.log('hash ==>',hash)
+      })
+      .on('receipt', function(receipt){
+          console.log('receipt ==>',receipt)
+      })
+      .on('confirmation', function(confirmationNumber, receipt){
+        if(confirmationNumber == 1){
+          console.log('confirmation ==>',confirmationNumber)
+        }
+       })
+      .on('error', console.error);
+      } else {
+        alert("PLEASE CONNECT TO METAMASK WALLET !!");
+      }
+    } catch (e) {
+      console.log(e);
     }
   }
 
@@ -223,8 +246,6 @@ const Withdraw = props => {
         {({ isThemeDark, themeDark }) => {
           return (
             <>
-              <CustomDialog {...dialogProps} />
-
               <Layout tabName="withdraw" address={address} onConnect={onConnect} onWithdraw={onCanWidthdrawXio} >
                 <Grid container item className="firstSectionContainer " md={12}>
                   <Grid
@@ -250,7 +271,6 @@ const Withdraw = props => {
                       sm={4}
                       xs={12}
                       justify="center"
-                      onClick={()=>handleClickOpen()}
                     >
                       <Grid item sm={12} xs={12}>
                         <p className="colHeading" style={{ fontSize: "11px" }}>{outputToken}</p>
@@ -283,7 +303,7 @@ const Withdraw = props => {
                             className={
                               themeDark ? "inputText" : "inputTextLight"
                             }
-                            placeholder={token.outputTokenSymbol}
+                            placeholder={"XIO"}
                             disabled={true}
                             style={{ cursor: "pointer" }}
                             xs={12}

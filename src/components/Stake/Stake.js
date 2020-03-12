@@ -118,19 +118,22 @@ const Stake = props => {
   const [interestRate, setinterestRate] = useState("");
   const [token, setToken] = useState("OMG");
   const [balance, setBalance] = useState(false);
-  const [unitRate,setUnitRate] = useState(0)
-  const [tokensList,setTokensList] = useState([])
-  const [initial,setInitial] = useState(true)
+  const [unitRate, setUnitRate] = useState(0);
+  const [tokensList, setTokensList] = useState([]);
+  const [initial, setInitial] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   const onChangeAmount = e => {
     if (
       (e.target.value.match(/^(\d+\.?\d{0,9}|\.\d{1,9})$/) ||
-      e.target.value == "") && Number(e.target.value) <= 10000
+        e.target.value == "") &&
+      Number(e.target.value) <= 10000
     ) {
       setAmountXIO(e.target.value);
-      const rate = Number(e.target.value) * Number(durationDaysInput) * unitRate
-      console.log('ate ==>',rate)
-      setinterestRate(rate)
+      const rate =
+        Number(e.target.value) * Number(durationDaysInput) * unitRate;
+      console.log("ate ==>", rate);
+      setinterestRate(rate);
       // if (e.target.value) getXIOtoETHs(e.target.value, durationDaysInput);
     } else {
       console.log("nothing");
@@ -139,11 +142,14 @@ const Stake = props => {
 
   const onChangeDurationDays = e => {
     var reg = new RegExp("^\\d+$");
-    if ((reg.test(e.target.value) || e.target.value == "")&& Number(e.target.value) <= 30) {
+    if (
+      (reg.test(e.target.value) || e.target.value == "") &&
+      Number(e.target.value) <= 30
+    ) {
       setDurationDays(e.target.value);
-      const rate = Number(e.target.value) * Number(amountXioInput) * unitRate
-      console.log('ate ==>',rate)
-      setinterestRate(rate)
+      const rate = Number(e.target.value) * Number(amountXioInput) * unitRate;
+      console.log("ate ==>", rate);
+      setinterestRate(rate);
       // if (e.target.value) getXIOtoETHs(amountXioInput, e.target.value);
     } else {
       console.log("nothing");
@@ -164,20 +170,20 @@ const Stake = props => {
   };
 
   useEffect(() => {
-    initInfura()
-    initPortalWithInfura()
-    onGetInterestRate()
+    initInfura();
+    initPortalWithInfura();
+    onGetInterestRate();
     ethereum = window.ethereum;
     if (ethereum) {
       checkWeb3();
       initXioContract();
       initPortalContract();
-      getTokensData()
+      getTokensData();
     }
   }, []);
   useEffect(() => {
     if (contract && address) {
-      getIsUnlock()
+      getIsUnlock();
       // if (balance) getIsUnlock();
       // approve();
     }
@@ -221,15 +227,19 @@ const Stake = props => {
       transactionConfirmationBlocks: 1,
       transactionBlockTimeout: 5
     };
-    web3 = new Web3("https://rinkeby.infura.io/v3/ff4d778692ad42f7966a456564283e9d", null, OPTIONS)
-    console.log('web3 ==>',web3)
-  }
+    web3 = new Web3(
+      "https://rinkeby.infura.io/v3/ff4d778692ad42f7966a456564283e9d",
+      null,
+      OPTIONS
+    );
+    console.log("web3 ==>", web3);
+  };
 
   const initPortalWithInfura = () => {
     infuraPortal = new web3.eth.Contract(PORTAL_ABI, PORTAL_ADDRESS);
-  }
+  };
 
-  const getXIOtoETHs = async (amount) => {
+  const getXIOtoETHs = async amount => {
     try {
       const res = await infuraPortal.methods.getXIOtoETH(amount).call();
       console.log("res of xiotoeth ==>", res);
@@ -245,77 +255,84 @@ const Stake = props => {
         .getETHtoALT(amount, OMG_EXCHANGE)
         .call();
       console.log("res of ethToAlt ==>", res);
-      res = await web3js.utils.fromWei(res.toString())
-      if(initial){
+      res = await web3js.utils.fromWei(res.toString());
+      if (initial) {
         setUnitRate(res);
-        setinterestRate(res)
-        setInitial(false)
+        setinterestRate(res);
+        setInitial(false);
       }
-        res = await web3js.utils.toWei(res.toString())
-      return res
+      res = await web3js.utils.toWei(res.toString());
+      return res;
     } catch (e) {
       console.log(e);
       setUnitRate(0);
-      setinterestRate(0)
+      setinterestRate(0);
     }
   };
 
   const onGetInterestRate = async () => {
     try {
       const res = await infuraPortal.methods.getInterestRate().call();
-      console.log('res ==>',res)
+      console.log("res ==>", res);
       initialRate = res;
-      console.log('initail rate ==>',await web3js.utils.fromWei(initialRate.toString()))
-      getXIOtoETHs(res)
+      console.log(
+        "initail rate ==>",
+        await web3js.utils.fromWei(initialRate.toString())
+      );
+      getXIOtoETHs(res);
+    } catch (e) {
+      console.log(e);
     }
-    catch(e){
-      console.log(e)
-    }
-  }
+  };
 
   const getTokensData = async () => {
-    try{
+    try {
       const tokenList = [];
-      const tokens = {}
+      const tokens = {};
       let index = 0;
-      while(true){
-        const res = await portalContract.methods.portalData(index).call()
-        console.log(res)
-        if(res.tokenAddress == "0x0000000000000000000000000000000000000000"){
+      while (true) {
+        const res = await portalContract.methods.portalData(index).call();
+        console.log(res);
+        if (res.tokenAddress == "0x0000000000000000000000000000000000000000") {
           break;
         }
-        if(tokens[res.outputTokenSymbol]){}
-        else{
-          tokens[res.outputTokenSymbol] = 1
-          tokenList.push(res)
+        if (tokens[res.outputTokenSymbol]) {
+        } else {
+          tokens[res.outputTokenSymbol] = 1;
+          tokenList.push(res);
         }
         index++;
       }
-      setTokensList(tokenList)
+      setTokensList(tokenList);
+    } catch (e) {
+      console.log(e);
     }
-    catch(e){
-      console.log(e)
-    }
-  }
+  };
 
   const confirmStake = async () => {
     try {
       if (address) {
+        setLoading(true);
         const amount = await web3js.utils.toWei(amountXioInput.toString());
-        const soldxio = (Number(amountXioInput) * initialRate)
+        const soldxio = Number(amountXioInput) * initialRate;
         const timestamp = 24 * 60 * 60 * 1000;
-        const rateFromWei = await web3js.utils.fromWei(initialRate.toString())
-        const calculatedValue = Number(durationDaysInput)*Number(amountXioInput)*Number(rateFromWei)
-        const tokensBought = await getXIOtoETHs(await web3js.utils.toWei(calculatedValue.toString()));
+        const rateFromWei = await web3js.utils.fromWei(initialRate.toString());
+        const calculatedValue =
+          Number(durationDaysInput) *
+          Number(amountXioInput) *
+          Number(rateFromWei);
+        const tokensBought = await getXIOtoETHs(
+          await web3js.utils.toWei(calculatedValue.toString())
+        );
         const params = {
-          tokenAddress:token.tokenAddress,
-            durationDaysInput,
-            amount,
-            tokensBought,
-            portalId:token.portalId,
-            symbol:token.outputTokenSymbol
+          tokenAddress: token.tokenAddress,
+          durationDaysInput,
+          amount,
+          tokensBought,
+          portalId: token.portalId,
+          symbol: token.outputTokenSymbol
         };
-        console.log('params ==>',params);
+        console.log("params ==>", params);
         await portalContract.methods
           .stakeXIO(
             token.tokenAddress,
@@ -331,6 +348,7 @@ const Stake = props => {
             console.log(hash);
           })
           .on("confirmation", function(confirmationNumber, receipt) {
+            setLoading(false);
             if (confirmationNumber === 2) {
               // tx confirmed
               console.log(receipt);
@@ -341,6 +359,7 @@ const Stake = props => {
       }
     } catch (e) {
       console.log(e);
+      setLoading(false);
     }
   };
 
@@ -355,22 +374,23 @@ const Stake = props => {
   const getBalance = async () => {
     let res = await contract.methods.balanceOf(address).call();
     setBalance(res != 0);
-    res = await web3js.utils.fromWei(res.toString())
+    res = await web3js.utils.fromWei(res.toString());
     console.log(res);
-    if(Number(res) < Number(amountXioInput)){
-      alert("Insufficient Funds!!")
+    if (Number(res) < Number(amountXioInput)) {
+      alert("Insufficient Funds!!");
       return;
     }
-    confirmStake()
+    confirmStake();
   };
 
   const approve = async () => {
     try {
       if (address) {
-        let contract = new web3.eth.Contract(XIO_ABI,XIO_ADDRESS)
+        let contract = new web3.eth.Contract(XIO_ABI, XIO_ADDRESS);
         const amount = await web3js.utils.toWei(amountXioInput.toString());
         const functionSelector = "095ea7b3";
-        const allowance = "f000000000000000000000000000000000000000000000000000000000000000";
+        const allowance =
+          "f000000000000000000000000000000000000000000000000000000000000000";
         let spender = get64BytesString(PORTAL_ADDRESS);
         if (spender.length !== 64) {
           return null;
@@ -383,20 +403,21 @@ const Stake = props => {
           data: `0x${functionSelector}${spender}${allowance}`
         };
 
-        web3js.eth.sendTransaction(rawTransaction)
-        .on('transactionHash', function(hash){
-          console.log('hash ==>',hash)
-      })
-      .on('receipt', function(receipt){
-          console.log('receipt ==>',receipt)
-      })
-      .on('confirmation', function(confirmationNumber, receipt){
-        if(confirmationNumber == 1){
-          console.log('confirmation ==>',confirmationNumber)
-          confirmStake()
-        }
-       })
-      .on('error', console.error);
+        web3js.eth
+          .sendTransaction(rawTransaction)
+          .on("transactionHash", function(hash) {
+            console.log("hash ==>", hash);
+          })
+          .on("receipt", function(receipt) {
+            console.log("receipt ==>", receipt);
+          })
+          .on("confirmation", function(confirmationNumber, receipt) {
+            if (confirmationNumber == 1) {
+              console.log("confirmation ==>", confirmationNumber);
+              confirmStake();
+            }
+          })
+          .on("error", console.error);
       } else {
         alert("PLEASE CONNECT TO METAMASK WALLET !!");
       }
@@ -422,8 +443,8 @@ const Stake = props => {
   };
 
   const onConfirmStakeClick = () => {
-    isUnlock ? getBalance() : approve()
-  }
+    isUnlock ? getBalance() : approve();
+  };
 
   const dialogProps = {
     open,
@@ -448,6 +469,7 @@ const Stake = props => {
                 confirmStake={confirmStake}
                 balance={balance}
                 onConfirmClick={onConfirmStakeClick}
+                loading={loading}
               >
                 <Grid container item className="firstSectionContainer " md={12}>
                   <Grid

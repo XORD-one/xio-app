@@ -210,7 +210,7 @@ const Dashboard = props => {
           res.Days = 0
         }
         else{
-          res.Days = Math.ceil(res.Days / (60 * 60 *  24)) 
+          res.Days = Math.ceil(res.Days / 60 ) 
         }
         res.stakeQuantity = await web3js.utils.fromWei((res.stakeQuantity).toString())
         if (res.publicKey !== "0x0000000000000000000000000000000000000000"){

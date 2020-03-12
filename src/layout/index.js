@@ -4,7 +4,8 @@ import {
   Typography,
   Button,
   Switch,
-  FormControlLabel
+  FormControlLabel,
+  Link
 } from "@material-ui/core";
 import RocketIcon from "@material-ui/icons/Delete";
 import Logo from "../components/assets/images/xio-logo.svg";
@@ -23,6 +24,8 @@ import {
 import { useHistory } from "react-router-dom";
 import xordLogoLight from "../components/assets/images/xord-logo-black.png";
 import xordLogoDark from "../components/assets/images/xord-logo-white.png";
+import spinnerWhite from "../components/assets/images/spinner-white.svg";
+import spinnerBlack from "../components/assets/images/spinner-black.svg";
 
 const layoutSubHeading = {
   color: "rgb(198, 96, 101)"
@@ -80,7 +83,8 @@ const Index = ({
   approve,
   onWithdraw,
   balance,
-  onConfirmClick
+  onConfirmClick,
+  loading
 }) => {
   const [completed, setCompleted] = useState(false);
 
@@ -318,12 +322,19 @@ const Index = ({
                 >
                   {tabName === "stake" && (
                     <>
-                      <h6 style={{ color: themeDark ? "white" : "black" }}>
-                        IF YOU STAKE <span style={{ color: "#C66065" }}>X</span>{" "}
-                        TOKENS FOR <span style={{ color: "#C66065" }}>X</span>{" "}
-                        DAYS , YOU WILL IMMEDIATELY RECEIVE{" "}
-                        <span style={{ color: "#C66065" }}>X TOKENS</span>
-                      </h6>
+                      {loading ? (
+                          <div style={{margin:"17px 0px"}} >
+                            <img src={themeDark ? spinnerBlack : spinnerWhite} />
+                          </div>
+                        ) : (
+                        <h6 style={{ color: themeDark ? "white" : "black" }}>
+                          IF YOU STAKE{" "}
+                          <span style={{ color: "#C66065" }}>X</span> TOKENS FOR{" "}
+                          <span style={{ color: "#C66065" }}>X</span> DAYS , YOU
+                          WILL IMMEDIATELY RECEIVE{" "}
+                          <span style={{ color: "#C66065" }}>X TOKENS</span>
+                        </h6>
+                      )}
                       <div
                         onClick={() => onConfirmClick()}
                         style={{
@@ -355,7 +366,7 @@ const Index = ({
                       <h6 style={{ color: themeDark ? "white" : "black" }}>
                         <span style={{ color: "#C66065" }}>XIO </span>HAS A
                         BALANCE OF
-                        <span style={{ color: "#C66065" }}> 1000 </span>{" "}
+                        <span style={{ color: "#C66065" }}> X </span>{" "}
                         AVAILABLE FOR WITHDRAW
                       </h6>
                       <div
@@ -415,7 +426,11 @@ const Index = ({
             </Grid>
             <div style={{ display: "flex" }}>
               <div
-                style={{ textAlign: "center", flex: 1, padding: "10px 0px 15px" }}
+                style={{
+                  textAlign: "center",
+                  flex: 1,
+                  padding: "10px 0px 15px"
+                }}
               >
                 <span
                   style={{
@@ -428,11 +443,13 @@ const Index = ({
                 >
                   POWERED BY
                 </span>{" "}
+                <Link href="https://www.xord.one" rel="noreferrer" target="_blank">
                 <img
                   width={80}
                   style={{ verticalAlign: "middle" }}
                   src={themeDark ? xordLogoDark : xordLogoLight}
                 />
+                </Link>
               </div>
             </div>
             <Switch
