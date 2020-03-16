@@ -304,6 +304,7 @@ const Stake = props => {
         index++;
       }
       setTokensList(tokenList);
+      setToken(tokenList[0])
     } catch (e) {
       console.log(e);
     }
@@ -470,6 +471,9 @@ const Stake = props => {
                 balance={balance}
                 onConfirmClick={onConfirmStakeClick}
                 loading={loading}
+                amount={amountXioInput}
+                days={durationDaysInput}
+                rate={Number(interestRate).toFixed(2)}
               >
                 <Grid container item className="firstSectionContainer " md={12}>
                   <Grid

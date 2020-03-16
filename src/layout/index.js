@@ -84,7 +84,10 @@ const Index = ({
   onWithdraw,
   balance,
   onConfirmClick,
-  loading
+  loading,
+  amount,
+  days,
+  rate
 }) => {
   const [completed, setCompleted] = useState(false);
 
@@ -329,10 +332,10 @@ const Index = ({
                         ) : (
                         <h6 style={{ color: themeDark ? "white" : "black" }}>
                           IF YOU STAKE{" "}
-                          <span style={{ color: "#C66065" }}>X</span> TOKENS FOR{" "}
-                          <span style={{ color: "#C66065" }}>X</span> DAYS , YOU
+                        <span style={{ color: "#C66065" }}>{amount}</span> TOKENS FOR{" "}
+                        <span style={{ color: "#C66065" }}>{days}</span> DAYS , YOU
                           WILL IMMEDIATELY RECEIVE{" "}
-                          <span style={{ color: "#C66065" }}>X TOKENS</span>
+                          <span style={{ color: "#C66065" }}>{rate} TOKENS</span>
                         </h6>
                       )}
                       <div
