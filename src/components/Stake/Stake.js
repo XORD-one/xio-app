@@ -110,9 +110,9 @@ const plusEqual = {
 };
 
 const Stake = props => {
-  const [open, setOpen] = React.useState(false);
-  const [durationDaysInput, setDurationDays] = React.useState(1);
-  const [amountXioInput, setAmountXIO] = React.useState(1);
+  const [open, setOpen] = useState(false);
+  const [durationDaysInput, setDurationDays] = useState(1);
+  const [amountXioInput, setAmountXIO] = useState(1);
   const [address, setAccountAddress] = useState("");
   const [isUnlock, setIsUnlock] = useState(false);
   const [interestRate, setinterestRate] = useState("");
@@ -122,6 +122,16 @@ const Stake = props => {
   const [tokensList, setTokensList] = useState([]);
   const [initial, setInitial] = useState(true);
   const [loading, setLoading] = useState(false);
+  const [amountFocus, setAmountFocus] = useState(false);
+  const [daysFocus, setDaysFocus] = useState(false);
+
+  const onToggleFocus = field => {
+    if (field === "amount") {
+      setAmountFocus(!amountFocus);
+    } else {
+      setDaysFocus(!daysFocus);
+    }
+  };
 
   const onChangeAmount = e => {
     if (
@@ -132,11 +142,11 @@ const Stake = props => {
       setAmountXIO(e.target.value);
       const rate =
         Number(e.target.value) * Number(durationDaysInput) * unitRate;
-      console.log("ate ==>", rate);
+      //console.log("ate ==>", rate);
       setinterestRate(rate);
       // if (e.target.value) getXIOtoETHs(e.target.value, durationDaysInput);
     } else {
-      console.log("nothing");
+      //console.log("nothing");
     }
   };
 
@@ -148,25 +158,25 @@ const Stake = props => {
     ) {
       setDurationDays(e.target.value);
       const rate = Number(e.target.value) * Number(amountXioInput) * unitRate;
-      console.log("ate ==>", rate);
+      //console.log("ate ==>", rate);
       setinterestRate(rate);
       // if (e.target.value) getXIOtoETHs(amountXioInput, e.target.value);
     } else {
-      console.log("nothing");
+      //console.log("nothing");
     }
   };
   const handleClickOpen = () => {
     setOpen(true);
   };
 
-  const handleClose = () => {
+  const handleClickClose = () => {
     setOpen(false);
   };
 
   const onTokenSelect = data => {
-    console.log(data);
+    //console.log(data);
     setToken(data);
-    handleClose();
+    handleClickClose();
   };
 
   useEffect(() => {
@@ -192,14 +202,14 @@ const Stake = props => {
   async function checkWeb3() {
     // Use Mist/MetaMask's provider.
     web3js = new Web3(window.web3.currentProvider);
-    console.log(web3js);
+    //console.log(web3js);
     //get selected account on metamask
     accounts = await web3js.eth.getAccounts();
-    console.log(accounts);
+    //console.log(accounts);
     setAccountAddress(accounts[0]);
     //get network which metamask is connected too
     let network = await web3js.eth.net.getNetworkType();
-    console.log(network);
+    //console.log(network);
   }
 
   const onConnect = async () => {
@@ -232,7 +242,7 @@ const Stake = props => {
       null,
       OPTIONS
     );
-    console.log("web3 ==>", web3);
+    //console.log("web3 ==>", web3);
   };
 
   const initPortalWithInfura = () => {
@@ -242,10 +252,10 @@ const Stake = props => {
   const getXIOtoETHs = async amount => {
     try {
       const res = await infuraPortal.methods.getXIOtoETH(amount).call();
-      console.log("res of xiotoeth ==>", res);
+      //console.log("res of xiotoeth ==>", res);
       return getETHtoALTs(res);
     } catch (e) {
-      console.log(e);
+      //console.log(e);
     }
   };
 
@@ -254,7 +264,7 @@ const Stake = props => {
       let res = await infuraPortal.methods
         .getETHtoALT(amount, OMG_EXCHANGE)
         .call();
-      console.log("res of ethToAlt ==>", res);
+      //console.log("res of ethToAlt ==>", res);
       res = await web3js.utils.fromWei(res.toString());
       if (initial) {
         setUnitRate(res);
@@ -264,7 +274,7 @@ const Stake = props => {
       res = await web3js.utils.toWei(res.toString());
       return res;
     } catch (e) {
-      console.log(e);
+      //console.log(e);
       setUnitRate(0);
       setinterestRate(0);
     }
@@ -273,15 +283,15 @@ const Stake = props => {
   const onGetInterestRate = async () => {
     try {
       const res = await infuraPortal.methods.getInterestRate().call();
-      console.log("res ==>", res);
+      //console.log("res ==>", res);
       initialRate = res;
-      console.log(
-        "initail rate ==>",
-        await web3js.utils.fromWei(initialRate.toString())
-      );
+      //console.log(
+      //   "initail rate ==>",
+      //   await web3js.utils.fromWei(initialRate.toString())
+      // );
       getXIOtoETHs(res);
     } catch (e) {
-      console.log(e);
+      //console.log(e);
     }
   };
 
@@ -292,7 +302,7 @@ const Stake = props => {
       let index = 0;
       while (true) {
         const res = await portalContract.methods.portalData(index).call();
-        console.log(res);
+        //console.log(res);
         if (res.tokenAddress == "0x0000000000000000000000000000000000000000") {
           break;
         }
@@ -304,13 +314,13 @@ const Stake = props => {
         index++;
       }
       setTokensList(tokenList);
-      setToken(tokenList[0])
+      setToken(tokenList[0]);
     } catch (e) {
-      console.log(e);
+      //console.log(e);
     }
   };
 
-  const confirmStake = async () => {
+  const confirmStake = async (updateList, onSetMessage) => {
     try {
       if (address) {
         setLoading(true);
@@ -333,33 +343,37 @@ const Stake = props => {
           portalId: token.portalId,
           symbol: token.outputTokenSymbol
         };
-        console.log("params ==>", params);
+        //console.log("params ==>", params);
         await portalContract.methods
           .stakeXIO(
             token.tokenAddress,
             durationDaysInput,
             amount,
             tokensBought,
-            token.portalId,
-            token.outputTokenSymbol
+            token.portalId
           )
           .send({ from: address })
           .on("transactionHash", hash => {
             // hash of tx
-            console.log(hash);
+            //console.log(hash);
           })
           .on("confirmation", function(confirmationNumber, receipt) {
-            setLoading(false);
             if (confirmationNumber === 2) {
               // tx confirmed
-              console.log(receipt);
+              //console.log(receipt);
+              setLoading(false);
+              onSetMessage("XIO Successfully Staked !!");
+              setAmountXIO(1);
+              setDurationDays(1);
+              updateList();
             }
           });
       } else {
         alert("PLEASE CONNECT TO METAMASK WALLET !!");
       }
     } catch (e) {
-      console.log(e);
+      //console.log(e);
+      onSetMessage("Oops, something went wrong please try again !!");
       setLoading(false);
     }
   };
@@ -372,21 +386,22 @@ const Stake = props => {
     setIsUnlock(res != 0);
   };
 
-  const getBalance = async () => {
+  const getBalance = async (param, msg) => {
     let res = await contract.methods.balanceOf(address).call();
     setBalance(res != 0);
     res = await web3js.utils.fromWei(res.toString());
-    console.log(res);
+    //console.log(res);
     if (Number(res) < Number(amountXioInput)) {
-      alert("Insufficient Funds!!");
+      msg("Insufficient Funds!!");
       return;
     }
-    confirmStake();
+    confirmStake(param, msg);
   };
 
-  const approve = async () => {
+  const approve = async (onSetMessage) => {
     try {
       if (address) {
+        setLoading(true)
         let contract = new web3.eth.Contract(XIO_ABI, XIO_ADDRESS);
         const amount = await web3js.utils.toWei(amountXioInput.toString());
         const functionSelector = "095ea7b3";
@@ -407,30 +422,34 @@ const Stake = props => {
         web3js.eth
           .sendTransaction(rawTransaction)
           .on("transactionHash", function(hash) {
-            console.log("hash ==>", hash);
+            //console.log("hash ==>", hash);
           })
           .on("receipt", function(receipt) {
-            console.log("receipt ==>", receipt);
+            //console.log("receipt ==>", receipt);
           })
           .on("confirmation", function(confirmationNumber, receipt) {
             if (confirmationNumber == 1) {
-              console.log("confirmation ==>", confirmationNumber);
-              confirmStake();
+              //console.log("confirmation ==>", confirmationNumber);
+              getIsUnlock()
+              onSetMessage("Wallet Successfully Activated, You Can Now Stake XIO !!")
+              setLoading(false)
             }
           })
           .on("error", console.error);
       } else {
-        alert("PLEASE CONNECT TO METAMASK WALLET !!");
+        onSetMessage("PLEASE CONNECT TO METAMASK WALLET !!");
       }
     } catch (e) {
       console.log(e);
+      setLoading(false)
+      onSetMessage("Oops, something went wrong please try again !!")
     }
   };
 
   const getNonceByEthAddress = async eth_address => {
     try {
       let nonce = await web3js.eth.getTransactionCount(eth_address, "pending");
-      console.log(nonce);
+      //console.log(nonce);
       return nonce;
     } catch (e) {}
   };
@@ -443,13 +462,13 @@ const Stake = props => {
     return string;
   };
 
-  const onConfirmStakeClick = () => {
-    isUnlock ? getBalance() : approve();
+  const onConfirmStakeClick = (param, msg) => {
+    isUnlock ? getBalance(param, msg) : approve(msg);
   };
 
   const dialogProps = {
     open,
-    handleClose,
+    handleClose: handleClickClose,
     onTokenSelect,
     tokensList
   };
@@ -473,7 +492,8 @@ const Stake = props => {
                 loading={loading}
                 amount={amountXioInput}
                 days={durationDaysInput}
-                rate={Number(interestRate).toFixed(2)}
+                rate={Number(interestRate).toFixed(4)}
+                outputToken={token.outputTokenSymbol}
               >
                 <Grid container item className="firstSectionContainer " md={12}>
                   <Grid
@@ -526,7 +546,20 @@ const Stake = props => {
                         className="firstStakeSectionItem"
                         style={
                           themeDark
-                            ? firstStakeSectionItem
+                            ? amountFocus
+                              ? {
+                                  ...firstStakeSectionItem,
+                                  borderColor: "#C66065"
+                                }
+                              : {
+                                  ...firstStakeSectionItem,
+                                  borderColor: "rgb(65, 65, 65)"
+                                }
+                            : amountFocus
+                            ? {
+                                ...firstStakeSectionItemLight,
+                                borderColor: "#C66065"
+                              }
                             : firstStakeSectionItemLight
                         }
                       >
@@ -537,6 +570,8 @@ const Stake = props => {
                           }
                           placeholder="0.0"
                           value={amountXioInput}
+                          onFocus={() => onToggleFocus("amount")}
+                          onBlur={() => onToggleFocus("amount")}
                         />
                       </Grid>
                     </Grid>
@@ -602,7 +637,20 @@ const Stake = props => {
                         className="firstStakeSectionItem"
                         style={
                           themeDark
-                            ? firstStakeSectionItem
+                            ? daysFocus
+                              ? {
+                                  ...firstStakeSectionItem,
+                                  borderColor: "#C66065"
+                                }
+                              : {
+                                  ...firstStakeSectionItem,
+                                  borderColor: "rgb(65, 65, 65)"
+                                }
+                            : daysFocus
+                            ? {
+                                ...firstStakeSectionItemLight,
+                                borderColor: "#C66065"
+                              }
                             : firstStakeSectionItemLight
                         }
                       >
@@ -614,6 +662,8 @@ const Stake = props => {
                           value={durationDaysInput}
                           placeholder="0"
                           xs={12}
+                          onFocus={() => onToggleFocus("days")}
+                          onBlur={() => onToggleFocus("days")}
                         />
                       </Grid>
                     </Grid>
@@ -784,7 +834,7 @@ const Stake = props => {
                           }
                           disabled="true"
                           placeholder="0.0"
-                          value={Number(interestRate).toFixed(2)}
+                          value={Number(interestRate).toFixed(4)}
                         />
                       </Grid>
                     </Grid>

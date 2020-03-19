@@ -6,10 +6,14 @@
     order:2;
 }
 
-.connectButton{
+.connectButtonContain{
     order: 3;
     text-align: right;
     cursor: pointer;
+}
+
+.connectButton:hover{
+    background-color: #545454;
 }
 
 .MuiSwitch-root{
@@ -19,7 +23,7 @@
 }
 
 .layoutHeading{
-    /* color: white; */
+    margin-bottom: 30px;
     
 }
 .tableHeader {
@@ -43,9 +47,12 @@
     padding: 32px 20px;
 }
 
+.tabarText:hover{
+    color: #C66065!important;
+}
 
 
-@media  screen and (max-width: 500px){
+@media  screen and (max-width: 599px){
     .socialIcons{
         order: 2;
         text-align: center;
@@ -64,7 +71,7 @@
     .layoutHeading{
         padding: 20px 20px 0px;
         font-size: 18px;
-        margin-bottom: 6px;
+        
         text-align: center;
     }
     .layoutSubHeading{

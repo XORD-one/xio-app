@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Grid, Typography, Button } from "@material-ui/core";
+import { Grid, Typography, Button,Tooltip } from "@material-ui/core";
 
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -96,18 +96,20 @@ const Dashboard = props => {
   const [address, setAccountAddress] = useState("");
   const [balance, setBalance] = useState(0);
   const [portalInterestList, setInterestList] = useState([]);
-  const [stakedXio,setStakedXio] = useState(0)
-  const [activePortal,setActivePortal] = useState([])
+  const [stakedXio, setStakedXio] = useState(0);
+  const [activePortal, setActivePortal] = useState([]);
+  const [interest, setInterest] = useState(0);
+  const [loadOnStake,setLoadOnStake] = useState(false)
 
   const getBalance = async () => {
     let res = await contract.methods.balanceOf(address).call();
     setBalance(res);
-    console.log(res);
+    //console.log(res);
   };
 
   const getActivePortalInfo = async () => {
     const res = await portalContract.methods.portalData(address).call();
-    console.log(res);
+    //console.log(res);
   };
 
   const getPortalInterest = async () => {
@@ -117,16 +119,16 @@ const Dashboard = props => {
       let i = 0;
       while (true) {
         const res = await portalContract.methods.portalData(i).call();
-        console.log(res);
+        //console.log(res);
         if (res.tokenAddress === "0x0000000000000000000000000000000000000000") {
           break;
         }
         let res1 = await portalContract.methods
           .getETHtoALT(amount, res.tokenExchangeAddress)
           .call();
-        res1 = await web3js.utils.fromWei(res1.toString())
-        res.xioStaked = await web3js.utils.fromWei((res.xioStaked).toString())
-        console.log(res, res1);
+        res1 = await web3js.utils.fromWei(res1.toString());
+        res.xioStaked = await web3js.utils.fromWei(res.xioStaked.toString());
+        //console.log(res, res1);
         const obj = {
           ...res,
           liquidity: Number(res1).toFixed(2)
@@ -136,39 +138,42 @@ const Dashboard = props => {
         i++;
       }
     } catch (e) {
-      console.log(e);
+      //console.log(e);
     }
   };
 
   useEffect(() => {
+    setLoadOnStake(false)
     ethereum = window.ethereum;
     if (ethereum) {
       checkWeb3();
       initXioContract();
       initPortalContract();
       getPortalInterest();
+      getInterestData();
+
     }
-  }, []);
+  }, [loadOnStake]);
 
   useEffect(() => {
     if (contract && address) {
       getBalance();
       getActivePortalInfo();
-      onGetLengthOfStakerData()
+      onGetLengthOfStakerData();
     }
-  }, [address]);
+  }, [address,loadOnStake]);
 
   async function checkWeb3() {
     // Use Mist/MetaMask's provider.
     web3js = new Web3(window.web3.currentProvider);
-    console.log(web3js);
+    //console.log(web3js);
     //get selected account on metamask
     accounts = await web3js.eth.getAccounts();
-    console.log(accounts);
+    //console.log(accounts);
     setAccountAddress(accounts[0]);
     //get network which metamask is connected too
     let network = await web3js.eth.net.getNetworkType();
-    console.log(network);
+    //console.log(network);
   }
 
   const onConnect = async () => {
@@ -190,46 +195,62 @@ const Dashboard = props => {
     contract = new web3js.eth.Contract(XIO_ABI, XIO_ADDRESS);
   };
 
-  const onGetLengthOfStakerData = async () => {
-    const res = await portalContract.methods.getArrayLengthOfStakerData(address).call()
-    console.log('res ==>',res)
-    getStakerData(res)
-  }
+  const getInterestData = async () => {
+    let res = await portalContract.methods.getInterestRate().call();
+    res = await web3js.utils.fromWei(res.toString());
+    res = Math.ceil(res * 365 * 100);
+    //console.log("res of interest ==>", res);
+    setInterest(res);
+  };
 
-  const getStakerData = async (data) => {
-    try{
+  const onGetLengthOfStakerData = async () => {
+    const res = await portalContract.methods
+      .getArrayLengthOfStakerData(address)
+      .call();
+    //console.log("res ==>", res);
+    getStakerData(res);
+  };
+
+  const getStakerData = async data => {
+    try {
       let amount = 0;
-      const portalInfo = []
-      for(let i=0;i<data ;i++){
-        const res = await portalContract.methods.stakerData(address,i).call()
-        console.log(res)
+      const portalInfo = [];
+      for (let i = 0; i < data; i++) {
+        const res = await portalContract.methods.stakerData(address, i).call();
+        //console.log(res);
         amount = amount + Number(res.stakeQuantity);
-        res.Days = res.stakeDurationTimestamp - (Math.round(new Date()/1000) - res.stakeInitiationTimestamp)
-        console.log("Days ===>",res.Days)
-        if(res.Days <=  0){
-          res.Days = 0
+        res.Days =
+          res.stakeDurationTimestamp -
+          (Math.round(new Date() / 1000) - res.stakeInitiationTimestamp);
+        //console.log("Days ===>", res.Days);
+        if (res.Days <= 0) {
+          res.Days = 0;
+        } else {
+          res.Days = Math.ceil(res.Days / 60);
         }
-        else{
-          res.Days = Math.ceil(res.Days / 60 ) 
-        }
-        res.stakeQuantity = await web3js.utils.fromWei((res.stakeQuantity).toString())
-        if (res.publicKey !== "0x0000000000000000000000000000000000000000"){
-          portalInfo.push(res)
+        res.stakeQuantity = await web3js.utils.fromWei(
+          res.stakeQuantity.toString()
+        );
+        if (res.publicKey !== "0x0000000000000000000000000000000000000000") {
+          portalInfo.push(res);
         }
       }
-      amount = await web3js.utils.fromWei(amount.toString())
-      setStakedXio(amount)
-      setActivePortal(portalInfo)
+      amount = await web3js.utils.fromWei(amount.toString());
+      setStakedXio(amount);
+      setActivePortal(portalInfo);
+    } catch (e) {
+      //console.log(e);
     }
-    catch(e){
-      console.log(e)
-    }
-  }
-
+  };
+  const availableXio = (balance / 1000000000000000000).toString().length > 4 ? (balance / 1000000000000000000).toString().slice(0,4) + ".." : (balance / 1000000000000000000).toString()
   return (
     <>
       <ThemeConsumer>
-        {({ isThemeDark, themeDark }) => {
+        {({ isThemeDark, themeDark,checkList,checkForNewList}) => {
+          if(checkList){
+            setLoadOnStake(true)
+            checkForNewList()
+          }
           return (
             <Layout tabName="dashboard" address={address} onConnect={onConnect}>
               <Grid
@@ -261,6 +282,8 @@ const Dashboard = props => {
                   >
                     AVAILABLE XIO
                   </h6>
+                  <Tooltip title={balance / 1000000000000000000} >
+
                   <h2
                     style={{
                       fontFamily: "'Montserrat', sans-serif",
@@ -271,8 +294,10 @@ const Dashboard = props => {
                       overflowWrap: "break-word"
                     }}
                   >
-                    {balance / 1000000000000000000}
+                    {availableXio}
                   </h2>
+                  </Tooltip>
+
                 </Grid>
 
                 <Grid
@@ -341,7 +366,7 @@ const Dashboard = props => {
                       padding: "0px"
                     }}
                   >
-                    25%
+                    {`${interest}%`}
                   </h2>
                 </Grid>
               </Grid>
@@ -410,35 +435,39 @@ const Dashboard = props => {
                         </TableRow>
                       </TableHead>
                       <TableBody style={{ paddingBottom: "20px" }}>
-                        { !!activePortal.length && activePortal.map((item)=>{
-                            return <TableRow style={{ cursor: "pointer" }}>
-                            <TableCell
-                              style={{ fontSize: 10 }}
-                              className={
-                                themeDark ? "tableBody" : "tableBodyLight"
-                              }
-                            >
-                              {item.portalId}
-                            </TableCell>
-                            <TableCell
-                              style={{ fontSize: 10 }}
-                              className={
-                                themeDark ? "tableBody" : "tableBodyLight"
-                              }
-                            >
-                              {item.stakeQuantity}
-                            </TableCell>
-                            <TableCell
-                              style={{ fontSize: 10 }}
-                              className={
-                                themeDark ? "tableBody" : "tableBodyLight"
-                              }
-                            >
-                              {item.Days}
-                            </TableCell>
-                          </TableRow>
-                        }) 
-                        }
+                        {!!activePortal.length &&
+                          activePortal.map(item => {
+                            if (item.Days !== 0) {
+                              return (
+                                <TableRow >
+                                  <TableCell
+                                    style={{ fontSize: 10 }}
+                                    className={
+                                      themeDark ? "tableBody" : "tableBodyLight"
+                                    }
+                                  >
+                                    {item.outputTokenSymbol}
+                                  </TableCell>
+                                  <TableCell
+                                    style={{ fontSize: 10 }}
+                                    className={
+                                      themeDark ? "tableBody" : "tableBodyLight"
+                                    }
+                                  >
+                                    {item.stakeQuantity}
+                                  </TableCell>
+                                  <TableCell
+                                    style={{ fontSize: 10 }}
+                                    className={
+                                      themeDark ? "tableBody" : "tableBodyLight"
+                                    }
+                                  >
+                                    {item.Days}
+                                  </TableCell>
+                                </TableRow>
+                              );
+                            }
+                          })}
                       </TableBody>
                     </Table>
                   </Grid>
@@ -509,7 +538,7 @@ const Dashboard = props => {
                         {!!portalInterestList.length &&
                           portalInterestList.map(item => {
                             return (
-                              <TableRow style={{ cursor: "pointer" }}>
+                              <TableRow >
                                 <TableCell
                                   style={{ fontSize: 10 }}
                                   className={

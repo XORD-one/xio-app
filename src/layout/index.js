@@ -26,6 +26,7 @@ import xordLogoLight from "../components/assets/images/xord-logo-black.png";
 import xordLogoDark from "../components/assets/images/xord-logo-white.png";
 import spinnerWhite from "../components/assets/images/spinner-white.svg";
 import spinnerBlack from "../components/assets/images/spinner-black.svg";
+import Toast from "../components/common/Toast"
 
 const layoutSubHeading = {
   color: "rgb(198, 96, 101)"
@@ -87,7 +88,8 @@ const Index = ({
   loading,
   amount,
   days,
-  rate
+  rate,
+  outputToken
 }) => {
   const [completed, setCompleted] = useState(false);
 
@@ -102,11 +104,18 @@ const Index = ({
   let history = useHistory();
   return (
     <ThemeConsumer>
-      {({ isThemeDark, themeDark }) => {
+      {({ isThemeDark, themeDark,checkForNewList,handleClose,message,openToast,handleClick }) => {
         const addressToShow =
           address &&
           address.slice(0, 6) + "...." + address.slice(address.length - 4);
+        const toastProps = {
+            handleClose,
+            message, 
+            open:openToast   
+          }
         return (
+          <>
+          <Toast {...toastProps} />
           <div
             style={{
               backgroundColor: themeDark ? "#1C1C1C" : "white",
@@ -127,6 +136,7 @@ const Index = ({
                   className="socialIcons"
                   item
                   md={3}
+                  sm={3}
                   xs={12}
                   style={{ paddingTop: 15 }}
                 >
@@ -151,6 +161,7 @@ const Index = ({
                   item
                   style={{ textAlign: "center" }}
                   xs={12}
+                  sm={3}
                   md={3}
                 >
                   <img
@@ -160,7 +171,7 @@ const Index = ({
                   />
                 </Grid>
 
-                <Grid className="connectButton" item md={3} xs={12}>
+                <Grid className="connectButtonContain" item md={3} sm={4} xs={12}>
                   <div
                     style={{
                       border: themeDark
@@ -170,6 +181,7 @@ const Index = ({
                       padding: "8px 15px 10px 10px",
                       borderRadius: 5
                     }}
+                    className="connectButton"
                     onClick={() => onConnect()}
                   >
                     <img
@@ -203,7 +215,7 @@ const Index = ({
                   style={themeDark ? layoutHeadingDark : layoutHeadingLight}
                   className="layoutHeading"
                 >
-                  STAKE XIO. EARN ALTS. ZERO LOSS.
+                  INSTANT. UPFRONT. INTEREST.
                 </h3>
                 {/* <h3 className="layoutSubHeading" style={layoutSubHeading}>STAKE XIO. GET PAID. ZERO WAIT</h3> */}
               </Grid>
@@ -326,22 +338,33 @@ const Index = ({
                   {tabName === "stake" && (
                     <>
                       {loading ? (
-                          <div style={{margin:"17px 0px"}} >
-                            <img src={themeDark ? spinnerBlack : spinnerWhite} />
-                          </div>
-                        ) : (
+                        <div style={{ margin: "17px 0px" }}>
+                          {
+                            unlock ? 
+                            <img src={themeDark ? spinnerBlack : spinnerWhite} /> 
+                            :
+                            <>
+                              <span style={{fontSize:13}} >YOUR WALLET IS BEING ACTIVATED, PLEASE WAIT </span>
+                              <img style={{position:"relative",top:7}} src={themeDark ? spinnerBlack : spinnerWhite} /> 
+                            </>
+                          }
+                        </div>
+                      ) : (
                         <h6 style={{ color: themeDark ? "white" : "black" }}>
                           IF YOU STAKE{" "}
-                        <span style={{ color: "#C66065" }}>{amount}</span> TOKENS FOR{" "}
-                        <span style={{ color: "#C66065" }}>{days}</span> DAYS , YOU
-                          WILL IMMEDIATELY RECEIVE{" "}
-                          <span style={{ color: "#C66065" }}>{rate} TOKENS</span>
+                          <span style={{ color: "#C66065" }}>{amount}</span>{" "}
+                          TOKENS FOR{" "}
+                          <span style={{ color: "#C66065" }}>{days}</span> DAYS
+                          , YOU WILL IMMEDIATELY RECEIVE{" "}
+                          <span style={{ color: "#C66065" }}>
+                            {rate} {outputToken}
+                          </span>
                         </h6>
                       )}
                       <div
-                        onClick={() => onConfirmClick()}
+                        onClick={() => loading ? null : onConfirmClick(checkForNewList,handleClick)}
                         style={{
-                          backgroundColor: address ? "#C66065" : "#757474",
+                          backgroundColor: address ? loading ? "#757474" : "#C66065" : "#757474",
                           cursor: "pointer",
                           border: themeDark
                             ? "1px solid #414141"
@@ -359,7 +382,7 @@ const Index = ({
                             margin: 0
                           }}
                         >
-                          {"CONFIRM STAKE"}
+                          {unlock ? "CONFIRM STAKE" : "ACTIVE WALLET"}
                         </h4>
                       </div>
                     </>
@@ -369,8 +392,8 @@ const Index = ({
                       <h6 style={{ color: themeDark ? "white" : "black" }}>
                         <span style={{ color: "#C66065" }}>XIO </span>HAS A
                         BALANCE OF
-                        <span style={{ color: "#C66065" }}> X </span>{" "}
-                        AVAILABLE FOR WITHDRAW
+                        <span style={{ color: "#C66065" }}> X </span> AVAILABLE
+                        FOR WITHDRAW
                       </h6>
                       <div
                         style={{
@@ -428,32 +451,39 @@ const Index = ({
               </Grid>
             </Grid>
             <div style={{ display: "flex" }}>
-              <div
+              <Link
+                href="https://www.xord.one"
+                rel="noreferrer"
+                target="_blank"
                 style={{
                   textAlign: "center",
                   flex: 1,
-                  padding: "10px 0px 15px"
+                  padding: "10px 0px 15px",
+                  margin:"0px 60px",
+                  textDecoration:"none"
                 }}
               >
-                <span
-                  style={{
-                    color: themeDark ? "white" : "#000000",
-                    fontFamily: "'Montserrat', sans-serif",
-                    fontSize: "12px",
-                    letterSpacing: "2px",
-                    fontWeight: "bold"
-                  }}
+                <div
+                  
                 >
-                  POWERED BY
-                </span>{" "}
-                <Link href="https://www.xord.one" rel="noreferrer" target="_blank">
-                <img
-                  width={80}
-                  style={{ verticalAlign: "middle" }}
-                  src={themeDark ? xordLogoDark : xordLogoLight}
-                />
-                </Link>
-              </div>
+                  <span
+                    style={{
+                      color: themeDark ? "white" : "#000000",
+                      fontFamily: "'Montserrat', sans-serif",
+                      fontSize: "12px",
+                      letterSpacing: "2px",
+                      fontWeight: "bold"
+                    }}
+                  >
+                    POWERED BY
+                  </span>{" "}
+                  <img
+                    width={80}
+                    style={{ verticalAlign: "middle" }}
+                    src={themeDark ? xordLogoDark : xordLogoLight}
+                  />
+                </div>
+              </Link>
             </div>
             <Switch
               style={{ color: "#c66065" }}
@@ -463,6 +493,7 @@ const Index = ({
               value="checkedA"
             />
           </div>
+          </>
         );
       }}
     </ThemeConsumer>
