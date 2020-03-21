@@ -263,7 +263,7 @@ const Stake = props => {
       //console.log("res of xiotoeth ==>", res);
       return getETHtoALTs(res);
     } catch (e) {
-      //console.log(e);
+      console.log(e);
     }
   };
 
@@ -282,7 +282,7 @@ const Stake = props => {
       res = await web3js.utils.toWei(res.toString());
       return res;
     } catch (e) {
-      //console.log(e);
+      console.log(e);
       setUnitRate(0);
       setinterestRate(0);
     }
@@ -299,7 +299,7 @@ const Stake = props => {
       // );
       getXIOtoETHs(res);
     } catch (e) {
-      //console.log(e);
+      console.log(e);
     }
   };
 
@@ -324,7 +324,7 @@ const Stake = props => {
       setTokensList(tokenList);
       setToken(tokenList[0]);
     } catch (e) {
-      //console.log(e);
+      console.log(e);
     }
   };
 
@@ -380,7 +380,7 @@ const Stake = props => {
         alert("PLEASE CONNECT TO METAMASK WALLET");
       }
     } catch (e) {
-      //console.log(e);
+      console.log(e);
       onSetMessage("Oops, something went wrong please try again");
       setLoading(false);
     }

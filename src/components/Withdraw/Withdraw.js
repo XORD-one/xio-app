@@ -246,7 +246,7 @@ const Withdraw = props => {
         }
         setLoading(true)
         const amountToSend = await web3js.utils.toWei(amount.toString());
-
+        console.log('amountToSend and amount',amountToSend,amount)
         let rawTransaction = {
           from: address,
           to: PORTAL_ADDRESS,
@@ -271,12 +271,17 @@ const Withdraw = props => {
               console.log("confirmation ==>", confirmationNumber);
             }
           })
-          .on("error", console.error);
+          .on("error", (e)=>{
+            console.log(e)
+            setLoading(false)
+            onSetMessage("Oops, something went wrong please try again.")
+          });
       } else {
         onSetMessage("PLEASE CONNECT TO METAMASK WALLET !!");
       }
     } catch (e) {
       console.log(e);
+      setLoading(false)
       onSetMessage("Oops, something went wrong please try again.")
     }
   };
