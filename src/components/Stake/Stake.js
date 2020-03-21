@@ -187,9 +187,9 @@ const Stake = props => {
     ethereum = window.ethereum;
     if (ethereum) {
       checkWeb3();
-      timer = setInterval(()=>{
+      timer = setInterval(() => {
         checkWeb3();
-      },3000)
+      }, 3000);
       initXioContract();
       initPortalContract();
       getTokensData();
@@ -198,12 +198,11 @@ const Stake = props => {
       getIsUnlock();
     }
     return () => {
-      if(timer){
-        clearInterval(timer)
+      if (timer) {
+        clearInterval(timer);
       }
-    }
+    };
   }, [address, balance]);
-
 
   async function checkWeb3() {
     // Use Mist/MetaMask's provider.
@@ -212,7 +211,7 @@ const Stake = props => {
     //get selected account on metamask
     accounts = await web3js.eth.getAccounts();
     //console.log(accounts);
-    if(accounts[0] !== address){
+    if (accounts[0] !== address) {
       setAccountAddress(accounts[0]);
     }
     //get network which metamask is connected too
@@ -220,7 +219,7 @@ const Stake = props => {
     //console.log(network);
   }
 
-  const onConnect = async (onSetMessage) => {
+  const onConnect = async onSetMessage => {
     ethereum = window.ethereum;
     if (!ethereum || !ethereum.isMetaMask) {
       // throw new Error('Please install MetaMask.')
@@ -259,6 +258,7 @@ const Stake = props => {
 
   const getXIOtoETHs = async amount => {
     try {
+      console.log('amo getXIOtoETH ==>',amount)
       const res = await infuraPortal.methods.getXIOtoETH(amount).call();
       //console.log("res of xiotoeth ==>", res);
       return getETHtoALTs(res);
@@ -269,6 +269,7 @@ const Stake = props => {
 
   const getETHtoALTs = async amount => {
     try {
+      console.log('amo ETHtoALT ==>',amount)
       let res = await infuraPortal.methods
         .getETHtoALT(amount, OMG_EXCHANGE)
         .call();
@@ -336,13 +337,20 @@ const Stake = props => {
         const soldxio = Number(amountXioInput) * initialRate;
         const timestamp = 24 * 60 * 60 * 1000;
         const rateFromWei = await web3js.utils.fromWei(initialRate.toString());
-        const calculatedValue =
+        let calculatedValue =
           Number(durationDaysInput) *
           Number(amountXioInput) *
           Number(rateFromWei);
+
+          calculatedValue = calculatedValue.toFixed(18)
         const tokensBought = await getXIOtoETHs(
-          await web3js.utils.toWei(calculatedValue.toString())
+          await web3js.utils.toWei(
+            calculatedValue.toString()
+          )
         );
+
+        console.log('tokens bought ==>',tokensBought)
+
         const params = {
           tokenAddress: token.tokenAddress,
           durationDaysInput,
@@ -351,7 +359,7 @@ const Stake = props => {
           portalId: token.portalId,
           symbol: token.outputTokenSymbol
         };
-        //console.log("params ==>", params);
+        console.log("params ==>", params);
         await portalContract.methods
           .stakeXIO(
             token.tokenAddress,
@@ -406,10 +414,10 @@ const Stake = props => {
     confirmStake(param, msg);
   };
 
-  const approve = async (onSetMessage) => {
+  const approve = async onSetMessage => {
     try {
       if (address) {
-        setLoading(true)
+        setLoading(true);
         let contract = new web3.eth.Contract(XIO_ABI, XIO_ADDRESS);
         const amount = await web3js.utils.toWei(amountXioInput.toString());
         const functionSelector = "095ea7b3";
@@ -438,9 +446,11 @@ const Stake = props => {
           .on("confirmation", function(confirmationNumber, receipt) {
             if (confirmationNumber == 1) {
               //console.log("confirmation ==>", confirmationNumber);
-              getIsUnlock()
-              onSetMessage("Wallet Successfully Activated, You Can Now Stake XIO")
-              setLoading(false)
+              getIsUnlock();
+              onSetMessage(
+                "Wallet Successfully Activated, You Can Now Stake XIO"
+              );
+              setLoading(false);
             }
           })
           .on("error", console.error);
@@ -449,8 +459,8 @@ const Stake = props => {
       }
     } catch (e) {
       console.log(e);
-      setLoading(false)
-      onSetMessage("Oops, something went wrong please try again")
+      setLoading(false);
+      onSetMessage("Oops, something went wrong please try again");
     }
   };
 
