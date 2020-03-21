@@ -1,4 +1,4 @@
-export const PORTAL_ADDRESS = "0x3C794d7065240db9F38Fd07A02F335D9110A6a89"
+export const PORTAL_ADDRESS = "0x442A235f4E1a4fD7A2D581c17b968F3eE36d974C"
 export const PORTAL_ABI = [
 	{
 		"constant": false,
