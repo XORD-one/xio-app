@@ -180,24 +180,30 @@ const Stake = props => {
   };
 
   useEffect(() => {
+    let timer;
     initInfura();
     initPortalWithInfura();
     onGetInterestRate();
     ethereum = window.ethereum;
     if (ethereum) {
       checkWeb3();
+      timer = setInterval(()=>{
+        checkWeb3();
+      },3000)
       initXioContract();
       initPortalContract();
       getTokensData();
     }
-  }, []);
-  useEffect(() => {
     if (contract && address) {
       getIsUnlock();
-      // if (balance) getIsUnlock();
-      // approve();
+    }
+    return () => {
+      if(timer){
+        clearInterval(timer)
+      }
     }
   }, [address, balance]);
+
 
   async function checkWeb3() {
     // Use Mist/MetaMask's provider.
@@ -206,19 +212,21 @@ const Stake = props => {
     //get selected account on metamask
     accounts = await web3js.eth.getAccounts();
     //console.log(accounts);
-    setAccountAddress(accounts[0]);
+    if(accounts[0] !== address){
+      setAccountAddress(accounts[0]);
+    }
     //get network which metamask is connected too
     let network = await web3js.eth.net.getNetworkType();
     //console.log(network);
   }
 
-  const onConnect = async () => {
+  const onConnect = async (onSetMessage) => {
     ethereum = window.ethereum;
-    await ethereum.enable();
     if (!ethereum || !ethereum.isMetaMask) {
       // throw new Error('Please install MetaMask.')
-      alert(`METAMASK NOT INSTALLED!!`);
+      onSetMessage(`METAMASK NOT INSTALLED!!`);
     } else {
+      await ethereum.enable();
       checkWeb3();
     }
   };
@@ -362,18 +370,18 @@ const Stake = props => {
               // tx confirmed
               //console.log(receipt);
               setLoading(false);
-              onSetMessage("XIO Successfully Staked !!");
+              onSetMessage("XIO Successfully Staked");
               setAmountXIO(1);
               setDurationDays(1);
               updateList();
             }
           });
       } else {
-        alert("PLEASE CONNECT TO METAMASK WALLET !!");
+        alert("PLEASE CONNECT TO METAMASK WALLET");
       }
     } catch (e) {
       //console.log(e);
-      onSetMessage("Oops, something went wrong please try again !!");
+      onSetMessage("Oops, something went wrong please try again");
       setLoading(false);
     }
   };
@@ -431,18 +439,18 @@ const Stake = props => {
             if (confirmationNumber == 1) {
               //console.log("confirmation ==>", confirmationNumber);
               getIsUnlock()
-              onSetMessage("Wallet Successfully Activated, You Can Now Stake XIO !!")
+              onSetMessage("Wallet Successfully Activated, You Can Now Stake XIO")
               setLoading(false)
             }
           })
           .on("error", console.error);
       } else {
-        onSetMessage("PLEASE CONNECT TO METAMASK WALLET !!");
+        onSetMessage("PLEASE CONNECT TO METAMASK WALLET");
       }
     } catch (e) {
       console.log(e);
       setLoading(false)
-      onSetMessage("Oops, something went wrong please try again !!")
+      onSetMessage("Oops, something went wrong please try again")
     }
   };
 

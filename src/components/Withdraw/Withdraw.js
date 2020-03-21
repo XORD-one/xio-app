@@ -1,4 +1,4 @@
-import React,{useState,useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import { Grid, Typography, Button } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
 import "./style.css";
@@ -88,20 +88,83 @@ const Withdraw = props => {
 
   const [token, setToken] = useState("OMG");
   const [open, setOpen] = React.useState(false);
-  const [address,setAccountAddress] = useState('')
-  const [amount,setAmount] = useState(1)
-  const [tokensList,setTokensList] = useState([])
+  const [address, setAccountAddress] = useState("");
+  const [amount, setAmount] = useState();
+  const [tokensList, setTokensList] = useState([]);
+  const [stakedXio, setStakedXio] = useState(0);
+  const [amountFocus, setAmountFocus] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  useEffect(()=>{
+  useEffect(() => {
+    let timer;
     ethereum = window.ethereum;
     if (ethereum) {
       checkWeb3();
-      initXioContract()
-      initPortalContract()
+      timer = setInterval(() => {
+        checkWeb3();
+      }, 3000);
+      initPortalContract();
+      initXioContract();
+      onGetLengthOfStakerData();
       // getTokensData()
     }
-  },[])
+    return () => {
+      if (timer) {
+        clearInterval(timer);
+      }
+    };
+  }, [address]);
 
+  const onToggleFocus = (type = "") => {
+    if (type === "focus" && !amount) {
+      setAmount(stakedXio);
+    }
+    setAmountFocus(!amountFocus);
+  };
+
+  const onGetLengthOfStakerData = async () => {
+    try {
+      console.log("check ==>", portalContract, address);
+      const res = await portalContract.methods
+        .getArrayLengthOfStakerData(address)
+        .call();
+      console.log("res ==>", res);
+      getStakerData(res);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const getStakerData = async data => {
+    try {
+      let amount = 0;
+      for (let i = 0; i < data; i++) {
+        const res = await portalContract.methods.stakerData(address, i).call();
+        console.log(res);
+        console.log(Math.round(new Date() / 1000));
+        console.log(
+          !!(
+            res.stakeInitiationTimestamp + res.stakeDurationTimestamp <=
+              Math.round(new Date() / 1000) &&
+            res.publicKey != "0x0000000000000000000000000000000000000000"
+          )
+        );
+        if (
+          Number(res.stakeInitiationTimestamp) +
+            Number(res.stakeDurationTimestamp) <=
+            Math.round(new Date() / 1000) &&
+          res.publicKey != "0x0000000000000000000000000000000000000000"
+        ) {
+          amount = amount + Number(res.stakeQuantity);
+        }
+      }
+      amount = await web3js.utils.fromWei(amount.toString());
+      console.log("amount ==>", amount);
+      setStakedXio(amount);
+    } catch (e) {
+      console.log(e);
+    }
+  };
   // const getTokensData = async () => {
   //   try{
   //     const tokenList = [];
@@ -130,53 +193,58 @@ const Withdraw = props => {
   async function checkWeb3() {
     // Use Mist/MetaMask's provider.
     web3js = new Web3(window.web3.currentProvider);
-    console.log(web3js);
     //get selected account on metamask
     accounts = await web3js.eth.getAccounts();
-    console.log(accounts);
-    setAccountAddress(accounts[0]);
+    if (accounts[0] !== address) {
+      setAccountAddress(accounts[0]);
+    }
     //get network which metamask is connected too
     let network = await web3js.eth.net.getNetworkType();
-    console.log(network);
   }
 
-  const onConnect = async () => {
+  const onConnect = async (onSetMessage) => {
     ethereum = window.ethereum;
-    await ethereum.enable();
     if (!ethereum || !ethereum.isMetaMask) {
       // throw new Error('Please install MetaMask.')
-      alert(`METAMASK NOT INSTALLED!!`);
+      onSetMessage(`METAMASK NOT INSTALLED!!`);
     } else {
+      await ethereum.enable();
       checkWeb3();
     }
-  }
+  };
 
   const initPortalContract = () => {
     portalContract = new web3js.eth.Contract(PORTAL_ABI, PORTAL_ADDRESS);
-  }
+  };
 
   const initXioContract = () => {
     contract = new web3js.eth.Contract(XIO_ABI, XIO_ADDRESS);
   };
 
   const onCanWidthdrawXio = async () => {
-    try{
+    try {
       let weiAmount = await web3js.utils.toWei(amount.toString());
-      console.log('weiAmount and Address ==>',weiAmount,address)
-      const res = await portalContract.methods.canWithdrawXIO(weiAmount,address).call()
-      console.log(res)
-      if(res){
-        onWithdrawXio()
+      console.log("weiAmount and Address ==>", weiAmount, address);
+      const res = await portalContract.methods
+        .canWithdrawXIO(weiAmount, address)
+        .call();
+      console.log(res);
+      if (res) {
+        onWithdrawXio();
       }
+    } catch (e) {
+      console.log(e);
     }
-    catch(e){
-      console.log(e)
-    }
-  }
+  };
 
-  const onWithdrawXio = async () => {
+  const onWithdrawXio = async (updateList,onSetMessage) => {
     try {
       if (address) {
+        if(amount && Number(amount) < 1){
+          onSetMessage("Please enter the amount of XIO you want to withdraw.")
+          return;
+        }
+        setLoading(true)
         const amountToSend = await web3js.utils.toWei(amount.toString());
 
         let rawTransaction = {
@@ -185,27 +253,33 @@ const Withdraw = props => {
           value: 0,
           data: portalContract.methods.withdrawXIO(amountToSend).encodeABI()
         };
-        console.log(rawTransaction)
-        web3js.eth.sendTransaction(rawTransaction)
-        .on('transactionHash', function(hash){
-          console.log('hash ==>',hash)
-      })
-      .on('receipt', function(receipt){
-          console.log('receipt ==>',receipt)
-      })
-      .on('confirmation', function(confirmationNumber, receipt){
-        if(confirmationNumber == 1){
-          console.log('confirmation ==>',confirmationNumber)
-        }
-       })
-      .on('error', console.error);
+        console.log(rawTransaction);
+        web3js.eth
+          .sendTransaction(rawTransaction)
+          .on("transactionHash", function(hash) {
+            console.log("hash ==>", hash);
+          })
+          .on("receipt", function(receipt) {
+            console.log("receipt ==>", receipt);
+          })
+          .on("confirmation", function(confirmationNumber, receipt) {
+            if (confirmationNumber == 1) {
+              setLoading(false)
+              setAmount(null)
+              onSetMessage("Staked XIO Successfully Withdrawn.")
+              updateList()
+              console.log("confirmation ==>", confirmationNumber);
+            }
+          })
+          .on("error", console.error);
       } else {
-        alert("PLEASE CONNECT TO METAMASK WALLET !!");
+        onSetMessage("PLEASE CONNECT TO METAMASK WALLET !!");
       }
     } catch (e) {
       console.log(e);
+      onSetMessage("Oops, something went wrong please try again.")
     }
-  }
+  };
 
   const onChangeAmount = e => {
     if (
@@ -217,7 +291,6 @@ const Withdraw = props => {
       console.log("nothing");
     }
   };
-
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -244,9 +317,22 @@ const Withdraw = props => {
     <>
       <ThemeConsumer>
         {({ isThemeDark, themeDark }) => {
+          const allowed = amount
+            ? Number(stakedXio) - Number(amount) < 0
+              ? 0
+              : Number(stakedXio) - Number(amount)
+            : stakedXio;
           return (
             <>
-              <Layout tabName="withdraw" address={address} onConnect={onConnect} onWithdraw={onCanWidthdrawXio} >
+              <Layout
+                tabName="withdraw"
+                loading={loading}
+                allowedWithdraw={allowed}
+                address={address}
+                onConnect={onConnect}
+                onWithdraw={onWithdrawXio}
+                warning={Number(amount) > Number(stakedXio)}
+              >
                 <Grid container item className="firstSectionContainer " md={12}>
                   <Grid
                     style={{
@@ -273,7 +359,9 @@ const Withdraw = props => {
                       justify="center"
                     >
                       <Grid item sm={12} xs={12}>
-                        <p className="colHeading" style={{ fontSize: "11px" }}>{outputToken}</p>
+                        <p className="colHeading" style={{ fontSize: "11px" }}>
+                          {outputToken}
+                        </p>
                       </Grid>
 
                       <Grid sm={12} xs={6} container justify="center">
@@ -308,7 +396,6 @@ const Withdraw = props => {
                             style={{ cursor: "pointer" }}
                             xs={12}
                           />
-                          
                         </Grid>
                       </Grid>
                     </Grid>
@@ -342,7 +429,9 @@ const Withdraw = props => {
                       justify="center"
                     >
                       <Grid item sm={12} xs={12}>
-                        <p className="colHeading" style={{ fontSize: "11px" }}>{instantInterest}</p>
+                        <p className="colHeading" style={{ fontSize: "11px" }}>
+                          {instantInterest}
+                        </p>
                       </Grid>
 
                       <Grid
@@ -352,7 +441,20 @@ const Withdraw = props => {
                         className="firstWithdrawSectionItem"
                         style={
                           themeDark
-                            ? firstWithdrawSectionItem
+                            ? amountFocus
+                              ? {
+                                  ...firstWithdrawSectionItem,
+                                  borderColor: "#C66065"
+                                }
+                              : {
+                                  ...firstWithdrawSectionItem,
+                                  borderColor: "rgb(65, 65, 65)"
+                                }
+                            : amountFocus
+                            ? {
+                                ...firstWithdrawSectionItemLight,
+                                borderColor: "#C66065"
+                              }
                             : firstWithdrawSectionItemLight
                         }
                       >
@@ -360,7 +462,14 @@ const Withdraw = props => {
                           className={themeDark ? "inputText" : "inputTextLight"}
                           placeholder="0.0"
                           value={amount}
-                          onChange={(e)=>onChangeAmount(e)}
+                          style={
+                            Number(amount) > Number(stakedXio)
+                              ? { color: "red" }
+                              : {}
+                          }
+                          onChange={e => onChangeAmount(e)}
+                          onFocus={() => onToggleFocus("focus")}
+                          onBlur={() => onToggleFocus()}
                         />
                       </Grid>
                     </Grid>

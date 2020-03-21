@@ -84,4 +84,7 @@
     .childContainer{
         padding: 32px 5px;
     }
+    .connectButtonContain{
+        text-align: center;
+    }
 }

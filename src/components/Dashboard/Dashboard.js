@@ -138,14 +138,18 @@ const Dashboard = props => {
         i++;
       }
     } catch (e) {
-      //console.log(e);
+      console.log(e);
     }
   };
 
   useEffect(() => {
+    let timer;
     setLoadOnStake(false)
     ethereum = window.ethereum;
     if (ethereum) {
+      timer = setInterval(()=>{
+        checkWeb3();
+      },3000)
       checkWeb3();
       initXioContract();
       initPortalContract();
@@ -153,15 +157,18 @@ const Dashboard = props => {
       getInterestData();
 
     }
-  }, [loadOnStake]);
-
-  useEffect(() => {
     if (contract && address) {
       getBalance();
       getActivePortalInfo();
       onGetLengthOfStakerData();
     }
+    return () => {
+      if(timer){
+        clearInterval(timer)
+      }
+    }
   }, [address,loadOnStake]);
+
 
   async function checkWeb3() {
     // Use Mist/MetaMask's provider.
@@ -170,19 +177,21 @@ const Dashboard = props => {
     //get selected account on metamask
     accounts = await web3js.eth.getAccounts();
     //console.log(accounts);
-    setAccountAddress(accounts[0]);
+    if(accounts[0] !== address){
+      setAccountAddress(accounts[0]);
+    }
     //get network which metamask is connected too
     let network = await web3js.eth.net.getNetworkType();
     //console.log(network);
   }
 
-  const onConnect = async () => {
+  const onConnect = async (onSetMessage) => {
     ethereum = window.ethereum;
-    await ethereum.enable();
     if (!ethereum || !ethereum.isMetaMask) {
       // throw new Error('Please install MetaMask.')
-      alert(`METAMASK NOT INSTALLED!!`);
+      onSetMessage(`METAMASK NOT INSTALLED!!`);
     } else {
+      await ethereum.enable();
       checkWeb3();
     }
   };
@@ -239,7 +248,7 @@ const Dashboard = props => {
       setStakedXio(amount);
       setActivePortal(portalInfo);
     } catch (e) {
-      //console.log(e);
+      console.log(e);
     }
   };
   const availableXio = (balance / 1000000000000000000).toString().length > 4 ? (balance / 1000000000000000000).toString().slice(0,4) + ".." : (balance / 1000000000000000000).toString()
@@ -437,6 +446,7 @@ const Dashboard = props => {
                       <TableBody style={{ paddingBottom: "20px" }}>
                         {!!activePortal.length &&
                           activePortal.map(item => {
+                            console.log('items ==>',item)
                             if (item.Days !== 0) {
                               return (
                                 <TableRow >
