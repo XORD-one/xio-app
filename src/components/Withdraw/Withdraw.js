@@ -155,10 +155,12 @@ const Withdraw = props => {
             Math.round(new Date() / 1000) &&
           res.publicKey != "0x0000000000000000000000000000000000000000"
         ) {
+          res.stakeQuantity = await web3js.utils.fromWei(
+            res.stakeQuantity.toString()
+          );
           amount = amount + Number(res.stakeQuantity);
         }
       }
-      amount = await web3js.utils.fromWei(amount.toString());
       console.log("amount ==>", amount);
       setStakedXio(amount);
     } catch (e) {
