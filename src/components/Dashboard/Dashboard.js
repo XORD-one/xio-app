@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Grid, Typography, Button,Tooltip } from "@material-ui/core";
+import { Grid, Typography, Button, Tooltip } from "@material-ui/core";
 
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -99,7 +99,7 @@ const Dashboard = props => {
   const [stakedXio, setStakedXio] = useState(0);
   const [activePortal, setActivePortal] = useState([]);
   const [interest, setInterest] = useState(0);
-  const [loadOnStake,setLoadOnStake] = useState(false)
+  const [loadOnStake, setLoadOnStake] = useState(false);
 
   const getBalance = async () => {
     let res = await contract.methods.balanceOf(address).call();
@@ -144,18 +144,17 @@ const Dashboard = props => {
 
   useEffect(() => {
     let timer;
-    setLoadOnStake(false)
+    setLoadOnStake(false);
     ethereum = window.ethereum;
     if (ethereum) {
-      timer = setInterval(()=>{
+      timer = setInterval(() => {
         checkWeb3();
-      },3000)
+      }, 3000);
       checkWeb3();
       initXioContract();
       initPortalContract();
       getPortalInterest();
       getInterestData();
-
     }
     if (contract && address) {
       getBalance();
@@ -163,12 +162,11 @@ const Dashboard = props => {
       onGetLengthOfStakerData();
     }
     return () => {
-      if(timer){
-        clearInterval(timer)
+      if (timer) {
+        clearInterval(timer);
       }
-    }
-  }, [address,loadOnStake]);
-
+    };
+  }, [address, loadOnStake]);
 
   async function checkWeb3() {
     // Use Mist/MetaMask's provider.
@@ -177,7 +175,7 @@ const Dashboard = props => {
     //get selected account on metamask
     accounts = await web3js.eth.getAccounts();
     //console.log(accounts);
-    if(accounts[0] !== address){
+    if (accounts[0] !== address) {
       setAccountAddress(accounts[0]);
     }
     //get network which metamask is connected too
@@ -185,7 +183,7 @@ const Dashboard = props => {
     //console.log(network);
   }
 
-  const onConnect = async (onSetMessage) => {
+  const onConnect = async onSetMessage => {
     ethereum = window.ethereum;
     if (!ethereum || !ethereum.isMetaMask) {
       // throw new Error('Please install MetaMask.')
@@ -227,7 +225,11 @@ const Dashboard = props => {
       for (let i = 0; i < data; i++) {
         const res = await portalContract.methods.stakerData(address, i).call();
         //console.log(res);
+        res.stakeQuantity = await web3js.utils.fromWei(
+          res.stakeQuantity.toString()
+        );
         amount = amount + Number(res.stakeQuantity);
+
         res.Days =
           res.stakeDurationTimestamp -
           (Math.round(new Date() / 1000) - res.stakeInitiationTimestamp);
@@ -237,28 +239,29 @@ const Dashboard = props => {
         } else {
           res.Days = Math.ceil(res.Days / 60);
         }
-        res.stakeQuantity = await web3js.utils.fromWei(
-          res.stakeQuantity.toString()
-        );
+
         if (res.publicKey !== "0x0000000000000000000000000000000000000000") {
           portalInfo.push(res);
         }
       }
-      amount = await web3js.utils.fromWei(amount.toString());
+      // amount = await web3js.utils.fromWei(amount.toString());
       setStakedXio(amount);
       setActivePortal(portalInfo);
     } catch (e) {
       console.log(e);
     }
   };
-  const availableXio = (balance / 1000000000000000000).toString().length > 4 ? (balance / 1000000000000000000).toString().slice(0,4) + ".." : (balance / 1000000000000000000).toString()
+  const availableXio =
+    (balance / 1000000000000000000).toString().length > 4
+      ? (balance / 1000000000000000000).toString().slice(0, 4) + ".."
+      : (balance / 1000000000000000000).toString();
   return (
     <>
       <ThemeConsumer>
-        {({ isThemeDark, themeDark,checkList,checkForNewList}) => {
-          if(checkList){
-            setLoadOnStake(true)
-            checkForNewList()
+        {({ isThemeDark, themeDark, checkList, checkForNewList }) => {
+          if (checkList) {
+            setLoadOnStake(true);
+            checkForNewList();
           }
           return (
             <Layout tabName="dashboard" address={address} onConnect={onConnect}>
@@ -291,22 +294,20 @@ const Dashboard = props => {
                   >
                     AVAILABLE XIO
                   </h6>
-                  <Tooltip title={balance / 1000000000000000000} >
-
-                  <h2
-                    style={{
-                      fontFamily: "'Montserrat', sans-serif",
-                      color: themeDark ? "white" : "black",
-                      fontWeight: "bold",
-                      textAlign: "center",
-                      padding: "0px",
-                      overflowWrap: "break-word"
-                    }}
-                  >
-                    {availableXio}
-                  </h2>
+                  <Tooltip title={balance / 1000000000000000000}>
+                    <h2
+                      style={{
+                        fontFamily: "'Montserrat', sans-serif",
+                        color: themeDark ? "white" : "black",
+                        fontWeight: "bold",
+                        textAlign: "center",
+                        padding: "0px",
+                        overflowWrap: "break-word"
+                      }}
+                    >
+                      {availableXio}
+                    </h2>
                   </Tooltip>
-
                 </Grid>
 
                 <Grid
@@ -446,10 +447,10 @@ const Dashboard = props => {
                       <TableBody style={{ paddingBottom: "20px" }}>
                         {!!activePortal.length &&
                           activePortal.map(item => {
-                            console.log('items ==>',item)
+                            console.log("items ==>", item);
                             if (item.Days !== 0) {
                               return (
-                                <TableRow >
+                                <TableRow>
                                   <TableCell
                                     style={{ fontSize: 10 }}
                                     className={
@@ -548,7 +549,7 @@ const Dashboard = props => {
                         {!!portalInterestList.length &&
                           portalInterestList.map(item => {
                             return (
-                              <TableRow >
+                              <TableRow>
                                 <TableCell
                                   style={{ fontSize: 10 }}
                                   className={
