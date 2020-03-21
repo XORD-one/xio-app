@@ -18,7 +18,7 @@ import {
   faFacebookF,
   faTwitter,
   faYoutube,
-  faGithub,
+  faTelegram,
   faLinkedinIn
 } from "@fortawesome/free-brands-svg-icons";
 import { useHistory } from "react-router-dom";
@@ -151,19 +151,55 @@ const Index = ({
                     style={{ padding: "15px 0px" }}
                   >
                     <h4 style={socialIcon}>
-                      <FontAwesomeIcon icon={faLinkedinIn} />
+                      <Link
+                        href="https://www.linkedin.com/company/xio-incubator"
+                        rel="noreferrer"
+                        target="_blank"
+                        style={{ color: "#b8b8b8" }}
+                      >
+                        <FontAwesomeIcon icon={faLinkedinIn} />
+                      </Link>
+                      {/*  */}
                     </h4>
                     <h4 style={socialIcon}>
-                      <FontAwesomeIcon icon={faTwitter} />
+                      <Link
+                        href="https://twitter.com/xio_network"
+                        rel="noreferrer"
+                        target="_blank"
+                        style={{ color: "#b8b8b8" }}
+                      >
+                        <FontAwesomeIcon icon={faTwitter} />
+                      </Link>
                     </h4>
                     <h4 style={socialIcon}>
-                      <FontAwesomeIcon icon={faYoutube} />
+                      <Link
+                        href="https://www.youtube.com/c/bombx/"
+                        rel="noreferrer"
+                        target="_blank"
+                        style={{ color: "#b8b8b8" }}
+                      >
+                        <FontAwesomeIcon icon={faYoutube} />
+                      </Link>
                     </h4>
                     <h4 style={socialIcon}>
-                      <FontAwesomeIcon icon={faFacebookF} />
+                      <Link
+                        href="https://www.facebook.com/groups/xionetwork"
+                        rel="noreferrer"
+                        target="_blank"
+                        style={{ color: "#b8b8b8" }}
+                      >
+                        <FontAwesomeIcon icon={faFacebookF} />
+                      </Link>
                     </h4>
                     <h4 style={socialIcon}>
-                      <FontAwesomeIcon icon={faGithub} />
+                      <Link
+                        href="https://t.me/xionews"
+                        rel="noreferrer"
+                        target="_blank"
+                        style={{ color: "#b8b8b8" }}
+                      >
+                        <FontAwesomeIcon icon={faTelegram} />
+                      </Link>
                     </h4>
                   </Grid>
                   <Grid
@@ -421,7 +457,9 @@ const Index = ({
                       <>
                         {loading ? (
                           <div style={{ margin: "17px 0px" }}>
-                            <img src={themeDark ? spinnerBlack : spinnerWhite} />
+                            <img
+                              src={themeDark ? spinnerBlack : spinnerWhite}
+                            />
                           </div>
                         ) : (
                           <h6 style={{ color: themeDark ? "white" : "black" }}>
@@ -438,10 +476,10 @@ const Index = ({
                         <div
                           style={{
                             backgroundColor: !!(!warning && address)
-                            ? loading
-                              ? "#757474"
-                              : "#C66065"
-                            : "#757474",
+                              ? loading
+                                ? "#757474"
+                                : "#C66065"
+                              : "#757474",
                             border: themeDark
                               ? "1px solid #414141"
                               : "1px solid #DADADA",
@@ -450,7 +488,11 @@ const Index = ({
                             borderRadius: 5,
                             cursor: "pointer"
                           }}
-                          onClick={() => !warning && !loading ? onWithdraw(checkForNewList,handleClick) : null}
+                          onClick={() =>
+                            !warning && !loading
+                              ? onWithdraw(checkForNewList, handleClick)
+                              : null
+                          }
                         >
                           <h4
                             style={{
