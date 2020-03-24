@@ -100,6 +100,7 @@ const Dashboard = props => {
   const [activePortal, setActivePortal] = useState([]);
   const [interest, setInterest] = useState(0);
   const [loadOnStake, setLoadOnStake] = useState(false);
+  const [network,setNetwork] = useState('')
 
   const getBalance = async () => {
     let res = await contract.methods.balanceOf(address).call();
@@ -179,8 +180,11 @@ const Dashboard = props => {
       setAccountAddress(accounts[0]);
     }
     //get network which metamask is connected too
-    let network = await web3js.eth.net.getNetworkType();
+    let getNetwork = await web3js.eth.net.getNetworkType();
     //console.log(network);
+    if(getNetwork !== network)
+    setNetwork(getNetwork)
+
   }
 
   const onConnect = async onSetMessage => {
@@ -264,7 +268,7 @@ const Dashboard = props => {
             checkForNewList();
           }
           return (
-            <Layout tabName="dashboard" address={address} onConnect={onConnect}>
+            <Layout tabName="dashboard" address={address} onConnect={onConnect} network={network} >
               <Grid
                 container
                 item

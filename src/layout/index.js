@@ -91,7 +91,8 @@ const Index = ({
   rate,
   outputToken,
   allowedWithdraw,
-  warning
+  warning,
+  network
 }) => {
   const [completed, setCompleted] = useState(false);
 
@@ -135,6 +136,9 @@ const Index = ({
                 justifyContent: "space-between"
               }}
             >
+              {network !== "rinkeby" ? <div style={{fontFamily: "'Montserrat', sans-serif",fontWeight: "bold",backgroundColor:"#C66065",color:"white",textAlign:"center",padding:"10px 0px"}} >
+                NETWORK ERROR: SWITCH METAMASK'S NETWORK TO RINKEBY.
+              </div> : null }
               <Grid>
                 <Grid
                   container
@@ -340,7 +344,7 @@ const Index = ({
                     <h4
                       style={{
                         color:
-                          tabName === "withdraw"
+                          tabName === "unstake"
                             ? themeDark
                               ? "white"
                               : "black"
@@ -352,9 +356,9 @@ const Index = ({
                         cursor: "pointer"
                       }}
                       className="tabarText"
-                      onClick={() => history.push("/withdraw")}
+                      onClick={() => history.push("/unstake")}
                     >
-                      WITHDRAW
+                      UNSTAKE
                     </h4>
                   </Grid>
 
@@ -398,7 +402,7 @@ const Index = ({
                             ) : (
                               <>
                                 <span style={{ fontSize: 13 }}>
-                                  YOUR WALLET IS BEING ACTIVATED, PLEASE WAIT{" "}
+                                PLEASE CONFIRM PERMISSION TO ACTIVATE YOUR WALLET{" "}
                                 </span>
                                 <img
                                   style={{ position: "relative", top: 7 }}
@@ -448,12 +452,12 @@ const Index = ({
                               margin: 0
                             }}
                           >
-                            {unlock ? "CONFIRM STAKE" : "ACTIVE WALLET"}
+                            {unlock ? "CONFIRM STAKE" : "ACTIVATE WALLET"}
                           </h4>
                         </div>
                       </>
                     )}
-                    {tabName === "withdraw" && (
+                    {tabName === "unstake" && (
                       <>
                         {loading ? (
                           <div style={{ margin: "17px 0px" }}>
@@ -470,7 +474,7 @@ const Index = ({
                               {" "}
                               {allowedWithdraw}{" "}
                             </span>{" "}
-                            AVAILABLE FOR WITHDRAW
+                            AVAILABLE FOR UNSTAKE
                           </h6>
                         )}
                         <div
@@ -502,7 +506,7 @@ const Index = ({
                               margin: 0
                             }}
                           >
-                            CONFIRM WITHDRAW
+                            CONFIRM UNSTAKE
                           </h4>
                         </div>
                       </>

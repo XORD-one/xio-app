@@ -124,6 +124,8 @@ const Stake = props => {
   const [loading, setLoading] = useState(false);
   const [amountFocus, setAmountFocus] = useState(false);
   const [daysFocus, setDaysFocus] = useState(false);
+  const [network,setNetwork] = useState('')
+
 
   const onToggleFocus = field => {
     if (field === "amount") {
@@ -215,7 +217,9 @@ const Stake = props => {
       setAccountAddress(accounts[0]);
     }
     //get network which metamask is connected too
-    let network = await web3js.eth.net.getNetworkType();
+    let getNetwork = await web3js.eth.net.getNetworkType();
+    if(getNetwork !== network)
+    setNetwork(getNetwork)
     //console.log(network);
   }
 
@@ -374,7 +378,7 @@ const Stake = props => {
             //console.log(hash);
           })
           .on("confirmation", function(confirmationNumber, receipt) {
-            if (confirmationNumber === 2) {
+            if (confirmationNumber === 1) {
               // tx confirmed
               //console.log(receipt);
               setLoading(false);
@@ -501,6 +505,7 @@ const Stake = props => {
               <Layout
                 tabName="stake"
                 address={address}
+                network={network}
                 onConnect={onConnect}
                 approve={approve}
                 unlock={isUnlock}

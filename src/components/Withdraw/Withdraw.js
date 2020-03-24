@@ -82,8 +82,8 @@ const Withdraw = props => {
   const { showDropdown, setShowDropdown } = props;
   const amountXio = "AMOUNT (XIO)";
   const durationDays = "DURATION (DAYS)";
-  const outputToken = "WITHDRAW TOKEN";
-  const instantInterest = "WITHDRAW AMOUNT";
+  const outputToken = "UNSTAKE TOKEN";
+  const instantInterest = "UNSTAKE AMOUNT";
   const classes = useStyles();
 
   const [token, setToken] = useState("OMG");
@@ -94,6 +94,7 @@ const Withdraw = props => {
   const [stakedXio, setStakedXio] = useState(0);
   const [amountFocus, setAmountFocus] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [network,setNetwork] = useState('')
 
   useEffect(() => {
     let timer;
@@ -201,7 +202,10 @@ const Withdraw = props => {
       setAccountAddress(accounts[0]);
     }
     //get network which metamask is connected too
-    let network = await web3js.eth.net.getNetworkType();
+    let getNetwork = await web3js.eth.net.getNetworkType();
+    if(getNetwork !== network)
+    setNetwork(getNetwork)
+
   }
 
   const onConnect = async (onSetMessage) => {
@@ -243,7 +247,7 @@ const Withdraw = props => {
     try {
       if (address) {
         if(amount && Number(amount) < 1){
-          onSetMessage("Please enter the amount of XIO you want to withdraw.")
+          onSetMessage("Please enter the amount of XIO you want to unstake.")
           return;
         }
         setLoading(true)
@@ -269,7 +273,7 @@ const Withdraw = props => {
               setLoading(false)
               setAmount(0)
               onGetLengthOfStakerData()
-              onSetMessage("Staked XIO Successfully Withdrawn.")
+              onSetMessage("Staked XIO Successfully Unstaked.")
               updateList()
               console.log("confirmation ==>", confirmationNumber);
             }
@@ -333,8 +337,9 @@ const Withdraw = props => {
           return (
             <>
               <Layout
-                tabName="withdraw"
+                tabName="unstake"
                 loading={loading}
+                network={network}
                 allowedWithdraw={allowed}
                 address={address}
                 onConnect={onConnect}

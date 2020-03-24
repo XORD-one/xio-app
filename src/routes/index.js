@@ -17,7 +17,7 @@ export default [
 
     {
         component: Withdraw,
-        path: '/withdraw',
+        path: '/unstake',
         exact: true
 
     }
