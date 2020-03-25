@@ -248,7 +248,7 @@ const Index = ({
                         padding: "8px 15px 10px 10px",
                         borderRadius: 5
                       }}
-                      className="connectButton"
+                      className={themeDark ? "connectButton" : "connectButtonLight"}
                       onClick={() => onConnect(handleClick)}
                     >
                       <img

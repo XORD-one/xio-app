@@ -16,6 +16,10 @@
     background-color: #545454;
 }
 
+.connectButtonLight:hover{
+    background-color: #54545447;
+}
+
 .MuiSwitch-root{
     position: fixed!important;
     right: 5px;
