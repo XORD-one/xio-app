@@ -136,9 +136,20 @@ const Index = ({
                 justifyContent: "space-between"
               }}
             >
-              {network !== "rinkeby" ? <div style={{fontFamily: "'Montserrat', sans-serif",fontWeight: "bold",backgroundColor:"#C66065",color:"white",textAlign:"center",padding:"10px 0px"}} >
-                NETWORK ERROR: SWITCH METAMASK'S NETWORK TO RINKEBY.
-              </div> : null }
+              {network !== "rinkeby" ? (
+                <div
+                  style={{
+                    fontFamily: "'Montserrat', sans-serif",
+                    fontWeight: "bold",
+                    backgroundColor: "#C66065",
+                    color: "white",
+                    textAlign: "center",
+                    padding: "10px 0px"
+                  }}
+                >
+                  NETWORK ERROR: SWITCH METAMASK'S NETWORK TO RINKEBY.
+                </div>
+              ) : null}
               <Grid>
                 <Grid
                   container
@@ -401,8 +412,14 @@ const Index = ({
                               />
                             ) : (
                               <>
-                                <span style={{ fontSize: 13 }}>
-                                PLEASE CONFIRM PERMISSION TO ACTIVATE YOUR WALLET{" "}
+                                <span
+                                  style={{
+                                    fontSize: 13,
+                                    color: themeDark ? "white" : "black"
+                                  }}
+                                >
+                                  PLEASE CONFIRM PERMISSION TO ACTIVATE YOUR
+                                  WALLET{" "}
                                 </span>
                                 <img
                                   style={{ position: "relative", top: 7 }}
