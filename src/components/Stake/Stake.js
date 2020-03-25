@@ -753,14 +753,16 @@ const Stake = props => {
                                   display: "flex",
                                   flexDirection: "row",
                                   justifyContent: "space-around",
-                                  cursor: "pointer"
+                                  cursor: "pointer",
+                                  position:"relative"
                                 }
                               : {
                                   ...firstStakeSectionItemLight,
                                   display: "flex",
                                   flexDirection: "row",
                                   justifyContent: "space-around",
-                                  cursor: "pointer"
+                                  cursor: "pointer",
+                                  position:"relative"
                                 }
                           }
                           onClick={() => handleClickOpen()}
@@ -769,8 +771,8 @@ const Stake = props => {
                           <input
                             className={
                               themeDark
-                                ? "inputTextStake"
-                                : "inputTextStakeLight"
+                                ? "inputTextStake setIpad"
+                                : "inputTextStakeLight setIpad"
                             }
                             placeholder={token.outputTokenSymbol}
                             disabled={true}
@@ -781,7 +783,9 @@ const Stake = props => {
                             style={{
                               fontSize: 40,
                               color: "#C66065",
-                              cursor: "pointer"
+                              cursor: "pointer",
+                              position:"absolute",
+                              right:"-3px"
                             }}
                           />
                         </Grid>
