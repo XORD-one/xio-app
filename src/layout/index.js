@@ -171,6 +171,7 @@ const Index = ({
                         rel="noreferrer"
                         target="_blank"
                         style={{ color: "#b8b8b8" }}
+                        className="socialIcon"
                       >
                         <FontAwesomeIcon icon={faLinkedinIn} />
                       </Link>
@@ -182,6 +183,7 @@ const Index = ({
                         rel="noreferrer"
                         target="_blank"
                         style={{ color: "#b8b8b8" }}
+                        className="socialIcon"
                       >
                         <FontAwesomeIcon icon={faTwitter} />
                       </Link>
@@ -192,6 +194,7 @@ const Index = ({
                         rel="noreferrer"
                         target="_blank"
                         style={{ color: "#b8b8b8" }}
+                        className="socialIcon"
                       >
                         <FontAwesomeIcon icon={faYoutube} />
                       </Link>
@@ -202,6 +205,7 @@ const Index = ({
                         rel="noreferrer"
                         target="_blank"
                         style={{ color: "#b8b8b8" }}
+                        className="socialIcon"
                       >
                         <FontAwesomeIcon icon={faFacebookF} />
                       </Link>
@@ -212,6 +216,7 @@ const Index = ({
                         rel="noreferrer"
                         target="_blank"
                         style={{ color: "#b8b8b8" }}
+                        className="socialIcon"
                       >
                         <FontAwesomeIcon icon={faTelegram} />
                       </Link>

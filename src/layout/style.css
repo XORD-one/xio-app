@@ -55,6 +55,9 @@
     color: #C66065!important;
 }
 
+.socialIcon:hover{
+    color: #C66065!important;
+}
 
 @media  screen and (max-width: 599px){
     .socialIcons{
