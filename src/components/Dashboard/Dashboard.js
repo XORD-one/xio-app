@@ -100,7 +100,7 @@ const Dashboard = props => {
   const [activePortal, setActivePortal] = useState([]);
   const [interest, setInterest] = useState(0);
   const [loadOnStake, setLoadOnStake] = useState(false);
-  const [network,setNetwork] = useState('')
+  const [network,setNetwork] = useState('rinkeby')
 
   const getBalance = async () => {
     let res = await contract.methods.balanceOf(address).call();

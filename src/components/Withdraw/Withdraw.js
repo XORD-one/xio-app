@@ -94,7 +94,7 @@ const Withdraw = props => {
   const [stakedXio, setStakedXio] = useState(0);
   const [amountFocus, setAmountFocus] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [network,setNetwork] = useState('')
+  const [network,setNetwork] = useState('rinkeby')
 
   useEffect(() => {
     let timer;
