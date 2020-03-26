@@ -390,14 +390,12 @@ const Withdraw = props => {
                                   display: "flex",
                                   flexDirection: "row",
                                   justifyContent: "space-around",
-                                  cursor: "pointer"
                                 }
                               : {
                                   ...firstWithdrawSectionItemLight,
                                   display: "flex",
                                   flexDirection: "row",
                                   justifyContent: "space-around",
-                                  cursor: "pointer"
                                 }
                           }
                           item
@@ -408,7 +406,6 @@ const Withdraw = props => {
                             }
                             placeholder={"XIO"}
                             disabled={true}
-                            style={{ cursor: "pointer" }}
                             xs={12}
                           />
                         </Grid>
