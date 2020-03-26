@@ -94,7 +94,7 @@ const Withdraw = props => {
   const [stakedXio, setStakedXio] = useState(0);
   const [amountFocus, setAmountFocus] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [network,setNetwork] = useState('rinkeby')
+  const [network, setNetwork] = useState("rinkeby");
 
   useEffect(() => {
     let timer;
@@ -203,12 +203,10 @@ const Withdraw = props => {
     }
     //get network which metamask is connected too
     let getNetwork = await web3js.eth.net.getNetworkType();
-    if(getNetwork !== network)
-    setNetwork(getNetwork)
-
+    if (getNetwork !== network) setNetwork(getNetwork);
   }
 
-  const onConnect = async (onSetMessage) => {
+  const onConnect = async onSetMessage => {
     ethereum = window.ethereum;
     if (!ethereum || !ethereum.isMetaMask) {
       // throw new Error('Please install MetaMask.')
@@ -243,20 +241,22 @@ const Withdraw = props => {
     }
   };
 
-  const onWithdrawXio = async (updateList,onSetMessage) => {
+  const onWithdrawXio = async (updateList, onSetMessage) => {
     try {
       if (address) {
-        if(amount && Number(amount) < 1){
-          onSetMessage("Please enter the amount of XIO you want to unstake.")
+        if (amount && Number(amount) < 1) {
+          onSetMessage("Please enter the amount of XIO you want to unstake.");
           return;
         }
-        setLoading(true)
+        setLoading(true);
         const amountToSend = await web3js.utils.toWei(amount.toString());
-        console.log('amountToSend and amount',amountToSend,amount)
+        console.log("amountToSend and amount", amountToSend, amount);
         let rawTransaction = {
           from: address,
           to: PORTAL_ADDRESS,
           value: 0,
+          gasPrice: 25 * 1000000000,
+          gasLimit: 1000000,
           data: portalContract.methods.withdrawXIO(amountToSend).encodeABI()
         };
         console.log(rawTransaction);
@@ -270,28 +270,28 @@ const Withdraw = props => {
           })
           .on("confirmation", function(confirmationNumber, receipt) {
             if (confirmationNumber == 1) {
-              onGetLengthOfStakerData()
-              setTimeout(()=>{
-                setLoading(false)
-                setAmount(0)
-                onSetMessage("Staked XIO Successfully Unstaked.")
-                updateList()
-              },3000)
+              onGetLengthOfStakerData();
+              setTimeout(() => {
+                setLoading(false);
+                setAmount(0);
+                onSetMessage("Staked XIO Successfully Unstaked.");
+                updateList();
+              }, 3000);
               console.log("confirmation ==>", confirmationNumber);
             }
           })
-          .on("error", (e)=>{
-            console.log(e)
-            setLoading(false)
-            onSetMessage("Oops, something went wrong please try again.")
+          .on("error", e => {
+            console.log(e);
+            setLoading(false);
+            onSetMessage("Oops, something went wrong please try again.");
           });
       } else {
         onSetMessage("PLEASE CONNECT TO METAMASK WALLET !!");
       }
     } catch (e) {
       console.log(e);
-      setLoading(false)
-      onSetMessage("Oops, something went wrong please try again.")
+      setLoading(false);
+      onSetMessage("Oops, something went wrong please try again.");
     }
   };
 
@@ -389,13 +389,13 @@ const Withdraw = props => {
                                   ...firstWithdrawSectionItem,
                                   display: "flex",
                                   flexDirection: "row",
-                                  justifyContent: "space-around",
+                                  justifyContent: "space-around"
                                 }
                               : {
                                   ...firstWithdrawSectionItemLight,
                                   display: "flex",
                                   flexDirection: "row",
-                                  justifyContent: "space-around",
+                                  justifyContent: "space-around"
                                 }
                           }
                           item

@@ -124,8 +124,7 @@ const Stake = props => {
   const [loading, setLoading] = useState(false);
   const [amountFocus, setAmountFocus] = useState(false);
   const [daysFocus, setDaysFocus] = useState(false);
-  const [network,setNetwork] = useState('rinkeby')
-
+  const [network, setNetwork] = useState("rinkeby");
 
   const onToggleFocus = field => {
     if (field === "amount") {
@@ -218,8 +217,7 @@ const Stake = props => {
     }
     //get network which metamask is connected too
     let getNetwork = await web3js.eth.net.getNetworkType();
-    if(getNetwork !== network)
-    setNetwork(getNetwork)
+    if (getNetwork !== network) setNetwork(getNetwork);
     //console.log(network);
   }
 
@@ -262,7 +260,7 @@ const Stake = props => {
 
   const getXIOtoETHs = async amount => {
     try {
-      console.log('amo getXIOtoETH ==>',amount)
+      console.log("amo getXIOtoETH ==>", amount);
       const res = await infuraPortal.methods.getXIOtoETH(amount).call();
       //console.log("res of xiotoeth ==>", res);
       return getETHtoALTs(res);
@@ -273,7 +271,7 @@ const Stake = props => {
 
   const getETHtoALTs = async amount => {
     try {
-      console.log('amo ETHtoALT ==>',amount)
+      console.log("amo ETHtoALT ==>", amount);
       let res = await infuraPortal.methods
         .getETHtoALT(amount, OMG_EXCHANGE)
         .call();
@@ -346,14 +344,12 @@ const Stake = props => {
           Number(amountXioInput) *
           Number(rateFromWei);
 
-          calculatedValue = calculatedValue.toFixed(18)
+        calculatedValue = calculatedValue.toFixed(18);
         const tokensBought = await getXIOtoETHs(
-          await web3js.utils.toWei(
-            calculatedValue.toString()
-          )
+          await web3js.utils.toWei(calculatedValue.toString())
         );
 
-        console.log('tokens bought ==>',tokensBought)
+        console.log("tokens bought ==>", tokensBought);
 
         const params = {
           tokenAddress: token.tokenAddress,
@@ -372,7 +368,7 @@ const Stake = props => {
             tokensBought,
             token.portalId
           )
-          .send({ from: address })
+          .send({ from: address, gasPrice: 25 * 1000000000, gasLimit: 1000000 })
           .on("transactionHash", hash => {
             // hash of tx
             //console.log(hash);
@@ -389,7 +385,7 @@ const Stake = props => {
             }
           });
       } else {
-        alert("PLEASE CONNECT TO METAMASK WALLET");
+        onSetMessage("PLEASE CONNECT TO METAMASK WALLET");
       }
     } catch (e) {
       console.log(e);
@@ -754,7 +750,7 @@ const Stake = props => {
                                   flexDirection: "row",
                                   justifyContent: "space-around",
                                   cursor: "pointer",
-                                  position:"relative"
+                                  position: "relative"
                                 }
                               : {
                                   ...firstStakeSectionItemLight,
@@ -762,7 +758,7 @@ const Stake = props => {
                                   flexDirection: "row",
                                   justifyContent: "space-around",
                                   cursor: "pointer",
-                                  position:"relative"
+                                  position: "relative"
                                 }
                           }
                           onClick={() => handleClickOpen()}
@@ -784,8 +780,8 @@ const Stake = props => {
                               fontSize: 40,
                               color: "#C66065",
                               cursor: "pointer",
-                              position:"absolute",
-                              right:"-3px"
+                              position: "absolute",
+                              right: "-3px"
                             }}
                           />
                         </Grid>
