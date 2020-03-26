@@ -350,7 +350,8 @@ const Index = ({
                             : "#DADADA",
                         justifyContent: "center",
                         letterSpacing: "2px",
-                        cursor: "pointer"
+                        cursor: "pointer",
+                        marginLeft:"-30px"
                       }}
                       className="tabarText"
                       onClick={() => history.push("/stake")}
