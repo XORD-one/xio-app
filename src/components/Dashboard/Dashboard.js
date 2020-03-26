@@ -510,7 +510,7 @@ const Dashboard = props => {
                         letterSpacing: "2px"
                       }}
                     >
-                      PORTAL INTEREST RATE
+                      PORTAL LIQUIDITY INFORMATION
                     </h6>
                   </Grid>
 
