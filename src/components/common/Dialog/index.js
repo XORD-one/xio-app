@@ -1,20 +1,31 @@
-import React from "react";
+import React, { useState } from "react";
 import "./style.css";
-import Grid from "@material-ui/core/Grid"
+import Grid from "@material-ui/core/Grid";
 import SearchIcon from "@material-ui/icons/Search";
 import Dialog from "@material-ui/core/Dialog";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 
-const CustomDialog = (props) => {
-  const list = [
-    // "UPTRENND (1UP)",
-    // "BINANCE (BNB)",
-    // "BAT (BAT)",
-    // "ETHEREUM (ETH)",
-    "OMG"
-  ];
+const CustomDialog = props => {
+  const [search, setSearch] = useState("");
+  const [searchList, setSearchList] = useState([]);
+
+  const onChange = e => {
+    const toSearch = e.target.value;
+    setSearch(toSearch);
+    const searchData = props.tokensList.filter(item => {
+      console.log(item);
+      return (
+        item.outputTokenSymbol.substring(0, toSearch.length).toLowerCase() ===
+        toSearch.toLowerCase()
+      );
+    });
+    setSearchList(searchData);
+  };
+
+  const list = search ? searchList : props.tokensList;
+
   return (
     <React.Fragment>
       <Dialog
@@ -60,7 +71,12 @@ const CustomDialog = (props) => {
                 />
               </Grid>
               <Grid item md={9}>
-                <input className="searchText" placeholder="SEARCH TOKEN NAME" />
+                <input
+                  className="searchText"
+                  value={search}
+                  onChange={e => onChange(e)}
+                  placeholder="SEARCH TOKEN NAME"
+                />
               </Grid>
             </Grid>
           </DialogContentText>
@@ -76,7 +92,7 @@ const CustomDialog = (props) => {
             paddingTop: "25px"
           }}
         >
-          {props.tokensList.map((item,i) => {
+          {list.map((item, i) => {
             return (
               <DialogContentText
                 style={{
@@ -84,15 +100,26 @@ const CustomDialog = (props) => {
                   fontWeight: "bolder",
                   backgroundColor: "#1C1C1C",
                   color: "#D4D4D4",
-                  cursor:"pointer"
+                  cursor: "pointer"
                 }}
-                onClick={()=>props.onTokenSelect(item)}
+                onClick={() => props.onTokenSelect(item)}
                 key={i}
               >
                 {item.outputTokenSymbol}
               </DialogContentText>
             );
           })}
+          {!list.length && <DialogContentText
+            style={{
+              fontFamily: "'Montserrat', sans-serif",
+              fontWeight: "bolder",
+              backgroundColor: "#1C1C1C",
+              color: "#D4D4D4",
+              cursor: "pointer"
+            }}
+          >
+            No Data Found
+          </DialogContentText>}
         </DialogContent>
       </Dialog>
     </React.Fragment>

@@ -100,7 +100,7 @@ const Dashboard = props => {
   const [activePortal, setActivePortal] = useState([]);
   const [interest, setInterest] = useState(0);
   const [loadOnStake, setLoadOnStake] = useState(false);
-  const [network,setNetwork] = useState('rinkeby')
+  const [network, setNetwork] = useState("rinkeby");
 
   const getBalance = async () => {
     let res = await contract.methods.balanceOf(address).call();
@@ -182,9 +182,7 @@ const Dashboard = props => {
     //get network which metamask is connected too
     let getNetwork = await web3js.eth.net.getNetworkType();
     //console.log(network);
-    if(getNetwork !== network)
-    setNetwork(getNetwork)
-
+    if (getNetwork !== network) setNetwork(getNetwork);
   }
 
   const onConnect = async onSetMessage => {
@@ -255,10 +253,23 @@ const Dashboard = props => {
       console.log(e);
     }
   };
-  const availableXio =
-    (balance / 1000000000000000000).toString().length > 4
-      ? (balance / 1000000000000000000).toString().slice(0, 4) + ".."
-      : (balance / 1000000000000000000).toString();
+
+  const truncateValue = (value) => {
+    console.log(value.toString().length > 4)
+    if(value.toString().length <= 5){
+      return value
+    }
+    else if(value.toString().length > 5 && value.toString().slice(0, 6).indexOf('.') !== -1){
+      return Number(value).toFixed(1)
+    }
+    else if(value.toString().length > 5 && value.toString().slice(0, 6).indexOf('.') == -1){
+      return value.toString().slice(0, 4) + ".." 
+    }
+    return value.toString().slice(0, 4) + ".." 
+  }
+
+  const balanceFromWei = balance / 1000000000000000000;
+  const availableXio = truncateValue(balanceFromWei)
   return (
     <>
       <ThemeConsumer>
@@ -268,7 +279,12 @@ const Dashboard = props => {
             checkForNewList();
           }
           return (
-            <Layout tabName="dashboard" address={address} onConnect={onConnect} network={network} >
+            <Layout
+              tabName="dashboard"
+              address={address}
+              onConnect={onConnect}
+              network={network}
+            >
               <Grid
                 container
                 item

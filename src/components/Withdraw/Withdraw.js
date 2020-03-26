@@ -270,11 +270,13 @@ const Withdraw = props => {
           })
           .on("confirmation", function(confirmationNumber, receipt) {
             if (confirmationNumber == 1) {
-              setLoading(false)
-              setAmount(0)
               onGetLengthOfStakerData()
-              onSetMessage("Staked XIO Successfully Unstaked.")
-              updateList()
+              setTimeout(()=>{
+                setLoading(false)
+                setAmount(0)
+                onSetMessage("Staked XIO Successfully Unstaked.")
+                updateList()
+              },3000)
               console.log("confirmation ==>", confirmationNumber);
             }
           })
