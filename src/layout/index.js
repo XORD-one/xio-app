@@ -27,6 +27,7 @@ import xordLogoDark from "../components/assets/images/xord-logo-white.png";
 import spinnerWhite from "../components/assets/images/spinner-white.svg";
 import spinnerBlack from "../components/assets/images/spinner-black.svg";
 import Toast from "../components/common/Toast";
+import Agreement from "../components/common/Agreement/index"
 
 const layoutSubHeading = {
   color: "rgb(198, 96, 101)"
@@ -114,7 +115,9 @@ const Index = ({
         handleClose,
         message,
         openToast,
-        handleClick
+        handleClick,
+        open,
+        toggleAgreement
       }) => {
         const addressToShow =
           address &&
@@ -124,9 +127,14 @@ const Index = ({
           message,
           open: openToast
         };
+        const agreementProps = {
+          open,
+          onClose:toggleAgreement
+        }
         return (
           <>
-            <Toast {...toastProps} />
+            <Agreement {...agreementProps} />
+            <Toast {...toastProps}  />
             <div
               style={{
                 backgroundColor: themeDark ? "#1C1C1C" : "white",

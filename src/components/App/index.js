@@ -4,7 +4,6 @@ import routes from "../../routes";
 import { ThemeProvider } from "../../config/index";
 
 
-
 function App() {
   const [themeDark, setToggleTheme] = useState(
    JSON.parse(localStorage.getItem("theme")) !== null ? JSON.parse(localStorage.getItem("theme")) : true
@@ -12,6 +11,7 @@ function App() {
   const [checkList,setCheckList] = useState(false)
   const [openToast,setOpenToast] = useState(false)
   const [message,setMessage] = useState('')
+  const [open,setOpen] = useState(true)
 
   const isThemeDark = () => {
     let theme = themeDark;
@@ -29,6 +29,10 @@ function App() {
     setOpenToast(true);
 };
 
+  const toggleAgreement = () => {
+    setOpen(!open)
+  }
+
 const handleClose = (event, reason) => {
   if (reason === 'clickaway') {
     return;
@@ -45,6 +49,8 @@ const handleClose = (event, reason) => {
     handleClose,
     openToast,
     message,
+    open,
+    toggleAgreement,
   };
   return (
     <>
