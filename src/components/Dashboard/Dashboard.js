@@ -260,7 +260,7 @@ const Dashboard = props => {
       return value
     }
     else if(value.toString().length > 5 && value.toString().slice(0, 6).indexOf('.') !== -1){
-      return Number(value).toFixed(1)
+      return Number(value).toFixed(2)
     }
     else if(value.toString().length > 5 && value.toString().slice(0, 6).indexOf('.') == -1){
       return value.toString().slice(0, 4) + ".." 
