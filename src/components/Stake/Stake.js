@@ -184,7 +184,6 @@ const Stake = props => {
     let timer;
     initInfura();
     initPortalWithInfura();
-    onGetInterestRate();
     ethereum = window.ethereum;
     if (ethereum) {
       checkWeb3();
@@ -247,7 +246,7 @@ const Stake = props => {
       transactionBlockTimeout: 5
     };
     web3 = new Web3(
-      "https://rinkeby.infura.io/v3/ff4d778692ad42f7966a456564283e9d",
+      "https://mainnet.infura.io/v3/ff4d778692ad42f7966a456564283e9d",
       null,
       OPTIONS
     );
@@ -258,24 +257,24 @@ const Stake = props => {
     infuraPortal = new web3.eth.Contract(PORTAL_ABI, PORTAL_ADDRESS);
   };
 
-  const getXIOtoETHs = async amount => {
+  const getXIOtoETHs = async (amount,token) => {
     try {
       console.log("amo getXIOtoETH ==>", amount);
       const res = await infuraPortal.methods.getXIOtoETH(amount).call();
-      //console.log("res of xiotoeth ==>", res);
-      return getETHtoALTs(res);
+      console.log("res of xiotoeth ==>", res);
+      return getETHtoALTs(res,token);
     } catch (e) {
       console.log(e);
     }
   };
 
-  const getETHtoALTs = async amount => {
+  const getETHtoALTs = async (amount,token) => {
     try {
       console.log("amo ETHtoALT ==>", amount);
       let res = await infuraPortal.methods
-        .getETHtoALT(amount, OMG_EXCHANGE)
+        .getETHtoALT(amount, token.tokenExchangeAddress)
         .call();
-      //console.log("res of ethToAlt ==>", res);
+      console.log("res of ethToAlt ==>", res);
       res = await web3js.utils.fromWei(res.toString());
       if (initial) {
         setUnitRate(res);
@@ -291,7 +290,7 @@ const Stake = props => {
     }
   };
 
-  const onGetInterestRate = async () => {
+  const onGetInterestRate = async (token) => {
     try {
       const res = await infuraPortal.methods.getInterestRate().call();
       //console.log("res ==>", res);
@@ -300,7 +299,7 @@ const Stake = props => {
       //   "initail rate ==>",
       //   await web3js.utils.fromWei(initialRate.toString())
       // );
-      getXIOtoETHs(res);
+      getXIOtoETHs(res,token);
     } catch (e) {
       console.log(e);
     }
@@ -326,6 +325,7 @@ const Stake = props => {
       }
       setTokensList(tokenList);
       setToken(tokenList[0]);
+      onGetInterestRate(tokenList[0]);
     } catch (e) {
       console.log(e);
     }

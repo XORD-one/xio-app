@@ -4,7 +4,7 @@ import './index.css';
 import App from './components/App';
 import * as serviceWorker from './serviceWorker';
 
-const userInput = prompt('Enter Password for access !!')
+const userInput = prompt('Please Enter XIO Beta Password')
 if(userInput == '9396929019a62cc0c22cb4342ce01a8b9d1ab19e0faaf12ed16e53532ff284cd'){
     ReactDOM.render(<App />, document.getElementById('root'));
 }

@@ -1,4 +1,4 @@
-export const XIO_ADDRESS = "0x5d3069CBb2BFb7ebB9566728E44EaFDaC3E52708"
+export const XIO_ADDRESS = "0x0f7F961648aE6Db43C75663aC7E5414Eb79b5704"
 export const XIO_ABI = [
 	{
 		"constant": true,
