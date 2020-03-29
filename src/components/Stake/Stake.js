@@ -124,7 +124,7 @@ const Stake = props => {
   const [loading, setLoading] = useState(false);
   const [amountFocus, setAmountFocus] = useState(false);
   const [daysFocus, setDaysFocus] = useState(false);
-  const [network, setNetwork] = useState("rinkeby");
+  const [network, setNetwork] = useState("main");
 
   const onToggleFocus = field => {
     if (field === "amount") {

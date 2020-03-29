@@ -144,7 +144,7 @@ const Index = ({
                 justifyContent: "space-between"
               }}
             >
-              {network !== "rinkeby" ? (
+              {network !== "main" ? (
                 <div
                   style={{
                     fontFamily: "'Montserrat', sans-serif",
@@ -155,7 +155,7 @@ const Index = ({
                     padding: "10px 0px"
                   }}
                 >
-                  NETWORK ERROR: SWITCH METAMASK'S NETWORK TO RINKEBY.
+                  NETWORK ERROR: SWITCH METAMASK'S NETWORK TO MAINNET.
                 </div>
               ) : null}
               <Grid>
