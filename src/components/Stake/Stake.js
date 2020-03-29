@@ -204,6 +204,10 @@ const Stake = props => {
     };
   }, [address, balance]);
 
+  useEffect(()=>{
+    onGetInterestRate();
+  },[token])
+
   async function checkWeb3() {
     // Use Mist/MetaMask's provider.
     web3js = new Web3(window.web3.currentProvider);
@@ -257,20 +261,21 @@ const Stake = props => {
     infuraPortal = new web3.eth.Contract(PORTAL_ABI, PORTAL_ADDRESS);
   };
 
-  const getXIOtoETHs = async (amount,token) => {
+  const getXIOtoETHs = async (amount) => {
     try {
       console.log("amo getXIOtoETH ==>", amount);
       const res = await infuraPortal.methods.getXIOtoETH(amount).call();
       console.log("res of xiotoeth ==>", res);
-      return getETHtoALTs(res,token);
+      return getETHtoALTs(res);
     } catch (e) {
       console.log(e);
     }
   };
 
-  const getETHtoALTs = async (amount,token) => {
+  const getETHtoALTs = async (amount) => {
     try {
       console.log("amo ETHtoALT ==>", amount);
+      console.log('tokens ==>',token)
       let res = await infuraPortal.methods
         .getETHtoALT(amount, token.tokenExchangeAddress)
         .call();
@@ -290,7 +295,7 @@ const Stake = props => {
     }
   };
 
-  const onGetInterestRate = async (token) => {
+  const onGetInterestRate = async () => {
     try {
       const res = await infuraPortal.methods.getInterestRate().call();
       //console.log("res ==>", res);
@@ -299,7 +304,7 @@ const Stake = props => {
       //   "initail rate ==>",
       //   await web3js.utils.fromWei(initialRate.toString())
       // );
-      getXIOtoETHs(res,token);
+      getXIOtoETHs(res);
     } catch (e) {
       console.log(e);
     }
@@ -325,7 +330,6 @@ const Stake = props => {
       }
       setTokensList(tokenList);
       setToken(tokenList[0]);
-      onGetInterestRate(tokenList[0]);
     } catch (e) {
       console.log(e);
     }
