@@ -281,11 +281,11 @@ const Stake = props => {
         .call();
       console.log("res of ethToAlt ==>", res);
       res = await web3js.utils.fromWei(res.toString());
-      if (initial) {
+      // if (initial) {
         setUnitRate(res);
         setinterestRate(res);
         setInitial(false);
-      }
+      // }
       res = await web3js.utils.toWei(res.toString());
       return res;
     } catch (e) {
