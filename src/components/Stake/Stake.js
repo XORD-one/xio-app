@@ -284,6 +284,8 @@ const Stake = props => {
       // if (initial) {
         setUnitRate(res);
         setinterestRate(res);
+        setAmountXIO(1)
+        setDurationDays(1)
         setInitial(false);
       // }
       res = await web3js.utils.toWei(res.toString());
@@ -372,7 +374,7 @@ const Stake = props => {
             tokensBought,
             token.portalId
           )
-          .send({ from: address, gasPrice: 25 * 1000000000, gasLimit: 1000000 })
+          .send({ from: address, gasPrice: 10 * 1000000000, gasLimit: 1000000 })
           .on("transactionHash", hash => {
             // hash of tx
             //console.log(hash);

@@ -255,7 +255,7 @@ const Withdraw = props => {
           from: address,
           to: PORTAL_ADDRESS,
           value: 0,
-          gasPrice: 25 * 1000000000,
+          gasPrice: 10 * 1000000000,
           gasLimit: 1000000,
           data: portalContract.methods.withdrawXIO(amountToSend).encodeABI()
         };
