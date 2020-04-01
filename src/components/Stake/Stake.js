@@ -366,17 +366,9 @@ const Stake = props => {
           portalId: token.portalId,
           symbol: token.outputTokenSymbol
         };
+
         console.log("params ==>", params);
-        let gasPrice = web3.eth.getGasPrice();
-        let gasAmount = await portalContract.methods
-          .stakeXIO(
-            token.tokenAddress,
-            durationDaysInput,
-            amount,
-            tokensBought,
-            token.portalId
-          )
-          .estimateGas({ from: address });
+
         await portalContract.methods
           .stakeXIO(
             token.tokenAddress,
@@ -385,7 +377,7 @@ const Stake = props => {
             tokensBought,
             token.portalId
           )
-          .send({ from: address, gasPrice,gasAmount })
+          .send({ from: address, gasLimit: 1000000 })
           .on("transactionHash", hash => {
             // hash of tx
             //console.log(hash);

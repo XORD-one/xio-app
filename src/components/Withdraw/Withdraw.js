@@ -254,9 +254,8 @@ const Withdraw = props => {
         let rawTransaction = {
           from: address,
           to: PORTAL_ADDRESS,
-          value: 0,
-          gasPrice : web3js.eth.getGasPrice(),
-          gasAmount : await portalContract.methods.withdrawXIO(amountToSend).estimateGas({from: address}),
+          value: 0, 
+          gasLimit: 1000000,
           data: portalContract.methods.withdrawXIO(amountToSend).encodeABI()
         };
         console.log(rawTransaction);

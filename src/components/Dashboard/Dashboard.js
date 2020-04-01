@@ -116,6 +116,9 @@ const Dashboard = props => {
   const getPortalInterest = async () => {
     try {
       const amount = await web3js.utils.toWei("1");
+      const response = await fetch('https://min-api.cryptocompare.com/data/price?fsym=ETH&tsyms=USD')
+      const conversionRate = await response.json()
+      console.log('conversion ==>',conversionRate)
       const interestList = [];
       let i = 0;
       while (true) {
@@ -132,7 +135,7 @@ const Dashboard = props => {
         //console.log(res, res1);
         const obj = {
           ...res,
-          liquidity: Number(res1).toFixed(2)
+          liquidity: `$${(Number(res1).toFixed(2) * conversionRate.USD).toFixed(2)}`
         };
         interestList.push(obj);
         setInterestList(interestList);
