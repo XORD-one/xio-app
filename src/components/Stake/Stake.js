@@ -204,9 +204,12 @@ const Stake = props => {
     };
   }, [address, balance]);
 
-  useEffect(()=>{
+  useEffect(() => {
     onGetInterestRate();
-  },[token])
+    console.log("chala ==>");
+    setAmountXIO(1);
+    setDurationDays(1);
+  }, [token.outputTokenSymbol]);
 
   async function checkWeb3() {
     // Use Mist/MetaMask's provider.
@@ -261,7 +264,7 @@ const Stake = props => {
     infuraPortal = new web3.eth.Contract(PORTAL_ABI, PORTAL_ADDRESS);
   };
 
-  const getXIOtoETHs = async (amount) => {
+  const getXIOtoETHs = async amount => {
     try {
       console.log("amo getXIOtoETH ==>", amount);
       const res = await infuraPortal.methods.getXIOtoETH(amount).call();
@@ -272,22 +275,20 @@ const Stake = props => {
     }
   };
 
-  const getETHtoALTs = async (amount) => {
+  const getETHtoALTs = async amount => {
     try {
       console.log("amo ETHtoALT ==>", amount);
-      console.log('tokens ==>',token)
+      console.log("tokens ==>", token);
       let res = await infuraPortal.methods
         .getETHtoALT(amount, token.tokenExchangeAddress)
         .call();
       console.log("res of ethToAlt ==>", res);
       res = await web3js.utils.fromWei(res.toString());
-      // if (initial) {
+      setinterestRate(res);
+      if (initial) {
         setUnitRate(res);
-        setinterestRate(res);
-        setAmountXIO(1)
-        setDurationDays(1)
         setInitial(false);
-      // }
+      }
       res = await web3js.utils.toWei(res.toString());
       return res;
     } catch (e) {
@@ -366,6 +367,16 @@ const Stake = props => {
           symbol: token.outputTokenSymbol
         };
         console.log("params ==>", params);
+        let gasPrice = web3.eth.getGasPrice();
+        let gasAmount = await portalContract.methods
+          .stakeXIO(
+            token.tokenAddress,
+            durationDaysInput,
+            amount,
+            tokensBought,
+            token.portalId
+          )
+          .estimateGas({ from: address });
         await portalContract.methods
           .stakeXIO(
             token.tokenAddress,
@@ -374,7 +385,7 @@ const Stake = props => {
             tokensBought,
             token.portalId
           )
-          .send({ from: address, gasPrice: 10 * 1000000000, gasLimit: 1000000 })
+          .send({ from: address, gasPrice,gasAmount })
           .on("transactionHash", hash => {
             // hash of tx
             //console.log(hash);

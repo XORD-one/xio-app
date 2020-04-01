@@ -560,7 +560,7 @@ const Dashboard = props => {
                             align="center"
                           >
                             <h6 style={{ margin: 0, fontSize: 10 }}>
-                              ETH LIQUIDITY
+                              LIQUIDITY
                             </h6>
                           </TableCell>
                         </TableRow>
