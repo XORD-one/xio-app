@@ -138,7 +138,7 @@ const Stake = props => {
     if (
       (e.target.value.match(/^(\d+\.?\d{0,9}|\.\d{1,9})$/) ||
         e.target.value == "") &&
-      Number(e.target.value) <= 10000
+      Number(e.target.value) <= 5000
     ) {
       setAmountXIO(e.target.value);
       const rate =
@@ -178,6 +178,7 @@ const Stake = props => {
     //console.log(data);
     setToken(data);
     handleClickClose();
+    setInitial(true)
   };
 
   useEffect(() => {
@@ -205,10 +206,10 @@ const Stake = props => {
   }, [address, balance]);
 
   useEffect(() => {
-    onGetInterestRate();
-    console.log("chala ==>");
     setAmountXIO(1);
     setDurationDays(1);
+    onGetInterestRate();
+    console.log("chala ==>");
   }, [token.outputTokenSymbol]);
 
   async function checkWeb3() {

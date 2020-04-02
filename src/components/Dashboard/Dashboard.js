@@ -16,6 +16,7 @@ import Web3 from "web3";
 import { XIO_ABI, XIO_ADDRESS } from "../../contracts/xio";
 import { PORTAL_ABI, PORTAL_ADDRESS } from "../../contracts/portal";
 import { OMG_EXCHANGE } from "../../contracts/omg";
+import {formattedNum} from "../../utils"
 
 let web3js = "";
 
@@ -127,15 +128,19 @@ const Dashboard = props => {
         if (res.tokenAddress === "0x0000000000000000000000000000000000000000") {
           break;
         }
-        let res1 = await portalContract.methods
-          .getETHtoALT(amount, res.tokenExchangeAddress)
-          .call();
+        // let res1 = await portalContract.methods
+        //   .getETHtoALT(amount, res.tokenExchangeAddress)
+        //   .call();
+        console.log('token ==>',res.outputTokenSymbol)
+        let res1 = await web3js.eth.getBalance(res.tokenExchangeAddress)
+        console.log('WEI value of token ==>',res1)
         res1 = await web3js.utils.fromWei(res1.toString());
+        console.log('Eth value of token ==>',res1)
         res.xioStaked = await web3js.utils.fromWei(res.xioStaked.toString());
-        //console.log(res, res1);
+        res.xioStaked = formattedNum(Number(res.xioStaked))
         const obj = {
           ...res,
-          liquidity: `$${(Number(res1).toFixed(2) * conversionRate.USD).toFixed(2)}`
+          liquidity: `$${formattedNum(Number(res1) * conversionRate.USD * 2,true)}`
         };
         interestList.push(obj);
         setInterestList(interestList);
