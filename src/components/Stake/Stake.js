@@ -9,9 +9,9 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { makeStyles } from "@material-ui/core/styles";
 import CustomDialog from "../common/Dialog";
 import Web3 from "web3";
-import { XIO_ABI, XIO_ADDRESS } from "../../contracts/xio";
+import { XIO_ABI, XIO_ADDRESS,XIO_EXCHANGE_ADDRESS } from "../../contracts/xio";
 import { PORTAL_ABI, PORTAL_ADDRESS } from "../../contracts/portal";
-import { OMG_EXCHANGE, OMG_TOKEN } from "../../contracts/omg";
+import { ERC20_ABI } from "../../contracts/erc20";
 
 let web3js = "";
 
@@ -339,6 +339,42 @@ const Stake = props => {
     }
   };
 
+
+  const calculationBeforeStake = async xioAmount => {
+    try {
+      const inputAmountA = (xioAmount * Number(durationDaysInput) * Number(initialRate))/1000000000000000000;
+      console.log('inputAmountA ==>',inputAmountA)
+      const inputReserveA = await contract.methods
+        .balanceOf(XIO_EXCHANGE_ADDRESS)
+        .call();
+      console.log('inputReserveA ==>',inputReserveA)
+      const outputReserveA = await web3.eth.getBalance(XIO_EXCHANGE_ADDRESS);
+      console.log("outputReserveA ==>",outputReserveA)
+      const numeratorA = inputAmountA * outputReserveA * 997;
+      const denominatorA = inputReserveA * 1000 + inputAmountA * 997;
+      const outputAmountA = numeratorA / denominatorA;
+      console.log("outputAmountA ==>",outputAmountA)
+      // ETH to TokenB conversion
+      const inputAmountB = outputAmountA;
+      const inputReserveB = await web3.eth.getBalance(token.tokenExchangeAddress);
+      console.log("inputReserveB ==>",inputReserveB)
+      const tokenContract = new web3.eth.Contract(ERC20_ABI, token.tokenAddress)
+      const outputReserveB = await tokenContract.methods
+        .balanceOf(token.tokenExchangeAddress)
+        .call();
+      console.log("outputReserveB ==>",outputReserveB)
+      const numeratorB = inputAmountB * outputReserveB * 997;
+      const denominatorB = inputReserveB * 1000 + inputAmountB * 997;
+      const outputAmountB = numeratorB / denominatorB;
+      console.log('retured outputAmountB ==>',outputAmountB)
+      return (Math.floor(outputAmountB)).toString()
+    } catch (e) {
+      console.log(e);
+      return null
+    }
+  };
+
+
   const confirmStake = async (updateList, onSetMessage) => {
     try {
       if (address) {
@@ -353,11 +389,13 @@ const Stake = props => {
           Number(rateFromWei);
 
         calculatedValue = calculatedValue.toFixed(18);
-        const tokensBought = await getXIOtoETHs(
-          await web3js.utils.toWei(calculatedValue.toString())
-        );
-
+        const tokensBought = await calculationBeforeStake(amount)
         console.log("tokens bought ==>", tokensBought);
+        if(!tokensBought){
+          onSetMessage("Oops, something went wrong please try again");
+          setLoading(false);
+          return;
+        }
 
         const params = {
           tokenAddress: token.tokenAddress,
@@ -391,6 +429,7 @@ const Stake = props => {
               onSetMessage("XIO Successfully Staked");
               setAmountXIO(1);
               setDurationDays(1);
+              setinterestRate(0)
               updateList();
             }
           });
