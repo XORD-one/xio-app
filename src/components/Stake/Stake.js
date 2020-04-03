@@ -389,13 +389,16 @@ const Stake = props => {
           Number(rateFromWei);
 
         calculatedValue = calculatedValue.toFixed(18);
-        const tokensBought = await calculationBeforeStake(amount)
+        const tokensBought = await getXIOtoETHs(
+          await web3js.utils.toWei(calculatedValue.toString())
+        );
+
         console.log("tokens bought ==>", tokensBought);
-        if(!tokensBought){
-          onSetMessage("Oops, something went wrong please try again");
-          setLoading(false);
-          return;
-        }
+        // if(!tokensBought){
+        //   onSetMessage("Oops, something went wrong please try again");
+        //   setLoading(false);
+        //   return;
+        // }
 
         const params = {
           tokenAddress: token.tokenAddress,
