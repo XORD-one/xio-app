@@ -9,7 +9,11 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { makeStyles } from "@material-ui/core/styles";
 import CustomDialog from "../common/Dialog";
 import Web3 from "web3";
-import { XIO_ABI, XIO_ADDRESS } from "../../contracts/xio";
+import {
+  XIO_ABI,
+  XIO_ADDRESS,
+  XIO_EXCHANGE_ADDRESS
+} from "../../contracts/xio";
 import { PORTAL_ABI, PORTAL_ADDRESS } from "../../contracts/portal";
 import { OMG_EXCHANGE, OMG_TOKEN } from "../../contracts/omg";
 
@@ -138,7 +142,7 @@ const Stake = props => {
     if (
       (e.target.value.match(/^(\d+\.?\d{0,9}|\.\d{1,9})$/) ||
         e.target.value == "") &&
-      Number(e.target.value) <= 10000
+      Number(e.target.value) <= 20000
     ) {
       setAmountXIO(e.target.value);
       const rate =
@@ -326,6 +330,30 @@ const Stake = props => {
       }
       setTokensList(tokenList);
       setToken(tokenList[0]);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const calculationBeforeStake = async xioAmount => {
+    try {
+      const inputAmountA = xioAmount;
+      const inputReserveA = await contract.methods
+        .balanceOf(XIO_EXCHANGE_ADDRESS)
+        .call();
+      const outputReserveA = await web3.eth.getBalance(XIO_EXCHANGE_ADDRESS);
+      const numeratorA = inputAmountA * outputReserveA * 997;
+      const denominatorA = inputReserveA * 1000 + inputAmountA * 997;
+      const outputAmountA = numeratorA / denominatorA;
+      // ETH to TokenB conversion
+      const inputAmountB = outputAmountA;
+      const inputReserveB = await web3.eth.getBalance(token);
+      const outputReserveB = tokenContract.methods
+        .balanceOf(exchangeAddressB)
+        .call();
+      const numeratorB = inputAmountB * outputReserveB * 997;
+      const denominatorB = inputReserveB * 1000 + inputAmountB * 997;
+      const outputAmountB = numeratorB / denominatorB;
     } catch (e) {
       console.log(e);
     }
