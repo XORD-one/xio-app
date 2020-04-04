@@ -318,7 +318,10 @@ const Stake = props => {
       while (true) {
         const res = await portalContract.methods.portalData(index).call();
         //console.log(res);
-        if (res.tokenAddress == "0x0000000000000000000000000000000000000000") {
+        if (res.tokenAddress == "0x0000000000000000000000000000000000000000" &&
+        res.outputTokenSymbol.toString() === "NONE" ) {
+          continue;
+        }else if(res.tokenAddress == "0x0000000000000000000000000000000000000000"){
           break;
         }
         if (tokens[res.outputTokenSymbol]) {
