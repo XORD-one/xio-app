@@ -393,7 +393,7 @@ const Stake = props => {
           await web3js.utils.toWei(calculatedValue.toString())
         );
         let resultA = await web3.utils.fromWei(tokensBought)
-        let tempA = Number(resultA)-Number(resultA*0.006).toFixed(18)
+        let tempA = (Number(resultA)-Number(resultA*0.0075)).toFixed(18)
         tokensBought = await web3.utils.toWei(tempA.toString())
         console.log("tokens bought ==>", tokensBought);
         // if(!tokensBought){
