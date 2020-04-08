@@ -431,7 +431,7 @@ const Stake = props => {
               // tx confirmed
               //console.log(receipt);
               setLoading(false);
-              onSetMessage("XIO Successfully Staked");
+              onSetMessage(`You have successfully staked ${amountXioInput} XIO and can unlock these tokens after ${durationDaysInput} days.`);
               setAmountXIO(1);
               setDurationDays(1);
               setinterestRate(0)
@@ -502,7 +502,7 @@ const Stake = props => {
               //console.log("confirmation ==>", confirmationNumber);
               getIsUnlock();
               onSetMessage(
-                "Wallet Successfully Activated, You Can Now Stake XIO"
+                "You have successfully activated your wallet and can now begin staking XIO"
               );
               setLoading(false);
             }
@@ -608,7 +608,7 @@ const Stake = props => {
                           className="toggleHeadText_2"
                           style={{ fontSize: "10px", height: 26 }}
                         >
-                          {"STAKE AMOUNT"}
+                          {"QUANTITY (XIO)"}
                         </p>
                       </Grid>
 

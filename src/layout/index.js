@@ -64,9 +64,9 @@ const headingDiv = {
 const tabBody = {
   backgroundColor: "#030303",
   margin: 0,
-  borderLeft: "2px solid #2d2d2d",
-  borderRight: "2px solid #2d2d2d",
-  borderBottom: "2px solid #2d2d2d"
+  borderLeft: "1px solid #2d2d2d",
+  borderRight: "1px solid #2d2d2d",
+  borderBottom: "1px solid #2d2d2d"
 };
 const tabBodyLight = {
   backgroundColor: "white",
@@ -446,9 +446,9 @@ const Index = ({
                           <h6 style={{ color: themeDark ? "white" : "black" }}>
                             IF YOU STAKE{" "}
                             <span style={{ color: "#C66065" }}>{amount}</span>{" "}
-                            TOKENS FOR{" "}
+                            XIO FOR{" "}
                             <span style={{ color: "#C66065" }}>{days}</span>{" "}
-                            DAYS , YOU WILL IMMEDIATELY RECEIVE{" "}
+                            DAYS, YOU WILL IMMEDIATELY RECEIVE{" "}
                             <span style={{ color: "#C66065" }}>
                               {rate} {outputToken}
                             </span>
@@ -461,15 +461,15 @@ const Index = ({
                               : onConfirmClick(checkForNewList, handleClick)
                           }
                           style={{
-                            backgroundColor: address
+                            background: address
                               ? loading
                                 ? "#757474"
-                                : "#C66065"
+                                : "linear-gradient(#c66065, #cc979e)"
                               : "#757474",
                             cursor: "pointer",
-                            border: themeDark
-                              ? "1px solid #414141"
-                              : "1px solid #DADADA",
+                            // border: themeDark
+                            //   ? "1px solid #414141"
+                            //   : "1px solid #DADADA",
                             display: "inline-block",
                             padding: 10,
                             borderRadius: 5
@@ -498,26 +498,24 @@ const Index = ({
                           </div>
                         ) : (
                           <h6 style={{ color: themeDark ? "white" : "black" }}>
-                            CURRENT{" "}
-                            <span style={{ color: "#C66065" }}>XIO </span>
-                            BALANCE IS
+                            YOU HAVE{" "}
                             <span style={{ color: "#C66065" }}>
-                              {" "}
-                              {allowedWithdraw}{" "}
-                            </span>{" "}
-                            AVAILABLE FOR UNSTAKE
+                              {allowedWithdraw}{" XIO "}
+                            </span>
+                            {/* <span style={{ color: "#C66065" }}>XIO </span> */}
+                            AVAILABLE TO UNSTAKE
                           </h6>
                         )}
                         <div
                           style={{
-                            backgroundColor: !!(!warning && address)
+                            background: !!(!warning && address)
                               ? loading
                                 ? "#757474"
-                                : "#C66065"
+                                : "linear-gradient(#c66065, #cc979e)"
                               : "#757474",
-                            border: themeDark
-                              ? "1px solid #414141"
-                              : "1px solid #DADADA",
+                            // border: themeDark
+                            //   ? "1px solid #414141"
+                            //   : "1px solid #DADADA",
                             display: "inline-block",
                             padding: 10,
                             borderRadius: 5,

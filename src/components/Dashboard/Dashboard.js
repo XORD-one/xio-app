@@ -17,6 +17,8 @@ import { XIO_ABI, XIO_ADDRESS } from "../../contracts/xio";
 import { PORTAL_ABI, PORTAL_ADDRESS } from "../../contracts/portal";
 import { OMG_EXCHANGE } from "../../contracts/omg";
 import {formattedNum} from "../../utils"
+import spinnerWhite from "../assets/images/spinner-white.svg";
+import spinnerBlack from "../assets/images/spinner-black.svg";
 
 let web3js = "";
 
@@ -102,6 +104,7 @@ const Dashboard = props => {
   const [interest, setInterest] = useState(0);
   const [loadOnStake, setLoadOnStake] = useState(false);
   const [network, setNetwork] = useState("main");
+  const [portalLoading,setPortalLoading] = useState(true)
 
   const getBalance = async () => {
     let res = await contract.methods.balanceOf(address).call();
@@ -143,15 +146,17 @@ const Dashboard = props => {
           liquidity: `$${formattedNum(Number(res1) * conversionRate.USD * 2,true)}`
         };
         interestList.push(obj);
-        setInterestList(interestList);
         i++;
       }
+      setInterestList(interestList);
+      setPortalLoading(false)
     } catch (e) {
       console.log(e);
     }
   };
 
   useEffect(() => {
+    console.log('process env ==>',process.env)
     let timer;
     setLoadOnStake(false);
     ethereum = window.ethereum;
@@ -431,7 +436,7 @@ const Dashboard = props => {
                         letterSpacing: "2px"
                       }}
                     >
-                      ACTIVE PORTAL INFORMATION
+                      USER ACTIVE STAKE INFORMATION
                     </h6>
                   </Grid>
 
@@ -440,13 +445,13 @@ const Dashboard = props => {
                       <TableHead>
                         <TableRow>
                           <TableCell
-                            style={{ width: "33%" }}
+                            style={{ width: "40%" }}
                             className={
                               themeDark ? "tableHeader" : "tableHeaderLight"
                             }
                           >
                             <h6 style={{ margin: 0, fontSize: 10 }}>
-                              PORTAL ID
+                            STAKE REWARDS TOKEN
                             </h6>
                           </TableCell>
                           <TableCell
@@ -467,7 +472,7 @@ const Dashboard = props => {
                             align="center"
                           >
                             <h6 style={{ margin: 0, fontSize: 10 }}>
-                              REMAINING DAYS
+                            DAYS UNTIL XIO RELEASED
                             </h6>
                           </TableCell>
                         </TableRow>
@@ -534,7 +539,7 @@ const Dashboard = props => {
                         letterSpacing: "2px"
                       }}
                     >
-                      PORTAL LIQUIDITY INFORMATION
+                      USER COMPLETED STAKE INFORMATION
                     </h6>
                   </Grid>
 
@@ -574,7 +579,7 @@ const Dashboard = props => {
                         </TableRow>
                       </TableHead>
                       <TableBody>
-                        {!!portalInterestList.length &&
+                        {portalLoading ? null : !!portalInterestList.length &&
                           portalInterestList.map(item => {
                             return (
                               <TableRow>
@@ -608,6 +613,7 @@ const Dashboard = props => {
                           })}
                       </TableBody>
                     </Table>
+                    {portalLoading && <div style={{width:"100%",textAlign:"center"}} > <img src={themeDark ? spinnerBlack : spinnerWhite} /> </div>}
                     {/* </Paper> */}
                   </Grid>
                 </Grid>
