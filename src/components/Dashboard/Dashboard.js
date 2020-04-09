@@ -16,7 +16,7 @@ import Web3 from "web3";
 import { XIO_ABI, XIO_ADDRESS } from "../../contracts/xio";
 import { PORTAL_ABI, PORTAL_ADDRESS } from "../../contracts/portal";
 import { OMG_EXCHANGE } from "../../contracts/omg";
-import {formattedNum} from "../../utils"
+import { formattedNum } from "../../utils";
 import spinnerWhite from "../assets/images/spinner-white.svg";
 import spinnerBlack from "../assets/images/spinner-black.svg";
 
@@ -30,17 +30,17 @@ let accounts = "";
 
 let ethereum = "";
 
-const styles = theme => ({
+const styles = (theme) => ({
   root: {
     width: "100%",
     backgroundColor: "transparent",
-    alignSelf: "cenetr"
+    alignSelf: "cenetr",
   },
   table: {
     backgroundColor: "transparent",
     alignSelf: "cenetr",
 
-    color: "white"
+    color: "white",
   },
   header: {
     fontWeight: "bold",
@@ -49,7 +49,7 @@ const styles = theme => ({
     fontFamily: "'Montserrat', sans-serif",
     letterSpacing: "2px",
     textAlign: "center",
-    paddingTop: 0
+    paddingTop: 0,
   },
   tableBody: {
     color: "white",
@@ -60,14 +60,14 @@ const styles = theme => ({
     fontFamily: "'Montserrat', sans-serif",
     fontWeight: 400,
     paddingBottom: "20px",
-    marginBottom: "40px"
-  }
+    marginBottom: "40px",
+  },
 });
 
 const tabBodyRow3 = {
   display: "flex",
   flexDirection: "column",
-  alignItems: "center"
+  alignItems: "center",
 };
 const tabBodyRow3_1 = {
   flexDirection: "row",
@@ -75,7 +75,7 @@ const tabBodyRow3_1 = {
   justifyContent: "center",
   border: "1px solid #414141",
   backgroundColor: "#1C1C1C",
-  borderRadius: "3px"
+  borderRadius: "3px",
 };
 const tabBodyRow3_1_Light = {
   flexDirection: "row",
@@ -83,18 +83,18 @@ const tabBodyRow3_1_Light = {
   justifyContent: "center",
   border: "1px solid #DADADA",
   backgroundColor: "#FCFCFC",
-  borderRadius: "3px"
+  borderRadius: "3px",
 };
 const tabBodyRow3_1_1 = {
   flexDirection: "row",
-  justifyContent: "center"
+  justifyContent: "center",
 };
 
 const tabBodyRow3_1_2 = {
-  paddingBottom: "20px"
+  paddingBottom: "20px",
 };
 
-const Dashboard = props => {
+const Dashboard = (props) => {
   const { classes } = props;
   const [address, setAccountAddress] = useState("");
   const [balance, setBalance] = useState(0);
@@ -104,7 +104,7 @@ const Dashboard = props => {
   const [interest, setInterest] = useState(0);
   const [loadOnStake, setLoadOnStake] = useState(false);
   const [network, setNetwork] = useState("main");
-  const [portalLoading,setPortalLoading] = useState(true)
+  const [portalLoading, setPortalLoading] = useState(true);
 
   const getBalance = async () => {
     let res = await contract.methods.balanceOf(address).call();
@@ -120,43 +120,51 @@ const Dashboard = props => {
   const getPortalInterest = async () => {
     try {
       const amount = await web3js.utils.toWei("1");
-      const response = await fetch('https://min-api.cryptocompare.com/data/price?fsym=ETH&tsyms=USD')
-      const conversionRate = await response.json()
-      console.log('conversion ==>',conversionRate)
+      const response = await fetch(
+        "https://min-api.cryptocompare.com/data/price?fsym=ETH&tsyms=USD"
+      );
+      const conversionRate = await response.json();
+      console.log("conversion ==>", conversionRate);
       const interestList = [];
       let i = 0;
       while (true) {
         const res = await portalContract.methods.portalData(i).call();
-        //console.log(res);
+        console.log(res);
+        if (res.outputTokenSymbol === "NONE") {
+          i++;
+          continue;
+        }
         if (res.tokenAddress === "0x0000000000000000000000000000000000000000") {
           break;
         }
         // let res1 = await portalContract.methods
         //   .getETHtoALT(amount, res.tokenExchangeAddress)
         //   .call();
-        console.log('token ==>',res.outputTokenSymbol)
-        let res1 = await web3js.eth.getBalance(res.tokenExchangeAddress)
-        console.log('WEI value of token ==>',res1)
+        console.log("token ==>", res.outputTokenSymbol);
+        let res1 = await web3js.eth.getBalance(res.tokenExchangeAddress);
+        console.log("WEI value of token ==>", res1);
         res1 = await web3js.utils.fromWei(res1.toString());
-        console.log('Eth value of token ==>',res1)
+        console.log("Eth value of token ==>", res1);
         res.xioStaked = await web3js.utils.fromWei(res.xioStaked.toString());
-        res.xioStaked = formattedNum(Number(res.xioStaked))
+        res.xioStaked = formattedNum(Number(res.xioStaked));
         const obj = {
           ...res,
-          liquidity: `$${formattedNum(Number(res1) * conversionRate.USD * 2,true)}`
+          liquidity: `$${formattedNum(
+            Number(res1) * conversionRate.USD * 2,
+            true
+          )}`,
         };
         interestList.push(obj);
         i++;
       }
       setInterestList(interestList);
-      setPortalLoading(false)
+      setPortalLoading(false);
     } catch (e) {
       console.log(e);
     }
   };
 
   useEffect(() => {
-    console.log('process env ==>',process.env)
     let timer;
     setLoadOnStake(false);
     ethereum = window.ethereum;
@@ -198,7 +206,7 @@ const Dashboard = props => {
     if (getNetwork !== network) setNetwork(getNetwork);
   }
 
-  const onConnect = async onSetMessage => {
+  const onConnect = async (onSetMessage) => {
     ethereum = window.ethereum;
     if (!ethereum || !ethereum.isMetaMask) {
       // throw new Error('Please install MetaMask.')
@@ -233,7 +241,7 @@ const Dashboard = props => {
     getStakerData(res);
   };
 
-  const getStakerData = async data => {
+  const getStakerData = async (data) => {
     try {
       let amount = 0;
       const portalInfo = [];
@@ -268,21 +276,25 @@ const Dashboard = props => {
   };
 
   const truncateValue = (value) => {
-    console.log(value.toString().length > 4)
-    if(value.toString().length <= 5){
-      return value
+    console.log(value.toString().length > 4);
+    if (value.toString().length <= 5) {
+      return value;
+    } else if (
+      value.toString().length > 5 &&
+      value.toString().slice(0, 6).indexOf(".") !== -1
+    ) {
+      return Number(value).toFixed(2);
+    } else if (
+      value.toString().length > 5 &&
+      value.toString().slice(0, 6).indexOf(".") == -1
+    ) {
+      return value.toString().slice(0, 4) + "..";
     }
-    else if(value.toString().length > 5 && value.toString().slice(0, 6).indexOf('.') !== -1){
-      return Number(value).toFixed(2)
-    }
-    else if(value.toString().length > 5 && value.toString().slice(0, 6).indexOf('.') == -1){
-      return value.toString().slice(0, 4) + ".." 
-    }
-    return value.toString().slice(0, 4) + ".." 
-  }
+    return value.toString().slice(0, 4) + "..";
+  };
 
   const balanceFromWei = balance / 1000000000000000000;
-  const availableXio = truncateValue(balanceFromWei)
+  const availableXio = truncateValue(balanceFromWei);
   return (
     <>
       <ThemeConsumer>
@@ -321,7 +333,7 @@ const Dashboard = props => {
                       fontStyle: "italic",
                       letterSpacing: "2px",
                       textAlign: "center",
-                      height: 22
+                      height: 22,
                     }}
                     className="firstSectionHeadings"
                   >
@@ -335,7 +347,7 @@ const Dashboard = props => {
                         fontWeight: "bold",
                         textAlign: "center",
                         padding: "0px",
-                        overflowWrap: "break-word"
+                        overflowWrap: "break-word",
                       }}
                     >
                       {availableXio}
@@ -359,7 +371,7 @@ const Dashboard = props => {
                       fontStyle: "italic",
                       letterSpacing: "2px",
                       textAlign: "center",
-                      height: 22
+                      height: 22,
                     }}
                     className="firstSectionHeadings"
                   >
@@ -371,7 +383,7 @@ const Dashboard = props => {
                       color: themeDark ? "white" : "black",
                       fontWeight: "bold",
                       textAlign: "center",
-                      padding: "0px"
+                      padding: "0px",
                     }}
                   >
                     {stakedXio}
@@ -394,7 +406,7 @@ const Dashboard = props => {
                       fontStyle: "italic",
                       letterSpacing: "2px",
                       textAlign: "center",
-                      height: 22
+                      height: 22,
                     }}
                     className="firstSectionHeadings"
                   >
@@ -406,7 +418,7 @@ const Dashboard = props => {
                       color: themeDark ? "white" : "black",
                       fontWeight: "bold",
                       textAlign: "center",
-                      padding: "0px"
+                      padding: "0px",
                     }}
                   >
                     {`${interest}%`}
@@ -433,7 +445,7 @@ const Dashboard = props => {
                         color: "#C66065",
                         fontFamily: "'Montserrat', sans-serif",
                         fontStyle: "italic",
-                        letterSpacing: "2px"
+                        letterSpacing: "2px",
                       }}
                     >
                       USER ACTIVE STAKE INFORMATION
@@ -451,7 +463,7 @@ const Dashboard = props => {
                             }
                           >
                             <h6 style={{ margin: 0, fontSize: 10 }}>
-                            STAKE REWARDS TOKEN
+                              STAKE REWARDS TOKEN
                             </h6>
                           </TableCell>
                           <TableCell
@@ -472,14 +484,14 @@ const Dashboard = props => {
                             align="center"
                           >
                             <h6 style={{ margin: 0, fontSize: 10 }}>
-                            DAYS UNTIL XIO RELEASED
+                              DAYS UNTIL XIO RELEASED
                             </h6>
                           </TableCell>
                         </TableRow>
                       </TableHead>
                       <TableBody style={{ paddingBottom: "20px" }}>
                         {!!activePortal.length &&
-                          activePortal.map(item => {
+                          activePortal.map((item) => {
                             console.log("items ==>", item);
                             if (item.Days !== 0) {
                               return (
@@ -536,7 +548,7 @@ const Dashboard = props => {
                         color: "#C66065",
                         fontFamily: "'Montserrat', sans-serif",
                         fontStyle: "italic",
-                        letterSpacing: "2px"
+                        letterSpacing: "2px",
                       }}
                     >
                       USER COMPLETED STAKE INFORMATION
@@ -579,41 +591,50 @@ const Dashboard = props => {
                         </TableRow>
                       </TableHead>
                       <TableBody>
-                        {portalLoading ? null : !!portalInterestList.length &&
-                          portalInterestList.map(item => {
-                            return (
-                              <TableRow>
-                                <TableCell
-                                  style={{ fontSize: 10 }}
-                                  className={
-                                    themeDark ? "tableBody" : "tableBodyLight"
-                                  }
-                                  style={{ latterSpacing: "2px" }}
-                                >
-                                  {item.outputTokenSymbol}
-                                </TableCell>
-                                <TableCell
-                                  style={{ fontSize: 10 }}
-                                  className={
-                                    themeDark ? "tableBody" : "tableBodyLight"
-                                  }
-                                >
-                                  {item.xioStaked}
-                                </TableCell>
-                                <TableCell
-                                  style={{ fontSize: 10 }}
-                                  className={
-                                    themeDark ? "tableBody" : "tableBodyLight"
-                                  }
-                                >
-                                  {item.liquidity}
-                                </TableCell>
-                              </TableRow>
-                            );
-                          })}
+                        {portalLoading
+                          ? null
+                          : !!portalInterestList.length &&
+                            portalInterestList.map((item) => {
+                              return (
+                                <TableRow>
+                                  <TableCell
+                                    style={{ fontSize: 10 }}
+                                    className={
+                                      themeDark ? "tableBody" : "tableBodyLight"
+                                    }
+                                    style={{ latterSpacing: "2px" }}
+                                  >
+                                    {item.outputTokenSymbol}
+                                  </TableCell>
+                                  <TableCell
+                                    style={{ fontSize: 10 }}
+                                    className={
+                                      themeDark ? "tableBody" : "tableBodyLight"
+                                    }
+                                  >
+                                    {item.xioStaked}
+                                  </TableCell>
+                                  <TableCell
+                                    style={{ fontSize: 10 }}
+                                    className={
+                                      themeDark ? "tableBody" : "tableBodyLight"
+                                    }
+                                  >
+                                    {item.liquidity}
+                                  </TableCell>
+                                </TableRow>
+                              );
+                            })}
                       </TableBody>
                     </Table>
-                    {portalLoading && <div style={{width:"100%",textAlign:"center"}} > <img src={themeDark ? spinnerBlack : spinnerWhite} /> </div>}
+                    {portalLoading && (
+                      <div style={{ width: "100%", textAlign: "center" }}>
+                        {" "}
+                        <img
+                          src={themeDark ? spinnerBlack : spinnerWhite}
+                        />{" "}
+                      </div>
+                    )}
                     {/* </Paper> */}
                   </Grid>
                 </Grid>
@@ -627,6 +648,6 @@ const Dashboard = props => {
 };
 
 Dashboard.propTypes = {
-  classes: PropTypes.object.isRequired
+  classes: PropTypes.object.isRequired,
 };
 export default withStyles(styles)(Dashboard);
