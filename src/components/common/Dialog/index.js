@@ -89,8 +89,10 @@ const CustomDialog = props => {
             textAlign: "center",
             border: "2px solid #3E3E3E",
             borderTop: "0px",
-            paddingTop: "25px"
+            paddingTop: "25px",
+            height:170
           }}
+          className="listContain"
         >
           {list.map((item, i) => {
             return (

@@ -475,7 +475,7 @@ const Withdraw = props => {
                           value={amount}
                           style={
                             Number(amount) > Number(stakedXio)
-                              ? { color: "red" }
+                              ? { color: "#C66065" }
                               : {}
                           }
                           onChange={e => onChangeAmount(e)}

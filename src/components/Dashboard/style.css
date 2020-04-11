@@ -10,7 +10,7 @@
 }
 .firstSectionItemLight {
   border: 1px solid #DADADA !important;
-  background-color: #FCFCFC !important;
+  background-color: #f7f7f7 !important;
   border-radius: 3px !important;
   padding: 10px 20px !important;
 }
@@ -34,6 +34,7 @@
   letter-spacing: 2px !important;
   text-align: center !important;
   padding-top: 0 !important;
+  background-color: #1c1c1c!important;
 }
 .tableHeaderLight {
   font-weight: bold !important;
@@ -43,7 +44,27 @@
   letter-spacing: 2px !important;
   text-align: center !important;
   padding-top: 0 !important;
+  background-color: #f7f7f7!important;
 }
+/* .MuiTableCell-stickyHeader{
+  background-color: transparent!important;
+} */
+
+.MuiTableContainer-root::-webkit-scrollbar {
+    width: 6px!important;
+    background-color: #8d8d8d!important;
+  }
+
+  .MuiTableContainer-root::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+    background-color: #8d8d8d;
+  }
+  
+  .MuiTableContainer-root::-webkit-scrollbar-thumb {
+    background-color: #C66065;
+    border-radius: 5px;
+  }
+
 
 .tableBody {
   color: white !important;

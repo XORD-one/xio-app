@@ -5,7 +5,7 @@ import {
   Button,
   Switch,
   FormControlLabel,
-  Link
+  Link,
 } from "@material-ui/core";
 import RocketIcon from "@material-ui/icons/Delete";
 import Logo from "../components/assets/images/xio-logo.svg";
@@ -19,31 +19,32 @@ import {
   faTwitter,
   faYoutube,
   faTelegram,
-  faLinkedinIn
+  faLinkedinIn,
 } from "@fortawesome/free-brands-svg-icons";
+import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
 import { useHistory } from "react-router-dom";
 import xordLogoLight from "../components/assets/images/xord-logo-black.png";
 import xordLogoDark from "../components/assets/images/xord-logo-white.png";
 import spinnerWhite from "../components/assets/images/spinner-white.svg";
 import spinnerBlack from "../components/assets/images/spinner-black.svg";
 import Toast from "../components/common/Toast";
-import Agreement from "../components/common/Agreement/index"
+import Agreement from "../components/common/Agreement/index";
 
 const layoutSubHeading = {
-  color: "rgb(198, 96, 101)"
+  color: "rgb(198, 96, 101)",
 };
 
 const layoutHeadingLight = {
   color: "black",
-  letterSpacing: 6
+  letterSpacing: 6,
 };
 const layoutHeadingDark = {
   color: "white",
-  letterSpacing: 6
+  letterSpacing: 6,
 };
 
 const tableHeader = {
-  color: "white"
+  color: "white",
 };
 
 const socialIcon = {
@@ -51,14 +52,14 @@ const socialIcon = {
   margin: 0,
   display: "inline-block",
   marginRight: 10,
-  cursor: "pointer"
+  cursor: "pointer",
 };
 
 const headingDiv = {
   flexDirection: "column",
   fontFamily: "'Montserrat', sans-serif",
   fontWeight: "bold",
-  alignItems: "center"
+  alignItems: "center",
 };
 
 const tabBody = {
@@ -66,14 +67,14 @@ const tabBody = {
   margin: 0,
   borderLeft: "1px solid #2d2d2d",
   borderRight: "1px solid #2d2d2d",
-  borderBottom: "1px solid #2d2d2d"
+  borderBottom: "1px solid #2d2d2d",
 };
 const tabBodyLight = {
   backgroundColor: "white",
   margin: 0,
   borderLeft: "1px solid #DADADA",
   borderRight: "1px solid #DADADA",
-  borderBottom: "1px solid #DADADA"
+  borderBottom: "1px solid #DADADA",
 };
 
 const Index = ({
@@ -93,7 +94,8 @@ const Index = ({
   outputToken,
   allowedWithdraw,
   warning,
-  network
+  network,
+  transactionMessage,
 }) => {
   const [completed, setCompleted] = useState(false);
 
@@ -117,7 +119,7 @@ const Index = ({
         openToast,
         handleClick,
         open,
-        toggleAgreement
+        toggleAgreement,
       }) => {
         const addressToShow =
           address &&
@@ -125,23 +127,23 @@ const Index = ({
         const toastProps = {
           handleClose,
           message,
-          open: openToast
+          open: openToast,
         };
         const agreementProps = {
           open,
-          onClose:toggleAgreement
-        }
+          onClose: toggleAgreement,
+        };
         return (
           <>
             <Agreement {...agreementProps} />
-            <Toast {...toastProps}  />
+            <Toast {...toastProps} />
             <div
               style={{
                 backgroundColor: themeDark ? "#1C1C1C" : "white",
                 minHeight: "100vh",
                 display: "flex",
                 flexDirection: "column",
-                justifyContent: "space-between"
+                justifyContent: "space-between",
               }}
             >
               {network !== "main" ? (
@@ -152,7 +154,7 @@ const Index = ({
                     backgroundColor: "#C66065",
                     color: "white",
                     textAlign: "center",
-                    padding: "10px 0px"
+                    padding: "10px 0px",
                   }}
                 >
                   NETWORK ERROR: SWITCH METAMASK'S NETWORK TO MAINNET.
@@ -259,9 +261,11 @@ const Index = ({
                           : "1px solid #DADADA",
                         display: "inline-block",
                         padding: "8px 15px 10px 10px",
-                        borderRadius: 5
+                        borderRadius: 5,
                       }}
-                      className={themeDark ? "connectButton" : "connectButtonLight"}
+                      className={
+                        themeDark ? "connectButton" : "connectButtonLight"
+                      }
                       onClick={() => onConnect(handleClick)}
                     >
                       <img
@@ -271,7 +275,7 @@ const Index = ({
                         style={{
                           margin: "0px 12px 0px 0px",
                           position: "relative",
-                          top: 5
+                          top: 5,
                         }}
                       />
                       <h4
@@ -281,7 +285,7 @@ const Index = ({
                           fontFamily: "'Montserrat', sans-serif",
                           margin: 0,
                           height: "20px",
-                          letterSpacing: "2px"
+                          letterSpacing: "2px",
                         }}
                       >
                         {address ? addressToShow : "CONNECT WALLET"}
@@ -316,13 +320,13 @@ const Index = ({
                         ? {
                             border: "1px solid #C66065",
                             borderRadius: "5px",
-                            fontFamily: "'Montserrat', sans-serif"
+                            fontFamily: "'Montserrat', sans-serif",
                           }
                         : {
-                            backgroundColor: "#FCFCFC",
+                            backgroundColor: "#f7f7f7",
                             border: "1px solid #C66065",
                             borderRadius: "5px",
-                            fontFamily: "'Montserrat', sans-serif"
+                            fontFamily: "'Montserrat', sans-serif",
                           }
                     }
                     md={8}
@@ -339,7 +343,7 @@ const Index = ({
                             : "#DADADA",
                         justifyContent: "flex-start",
                         letterSpacing: "2px",
-                        cursor: "pointer"
+                        cursor: "pointer",
                       }}
                       className="tabarText"
                       onClick={() => history.push("/")}
@@ -359,7 +363,7 @@ const Index = ({
                         justifyContent: "center",
                         letterSpacing: "2px",
                         cursor: "pointer",
-                        marginLeft:"-30px"
+                        marginLeft: "-30px",
                       }}
                       className="tabarText"
                       onClick={() => history.push("/stake")}
@@ -378,7 +382,7 @@ const Index = ({
                             : "#DADADA",
                         justifyContent: "flex-end",
                         letterSpacing: "2px",
-                        cursor: "pointer"
+                        cursor: "pointer",
                       }}
                       className="tabarText"
                       onClick={() => history.push("/unstake")}
@@ -398,7 +402,7 @@ const Index = ({
 
                     {completed && (
                       <Grid
-                        className=" tableHeader"
+                        className="tableHeader"
                         style={tableHeader}
                         item
                         xs={12}
@@ -409,7 +413,7 @@ const Index = ({
                     )}
                   </Grid>
                   <Grid
-                    className=" tableHeader"
+                    className="tableHeader"
                     style={tableHeader}
                     item
                     md={6}
@@ -420,71 +424,133 @@ const Index = ({
                       <>
                         {loading ? (
                           <div style={{ margin: "17px 0px" }}>
-                            {unlock ? (
-                              <img
-                                src={themeDark ? spinnerBlack : spinnerWhite}
-                              />
-                            ) : (
-                              <>
-                                <span
-                                  style={{
-                                    fontSize: 13,
-                                    color: themeDark ? "white" : "black"
-                                  }}
+                            <>
+                              <span
+                                style={{
+                                  fontSize: 13,
+                                  color: themeDark ? "white" : "black",
+                                }}
+                              >
+                                {transactionMessage.message || (
+                                  <>
+                                    <span
+                                      style={{
+                                        color: themeDark ? "white" : "black",
+                                      }}
+                                    >
+                                      YOUR STAKE OF{" "}
+                                      <span style={{ color: "#C66065" }}>
+                                        {amount}
+                                        {" XIO"}
+                                      </span>{" "}
+                                      FOR{" "}
+                                      <span style={{ color: "#C66065" }}>
+                                        {days}
+                                        {" DAYS"}
+                                      </span>{" "}
+                                      IS PENDING, PLEASE WAIT{" "}
+                                    </span>
+                                  </>
+                                )}{" "}
+                              </span>
+                              {transactionMessage.hash ? (
+                                <Link
+                                  href={`https://etherscan.io/tx/${transactionMessage.hash}`}
+                                  rel="noreferrer"
+                                  target="_blank"
+                                  style={{ position: "relative", top: 7 }}
                                 >
-                                  PLEASE CONFIRM PERMISSION TO ACTIVATE YOUR
-                                  WALLET{" "}
-                                </span>
+                                  <img
+                                    src={
+                                      themeDark ? spinnerBlack : spinnerWhite
+                                    }
+                                  />
+                                </Link>
+                              ) : (
                                 <img
                                   style={{ position: "relative", top: 7 }}
                                   src={themeDark ? spinnerBlack : spinnerWhite}
                                 />
-                              </>
-                            )}
+                              )}
+                            </>
                           </div>
                         ) : (
                           <h6 style={{ color: themeDark ? "white" : "black" }}>
                             IF YOU STAKE{" "}
-                            <span style={{ color: "#C66065" }}>{amount}</span>{" "}
-                            XIO FOR{" "}
-                            <span style={{ color: "#C66065" }}>{days}</span>{" "}
-                            DAYS, YOU WILL IMMEDIATELY RECEIVE{" "}
+                            <span style={{ color: "#C66065" }}>
+                              {amount} {" XIO"}
+                            </span>{" "}
+                            FOR{" "}
+                            <span style={{ color: "#C66065" }}>
+                              {days} {" DAYS"}
+                            </span>
+                            , YOU WILL IMMEDIATELY RECEIVE{" "}
                             <span style={{ color: "#C66065" }}>
                               {rate} {outputToken}
                             </span>
                           </h6>
                         )}
-                        <div
-                          onClick={() =>
-                            loading
-                              ? null
-                              : onConfirmClick(checkForNewList, handleClick)
-                          }
-                          style={{
-                            background: address
-                              ? loading
-                                ? "#757474"
-                                : "linear-gradient(#c66065, #cc979e)"
-                              : "#757474",
-                            cursor: "pointer",
-                            // border: themeDark
-                            //   ? "1px solid #414141"
-                            //   : "1px solid #DADADA",
-                            display: "inline-block",
-                            padding: 10,
-                            borderRadius: 5
-                          }}
-                        >
-                          <h4
-                            style={{
-                              color: "white",
-                              display: "inline-block",
-                              fontFamily: "'Montserrat', sans-serif",
-                              margin: 0
-                            }}
+                        <div className="actionWrapper">
+                          <div
+                            onClick={() =>
+                              loading ? null : approve(handleClick)
+                            }
+                            className={
+                              address && !unlock
+                                ? loading
+                                  ? "confirmStakeWrapperDisable"
+                                  : "confirmStakeWrapper"
+                                : "confirmStakeWrapperDisable"
+                            }
                           >
-                            {unlock ? "CONFIRM STAKE" : "ACTIVATE WALLET"}
-                          </h4>
+                            <h4
+                              style={{
+                                color: "white",
+                                display: "inline-block",
+                                fontFamily: "'Montserrat', sans-serif",
+                                margin: 0,
+                              }}
+                            >
+                              {unlock ? (
+                                <span>
+                                  WALLET ACTIVATED{" "}
+                                  <FontAwesomeIcon
+                                    color="#C66065"
+                                    icon={faCheckCircle}
+                                  />
+                                </span>
+                              ) : (
+                                "ACTIVATE WALLET"
+                              )}
+                            </h4>
+                          </div>
+                        </div>
+                        <div className="actionWrapper">
+                          <div
+                            onClick={() =>
+                              loading
+                                ? null
+                                : onConfirmClick(checkForNewList, handleClick)
+                            }
+                            className={
+                              address && unlock
+                                ? loading
+                                  ? "confirmStakeWrapperDisable"
+                                  : "confirmStakeWrapper"
+                                : "confirmStakeWrapperDisable"
+                            }
+                          >
+                            <h4
+                              style={{
+                                color: "white",
+                                display: "inline-block",
+                                fontFamily: "'Montserrat', sans-serif",
+                                margin: 0,
+                              }}
+                            >
+                              {"CONFIRM STAKE"}
+                            </h4>
+                          </div>
                         </div>
                       </>
                     )}
@@ -500,27 +566,21 @@ const Index = ({
                           <h6 style={{ color: themeDark ? "white" : "black" }}>
                             YOU HAVE{" "}
                             <span style={{ color: "#C66065" }}>
-                              {allowedWithdraw}{" XIO "}
+                              {allowedWithdraw}
+                              {" XIO "}
                             </span>
                             {/* <span style={{ color: "#C66065" }}>XIO </span> */}
                             AVAILABLE TO UNSTAKE
                           </h6>
                         )}
                         <div
-                          style={{
-                            background: !!(!warning && address)
+                          className={
+                            !!(!warning && address)
                               ? loading
-                                ? "#757474"
-                                : "linear-gradient(#c66065, #cc979e)"
-                              : "#757474",
-                            // border: themeDark
-                            //   ? "1px solid #414141"
-                            //   : "1px solid #DADADA",
-                            display: "inline-block",
-                            padding: 10,
-                            borderRadius: 5,
-                            cursor: "pointer"
-                          }}
+                                ? "confirmStakeWrapperDisable"
+                                : "confirmStakeWrapper"
+                              : "confirmStakeWrapperDisable"
+                          }
                           onClick={() =>
                             !warning && !loading
                               ? onWithdraw(checkForNewList, handleClick)
@@ -532,7 +592,7 @@ const Index = ({
                               color: "white",
                               display: "inline-block",
                               fontFamily: "'Montserrat', sans-serif",
-                              margin: 0
+                              margin: 0,
                             }}
                           >
                             CONFIRM UNSTAKE
@@ -550,7 +610,7 @@ const Index = ({
                             display: "inline-block",
                             padding: 10,
                             borderRadius: 5,
-                            marginTop: "40px"
+                            marginTop: "40px",
                           }}
                         >
                           <h4
@@ -558,7 +618,7 @@ const Index = ({
                               color: "#b8b8b8",
                               display: "inline-block",
                               fontFamily: "'Montserrat', sans-serif",
-                              margin: 0
+                              margin: 0,
                             }}
                           >
                             START OVER
@@ -579,7 +639,7 @@ const Index = ({
                     flex: 1,
                     padding: "10px 0px 15px",
                     margin: "0px 60px",
-                    textDecoration: "none"
+                    textDecoration: "none",
                   }}
                 >
                   <div>
@@ -589,7 +649,7 @@ const Index = ({
                         fontFamily: "'Montserrat', sans-serif",
                         fontSize: "12px",
                         letterSpacing: "2px",
-                        fontWeight: "bold"
+                        fontWeight: "bold",
                       }}
                     >
                       POWERED BY

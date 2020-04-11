@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Grid, Typography, Button, Tooltip } from "@material-ui/core";
-
+import TableContainer from '@material-ui/core/TableContainer'
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
@@ -42,6 +42,9 @@ const styles = (theme) => ({
 
     color: "white",
   },
+  container: {
+    maxHeight: 280,
+  },
   header: {
     fontWeight: "bold",
     color: "white",
@@ -82,7 +85,7 @@ const tabBodyRow3_1_Light = {
   alignItems: "center",
   justifyContent: "center",
   border: "1px solid #DADADA",
-  backgroundColor: "#FCFCFC",
+  backgroundColor: "#f7f7f7",
   borderRadius: "3px",
 };
 const tabBodyRow3_1_1 = {
@@ -454,8 +457,8 @@ const Dashboard = (props) => {
 
                   <Grid container item style={tabBodyRow3_1_2} md={10}>
                     <Table className={classes.table} align="center">
-                      <TableHead>
-                        <TableRow>
+                      <TableHead style={{background:"#1c1c1c"}} >
+                        <TableRow  >
                           <TableCell
                             style={{ width: "40%" }}
                             className={
@@ -557,7 +560,8 @@ const Dashboard = (props) => {
 
                   <Grid container item style={tabBodyRow3_1_2} md={10}>
                     {/* <Paper className={classes.root} align="center"> */}
-                    <Table className={classes.table} align="center">
+                    <TableContainer className={classes.container} >
+                    <Table stickyHeader className={classes.table} align="center">
                       <TableHead>
                         <TableRow>
                           <TableCell
@@ -627,6 +631,7 @@ const Dashboard = (props) => {
                             })}
                       </TableBody>
                     </Table>
+                    </TableContainer>
                     {portalLoading && (
                       <div style={{ width: "100%", textAlign: "center" }}>
                         {" "}

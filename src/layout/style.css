@@ -59,7 +59,38 @@
     color: #C66065!important;
 }
 
+.confirmStakeWrapper{
+    background:linear-gradient(#c66065, #cc979e);
+    cursor: pointer;                            
+    display: inline-block;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+.confirmStakeWrapper:hover{
+    background: black;
+}
+
+.confirmStakeWrapperDisable{
+    background:#757474;
+    cursor: pointer;
+    display: inline-block;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+
+}
+
+.actionWrapper{
+    padding: 10px;
+    display: inline-block;
+}
+
 @media  screen and (max-width: 599px){
+    .actionWrapper{
+        display: block;
+    }
     .socialIcons{
         order: 2;
         text-align: center;

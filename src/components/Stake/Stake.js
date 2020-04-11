@@ -117,7 +117,7 @@ const Stake = props => {
   const [isUnlock, setIsUnlock] = useState(false);
   const [interestRate, setinterestRate] = useState("");
   const [token, setToken] = useState("OMG");
-  const [balance, setBalance] = useState(false);
+  const [balance, setBalance] = useState(0);
   const [unitRate, setUnitRate] = useState(0);
   const [tokensList, setTokensList] = useState([]);
   const [initial, setInitial] = useState(true);
@@ -125,6 +125,9 @@ const Stake = props => {
   const [amountFocus, setAmountFocus] = useState(false);
   const [daysFocus, setDaysFocus] = useState(false);
   const [network, setNetwork] = useState("main");
+  const [transactionMessage,setTransactionMessage] = useState({message:"",hash:""})
+  const [limit,setLimit] = useState({xio:5000,days:30})
+  const [isAmountLimit,setIsAmountLimit] = useState(false)
 
   const onToggleFocus = field => {
     if (field === "amount") {
@@ -134,16 +137,24 @@ const Stake = props => {
     }
   };
 
+
   const onChangeAmount = e => {
     if (
       (e.target.value.match(/^(\d+\.?\d{0,9}|\.\d{1,9})$/) ||
         e.target.value == "") &&
-      Number(e.target.value) <= 5000
+      Number(e.target.value) <= limit.xio
     ) {
       setAmountXIO(e.target.value);
       const rate =
         Number(e.target.value) * Number(durationDaysInput) * unitRate;
       //console.log("ate ==>", rate);
+      if(Number(e.target.value)>Number(balance)){
+        setIsAmountLimit(true)
+        console.log("bara ==>")
+      }else{
+        setIsAmountLimit(false)
+        console.log("chota ==>")
+      }
       setinterestRate(rate);
       // if (e.target.value) getXIOtoETHs(e.target.value, durationDaysInput);
     } else {
@@ -155,7 +166,7 @@ const Stake = props => {
     var reg = new RegExp("^\\d+$");
     if (
       (reg.test(e.target.value) || e.target.value == "") &&
-      Number(e.target.value) <= 30
+      Number(e.target.value) <= limit.days
     ) {
       setDurationDays(e.target.value);
       const rate = Number(e.target.value) * Number(amountXioInput) * unitRate;
@@ -194,6 +205,9 @@ const Stake = props => {
       initXioContract();
       initPortalContract();
       getTokensData();
+      getXioLimit();
+      getDaysLimit();
+      getBalance()
     }
     if (contract && address) {
       getIsUnlock();
@@ -206,11 +220,26 @@ const Stake = props => {
   }, [address, balance]);
 
   useEffect(() => {
-    setAmountXIO(1);
-    setDurationDays(1);
     onGetInterestRate();
-    console.log("chala ==>");
   }, [token.outputTokenSymbol]);
+
+  const getXioLimit = async () => {
+    try{
+      const res = await portalContract.methods.getXIOStakeQuantity().call()
+      const xio = await web3js.utils.fromWei(res.toString());
+      console.log('limit of xio ==>',xio)
+      setLimit({...limit,xio})
+    }
+    catch(e){
+      console.log(e)
+    }
+  }
+
+  const getDaysLimit = async () => {
+    const res = await portalContract.methods.getDays().call()
+    console.log('days limit ==>',res)
+    setLimit({...limit,days:res})
+  }
 
   async function checkWeb3() {
     // Use Mist/MetaMask's provider.
@@ -288,6 +317,8 @@ const Stake = props => {
       setinterestRate(res);
       if (initial) {
         setUnitRate(res);
+        const interests = (Number(amountXioInput) * Number(durationDaysInput) * Number(res)).toFixed(4)
+        setinterestRate(interests)
         setInitial(false);
       }
       res = await web3js.utils.toWei(res.toString());
@@ -382,7 +413,12 @@ const Stake = props => {
   const confirmStake = async (updateList, onSetMessage) => {
     try {
       if (address) {
+        if(Number(balance)<Number(amountXioInput)){
+          onSetMessage("You have insuffient amount of XIO to make this transaction.")
+          return;
+        }
         setLoading(true);
+        setTransactionMessage({message:"PLEASE CONFIRM STAKE TRANSACTION IN YOUR WALLET",hash:""})
         const amount = await web3js.utils.toWei(amountXioInput.toString());
         const soldxio = Number(amountXioInput) * initialRate;
         const timestamp = 24 * 60 * 60 * 1000;
@@ -400,11 +436,7 @@ const Stake = props => {
         let tempA = (Number(resultA)-Number(resultA*0.0075)).toFixed(18)
         tokensBought = await web3.utils.toWei(tempA.toString())
         console.log("tokens bought ==>", tokensBought);
-        // if(!tokensBought){
-        //   onSetMessage("Oops, something went wrong please try again");
-        //   setLoading(false);
-        //   return;
-        // }
+
 
         const params = {
           tokenAddress: token.tokenAddress,
@@ -428,7 +460,8 @@ const Stake = props => {
           .send({ from: address, gasLimit: 2000000,gasPrice:10*1000000000 })
           .on("transactionHash", hash => {
             // hash of tx
-            //console.log(hash);
+            console.log(hash);
+            setTransactionMessage({message:"",hash})
           })
           .on("confirmation", function(confirmationNumber, receipt) {
             if (confirmationNumber === 1) {
@@ -460,21 +493,27 @@ const Stake = props => {
     setIsUnlock(res != 0);
   };
 
-  const getBalance = async (param, msg) => {
-    let res = await contract.methods.balanceOf(address).call();
-    setBalance(res != 0);
-    res = await web3js.utils.fromWei(res.toString());
-    //console.log(res);
-    if (Number(res) < Number(amountXioInput)) {
-      msg("Insufficient Funds!!");
-      return;
-    }
-    confirmStake(param, msg);
+  const getBalance = async () => {
+    try{
+      if(address){
+        let res = await contract.methods.balanceOf(address).call();
+        res = await web3js.utils.fromWei(res.toString());
+        setBalance(res);
+      }
+  }
+  catch(e){
+    console.log(e)
+  }
   };
-
+  
   const approve = async onSetMessage => {
     try {
+      if(isUnlock){
+        onSetMessage("Wallet already activated, you can start staking now.")
+        return;
+      }
       if (address) {
+        setTransactionMessage({message:"PLEASE CONFIRM PERMISSION TO ACTIVATE YOUR WALLET",hash:""})
         setLoading(true);
         let contract = new web3.eth.Contract(XIO_ABI, XIO_ADDRESS);
         const amount = await web3js.utils.toWei(amountXioInput.toString());
@@ -497,6 +536,7 @@ const Stake = props => {
           .sendTransaction(rawTransaction)
           .on("transactionHash", function(hash) {
             //console.log("hash ==>", hash);
+            setTransactionMessage({message:"YOUR WALLET ACTIVATION IS PENDING, PLEASE WAIT",hash})
           })
           .on("receipt", function(receipt) {
             //console.log("receipt ==>", receipt);
@@ -509,15 +549,21 @@ const Stake = props => {
                 "You have successfully activated your wallet and can now begin staking XIO"
               );
               setLoading(false);
+              setTransactionMessage({message:"",hash:""})
             }
           })
-          .on("error", console.error);
+          .on("error", function(e){
+            console.log(e);
+            setLoading(false);
+            onSetMessage("Oops, something went wrong please try again");            
+          });
       } else {
         onSetMessage("PLEASE CONNECT TO METAMASK WALLET");
       }
     } catch (e) {
       console.log(e);
       setLoading(false);
+      setTransactionMessage({message:"",hash:""})
       onSetMessage("Oops, something went wrong please try again");
     }
   };
@@ -539,7 +585,7 @@ const Stake = props => {
   };
 
   const onConfirmStakeClick = (param, msg) => {
-    isUnlock ? getBalance(param, msg) : approve(msg);
+        confirmStake(param, msg);
   };
 
   const dialogProps = {
@@ -571,6 +617,7 @@ const Stake = props => {
                 days={durationDaysInput}
                 rate={Number(interestRate).toFixed(4)}
                 outputToken={token.outputTokenSymbol}
+                transactionMessage={transactionMessage}
               >
                 <Grid container item className="firstSectionContainer " md={12}>
                   <Grid
@@ -644,6 +691,11 @@ const Stake = props => {
                           onChange={onChangeAmount}
                           className={
                             themeDark ? "inputTextStake" : "inputTextStakeLight"
+                          }
+                          style={
+                            {
+                              color: isAmountLimit ? "#C66065" : themeDark ? "white" : "#414141"
+                            }
                           }
                           placeholder="0.0"
                           value={amountXioInput}
@@ -841,6 +893,7 @@ const Stake = props => {
                               position: "absolute",
                               right: "-3px"
                             }}
+
                           />
                         </Grid>
                       </Grid>
