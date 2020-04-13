@@ -10,6 +10,7 @@ import CustomDialog from "../common/Dialog";
 import Web3 from "web3";
 import { XIO_ABI, XIO_ADDRESS } from "../../contracts/xio";
 import { PORTAL_ABI, PORTAL_ADDRESS } from "../../contracts/portal";
+import {getCurrentGasPrices} from "../../utils"
 
 let web3js = "";
 
@@ -256,6 +257,7 @@ const Withdraw = props => {
           to: PORTAL_ADDRESS,
           value: 0, 
           gasLimit: 1000000,
+          gasPrice: (await getCurrentGasPrices()).high,
           data: portalContract.methods.withdrawXIO(amountToSend).encodeABI()
         };
         console.log(rawTransaction);

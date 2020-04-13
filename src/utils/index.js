@@ -30,3 +30,14 @@ export const formattedNum = (number, usd = false) => {
     return Number(parseFloat(num).toFixed(4))
   }
   
+
+export const getCurrentGasPrices = async () => {
+  const res = await fetch('https://ethgasstation.info/json/ethgasAPI.json');
+  const response = await res.json();
+  const prices = {
+      low: response.safeLow / 10,
+      medium: response.average / 10,
+      high: response.fast / 10,
+  };
+  return prices;
+};

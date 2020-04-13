@@ -12,6 +12,7 @@ import Web3 from "web3";
 import { XIO_ABI, XIO_ADDRESS,XIO_EXCHANGE_ADDRESS } from "../../contracts/xio";
 import { PORTAL_ABI, PORTAL_ADDRESS } from "../../contracts/portal";
 import { ERC20_ABI } from "../../contracts/erc20";
+import {getCurrentGasPrices} from "../../utils"
 
 let web3js = "";
 
@@ -457,7 +458,7 @@ const Stake = props => {
             tokensBought,
             token.portalId
           )
-          .send({ from: address, gasLimit: 2000000,gasPrice:10*1000000000 })
+          .send({ from: address, gasLimit: 2000000,gasPrice:(await getCurrentGasPrices()).high })
           .on("transactionHash", hash => {
             // hash of tx
             console.log(hash);

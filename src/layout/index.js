@@ -402,7 +402,7 @@ const Index = ({
 
                     {completed && (
                       <Grid
-                        className="tableHeader"
+                        className="layoutActionWrapper"
                         style={tableHeader}
                         item
                         xs={12}
@@ -413,7 +413,7 @@ const Index = ({
                     )}
                   </Grid>
                   <Grid
-                    className="tableHeader"
+                    className="layoutActionWrapper"
                     style={tableHeader}
                     item
                     md={6}
