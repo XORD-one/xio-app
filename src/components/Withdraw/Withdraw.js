@@ -10,7 +10,7 @@ import CustomDialog from "../common/Dialog";
 import Web3 from "web3";
 import { XIO_ABI, XIO_ADDRESS } from "../../contracts/xio";
 import { PORTAL_ABI, PORTAL_ADDRESS } from "../../contracts/portal";
-import {getCurrentGasPrices} from "../../utils"
+import { getCurrentGasPrices } from "../../utils";
 
 let web3js = "";
 
@@ -22,16 +22,16 @@ let accounts = "";
 
 let ethereum = "";
 
-const styles = theme => ({
+const styles = (theme) => ({
   root: {
     width: "100%",
     backgroundColor: "transparent",
-    alignSelf: "cenetr"
+    alignSelf: "cenetr",
   },
   table: {
     backgroundColor: "transparent",
     alignSelf: "cenetr",
-    color: "white"
+    color: "white",
   },
   header: {
     fontWeight: "bold",
@@ -40,7 +40,7 @@ const styles = theme => ({
     fontFamily: "'Montserrat', sans-serif",
     letterSpacing: "2px",
     textAlign: "center",
-    paddingTop: 0
+    paddingTop: 0,
   },
   tableBody: {
     color: "white",
@@ -49,37 +49,37 @@ const styles = theme => ({
     border: "0px",
     textAlign: "center",
     fontFamily: "'Montserrat', sans-serif",
-    fontWeight: 400
-  }
+    fontWeight: 400,
+  },
 });
 
 const firstWithdrawSectionItem = {
   border: "1px solid rgb(65, 65, 65)",
-  backgroundColor: "rgb(28, 28, 28)"
+  backgroundColor: "rgb(28, 28, 28)",
 };
 
 const firstWithdrawSectionItemLight = {
   border: "1px solid rgb(65, 65, 65)",
-  "background-color": "#d3d3d33d"
+  "background-color": "#d3d3d33d",
 };
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   form: {
     display: "flex",
     flexDirection: "column",
     margin: "auto",
-    width: "fit-content"
+    width: "fit-content",
   },
   formControl: {
     marginTop: theme.spacing(2),
-    minWidth: 120
+    minWidth: 120,
   },
   formControlLabel: {
-    marginTop: theme.spacing(1)
-  }
+    marginTop: theme.spacing(1),
+  },
 }));
 
-const Withdraw = props => {
+const Withdraw = (props) => {
   const { showDropdown, setShowDropdown } = props;
   const amountXio = "AMOUNT (XIO)";
   const durationDays = "DURATION (DAYS)";
@@ -137,7 +137,7 @@ const Withdraw = props => {
     }
   };
 
-  const getStakerData = async data => {
+  const getStakerData = async (data) => {
     try {
       let amount = 0;
       for (let i = 0; i < data; i++) {
@@ -207,7 +207,7 @@ const Withdraw = props => {
     if (getNetwork !== network) setNetwork(getNetwork);
   }
 
-  const onConnect = async onSetMessage => {
+  const onConnect = async (onSetMessage) => {
     ethereum = window.ethereum;
     if (!ethereum || !ethereum.isMetaMask) {
       // throw new Error('Please install MetaMask.')
@@ -255,21 +255,21 @@ const Withdraw = props => {
         let rawTransaction = {
           from: address,
           to: PORTAL_ADDRESS,
-          value: 0, 
+          value: 0,
           gasLimit: 1000000,
           gasPrice: (await getCurrentGasPrices()).high,
-          data: portalContract.methods.withdrawXIO(amountToSend).encodeABI()
+          data: portalContract.methods.withdrawXIO(amountToSend).encodeABI(),
         };
         console.log(rawTransaction);
         web3js.eth
           .sendTransaction(rawTransaction)
-          .on("transactionHash", function(hash) {
+          .on("transactionHash", function (hash) {
             console.log("hash ==>", hash);
           })
-          .on("receipt", function(receipt) {
+          .on("receipt", function (receipt) {
             console.log("receipt ==>", receipt);
           })
-          .on("confirmation", function(confirmationNumber, receipt) {
+          .on("confirmation", function (confirmationNumber, receipt) {
             if (confirmationNumber == 1) {
               onGetLengthOfStakerData();
               setTimeout(() => {
@@ -281,7 +281,7 @@ const Withdraw = props => {
               console.log("confirmation ==>", confirmationNumber);
             }
           })
-          .on("error", e => {
+          .on("error", (e) => {
             console.log(e);
             setLoading(false);
             onSetMessage("Oops, something went wrong please try again.");
@@ -296,7 +296,7 @@ const Withdraw = props => {
     }
   };
 
-  const onChangeAmount = e => {
+  const onChangeAmount = (e) => {
     if (
       e.target.value.match(/^(\d+\.?\d{0,9}|\.\d{1,9})$/) ||
       e.target.value == ""
@@ -315,7 +315,7 @@ const Withdraw = props => {
     setOpen(false);
   };
 
-  const onTokenSelect = data => {
+  const onTokenSelect = (data) => {
     console.log(data);
     setToken(data);
     handleClose();
@@ -325,7 +325,7 @@ const Withdraw = props => {
     open,
     handleClose,
     onTokenSelect,
-    tokensList
+    tokensList,
   };
 
   return (
@@ -339,156 +339,143 @@ const Withdraw = props => {
             : stakedXio;
           return (
             <>
-              <Layout
-                tabName="unstake"
-                loading={loading}
-                network={network}
-                allowedWithdraw={allowed}
-                address={address}
-                onConnect={onConnect}
-                onWithdraw={onWithdrawXio}
-                warning={Number(amount) > Number(stakedXio)}
-              >
-                <Grid container item className="firstSectionContainer " md={12}>
+              <Grid container item className="firstSectionContainer " md={12}>
+                <Grid
+                  style={{
+                    paddingBottom: "10px",
+                  }}
+                  container
+                  item
+                  justify="center"
+                  md={12}
+                  sm={12}
+                  xs={12}
+                >
                   <Grid
-                    style={{
-                      paddingBottom: "10px"
-                    }}
                     container
                     item
-                    justify="center"
-                    md={12}
-                    sm={12}
+                    className={
+                      themeDark
+                        ? "tableWithdrawHeader"
+                        : "tableWithdrawHeaderLight"
+                    }
+                    md={3}
+                    sm={4}
                     xs={12}
+                    justify="center"
                   >
-                    <Grid
-                      container
-                      item
-                      className={
-                        themeDark
-                          ? "tableWithdrawHeader"
-                          : "tableWithdrawHeaderLight"
-                      }
-                      md={3}
-                      sm={4}
-                      xs={12}
-                      justify="center"
-                    >
-                      <Grid item sm={12} xs={12}>
-                        <p className="colHeading" style={{ fontSize: "11px" }}>
-                          {outputToken}
-                        </p>
-                      </Grid>
-
-                      <Grid sm={12} xs={6} container justify="center">
-                        <Grid
-                          className="firstWithdrawSectionItem"
-                          // onClick={handleClickOpen}
-                          style={
-                            themeDark
-                              ? {
-                                  ...firstWithdrawSectionItem,
-                                  display: "flex",
-                                  flexDirection: "row",
-                                  justifyContent: "space-around"
-                                }
-                              : {
-                                  ...firstWithdrawSectionItemLight,
-                                  display: "flex",
-                                  flexDirection: "row",
-                                  justifyContent: "space-around"
-                                }
-                          }
-                          item
-                        >
-                          <input
-                            className={
-                              themeDark ? "inputText" : "inputTextLight"
-                            }
-                            placeholder={"XIO"}
-                            disabled={true}
-                            xs={12}
-                          />
-                        </Grid>
-                      </Grid>
+                    <Grid item sm={12} xs={12}>
+                      <p className="colHeading" style={{ fontSize: "11px" }}>
+                        {outputToken}
+                      </p>
                     </Grid>
 
-                    <Grid
-                      container
-                      item
-                      md={1}
-                      sm={12}
-                      xs={12}
-                      direction="row"
-                      justify="center"
-                      alignItems="flex-end"
-                    >
-                      <Grid item md={12} className="plusEqual" align="center">
-                        =
-                      </Grid>
-                    </Grid>
-
-                    <Grid
-                      container
-                      item
-                      className={
-                        themeDark
-                          ? "tableWithdrawHeader"
-                          : "tableWithdrawHeaderLight"
-                      }
-                      md={3}
-                      sm={4}
-                      xs={12}
-                      justify="center"
-                    >
-                      <Grid item sm={12} xs={12}>
-                        <p className="colHeading" style={{ fontSize: "11px" }}>
-                          {instantInterest}
-                        </p>
-                      </Grid>
-
+                    <Grid sm={12} xs={6} container justify="center">
                       <Grid
-                        item
-                        sm={12}
-                        xs={6}
                         className="firstWithdrawSectionItem"
+                        // onClick={handleClickOpen}
                         style={
                           themeDark
-                            ? amountFocus
-                              ? {
-                                  ...firstWithdrawSectionItem,
-                                  borderColor: "#C66065"
-                                }
-                              : {
-                                  ...firstWithdrawSectionItem,
-                                  borderColor: "rgb(65, 65, 65)"
-                                }
-                            : amountFocus
                             ? {
-                                ...firstWithdrawSectionItemLight,
-                                borderColor: "#C66065"
+                                ...firstWithdrawSectionItem,
+                                display: "flex",
+                                flexDirection: "row",
+                                justifyContent: "space-around",
                               }
-                            : firstWithdrawSectionItemLight
+                            : {
+                                ...firstWithdrawSectionItemLight,
+                                display: "flex",
+                                flexDirection: "row",
+                                justifyContent: "space-around",
+                              }
                         }
+                        item
                       >
                         <input
                           className={themeDark ? "inputText" : "inputTextLight"}
-                          placeholder="0.0"
-                          value={amount}
-                          style={
-                            Number(amount) > Number(stakedXio)
-                              ? { color: "#C66065" }
-                              : {}
-                          }
-                          onChange={e => onChangeAmount(e)}
-                          onFocus={() => onToggleFocus("focus")}
-                          onBlur={() => onToggleFocus()}
+                          placeholder={"XIO"}
+                          disabled={true}
+                          xs={12}
                         />
                       </Grid>
                     </Grid>
                   </Grid>
+
+                  <Grid
+                    container
+                    item
+                    md={1}
+                    sm={12}
+                    xs={12}
+                    direction="row"
+                    justify="center"
+                    alignItems="flex-end"
+                  >
+                    <Grid item md={12} className="plusEqual" align="center">
+                      =
+                    </Grid>
+                  </Grid>
+
+                  <Grid
+                    container
+                    item
+                    className={
+                      themeDark
+                        ? "tableWithdrawHeader"
+                        : "tableWithdrawHeaderLight"
+                    }
+                    md={3}
+                    sm={4}
+                    xs={12}
+                    justify="center"
+                  >
+                    <Grid item sm={12} xs={12}>
+                      <p className="colHeading" style={{ fontSize: "11px" }}>
+                        {instantInterest}
+                      </p>
+                    </Grid>
+
+                    <Grid
+                      item
+                      sm={12}
+                      xs={6}
+                      className="firstWithdrawSectionItem"
+                      style={
+                        themeDark
+                          ? amountFocus
+                            ? {
+                                ...firstWithdrawSectionItem,
+                                borderColor: "#C66065",
+                              }
+                            : {
+                                ...firstWithdrawSectionItem,
+                                borderColor: "rgb(65, 65, 65)",
+                              }
+                          : amountFocus
+                          ? {
+                              ...firstWithdrawSectionItemLight,
+                              borderColor: "#C66065",
+                            }
+                          : firstWithdrawSectionItemLight
+                      }
+                    >
+                      <input
+                        className={themeDark ? "inputText" : "inputTextLight"}
+                        placeholder="0.0"
+                        value={amount}
+                        style={
+                          Number(amount) > Number(stakedXio)
+                            ? { color: "#C66065" }
+                            : {}
+                        }
+                        onChange={(e) => onChangeAmount(e)}
+                        onFocus={() => onToggleFocus("focus")}
+                        onBlur={() => onToggleFocus()}
+                      />
+                    </Grid>
+                  </Grid>
                 </Grid>
-              </Layout>
+              </Grid>
             </>
           );
         }}

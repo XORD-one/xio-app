@@ -603,7 +603,7 @@ const Stake = props => {
           return (
             <>
               <CustomDialog {...dialogProps} />
-              <Layout
+              {/* <Layout
                 tabName="stake"
                 address={address}
                 network={network}
@@ -619,7 +619,7 @@ const Stake = props => {
                 rate={Number(interestRate).toFixed(4)}
                 outputToken={token.outputTokenSymbol}
                 transactionMessage={transactionMessage}
-              >
+              > */}
                 <Grid container item className="firstSectionContainer " md={12}>
                   <Grid
                     style={{
@@ -975,7 +975,7 @@ const Stake = props => {
                     </Grid>
                   </Grid>
                 </Grid>
-              </Layout>
+              {/* </Layout> */}
             </>
           );
         }}

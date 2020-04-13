@@ -307,12 +307,13 @@ const Dashboard = (props) => {
             checkForNewList();
           }
           return (
-            <Layout
-              tabName="dashboard"
-              address={address}
-              onConnect={onConnect}
-              network={network}
-            >
+            // <Layout
+            //   tabName="dashboard"
+            //   address={address}
+            //   onConnect={onConnect}
+            //   network={network}
+            // >
+            <>
               <Grid
                 container
                 item
@@ -644,7 +645,8 @@ const Dashboard = (props) => {
                   </Grid>
                 </Grid>
               </Grid>
-            </Layout>
+              </>
+            // </Layout>
           );
         }}
       </ThemeConsumer>
