@@ -22,7 +22,7 @@ import {
   faLinkedinIn,
 } from "@fortawesome/free-brands-svg-icons";
 import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
-import { useHistory } from "react-router-dom";
+import { useHistory,withRouter } from "react-router-dom";
 import xordLogoLight from "../components/assets/images/xord-logo-black.png";
 import xordLogoDark from "../components/assets/images/xord-logo-white.png";
 import spinnerWhite from "../components/assets/images/spinner-white.svg";
@@ -96,6 +96,7 @@ const Index = ({
   warning,
   network,
   transactionMessage,
+  ...props
 }) => {
   const [completed, setCompleted] = useState(false);
 
@@ -106,7 +107,7 @@ const Index = ({
   const onConfirm = () => {
     approve();
   };
-
+  console.log('Layout props ==>',props)
   let history = useHistory();
   return (
     <ThemeConsumer>
@@ -146,20 +147,6 @@ const Index = ({
                 justifyContent: "space-between",
               }}
             >
-              {network !== "main" ? (
-                <div
-                  style={{
-                    fontFamily: "'Montserrat', sans-serif",
-                    fontWeight: "bold",
-                    backgroundColor: "#C66065",
-                    color: "white",
-                    textAlign: "center",
-                    padding: "10px 0px",
-                  }}
-                >
-                  NETWORK ERROR: SWITCH METAMASK'S NETWORK TO MAINNET.
-                </div>
-              ) : null}
               <Grid>
                 <Grid
                   container
@@ -334,7 +321,7 @@ const Index = ({
                     <h4
                       style={{
                         color:
-                          tabName === "dashboard"
+                        props.location.pathname === "/"
                             ? themeDark
                               ? "white"
                               : "black"
@@ -353,7 +340,7 @@ const Index = ({
                     <h4
                       style={{
                         color:
-                          tabName === "stake"
+                          props.location.pathname === "/stake"
                             ? themeDark
                               ? "white"
                               : "black"
@@ -373,7 +360,7 @@ const Index = ({
                     <h4
                       style={{
                         color:
-                          tabName === "unstake"
+                        props.location.pathname === "/unstake"
                             ? themeDark
                               ? "white"
                               : "black"
@@ -420,7 +407,7 @@ const Index = ({
                     xs={12}
                     style={{ alignSelf: "center" }}
                   >
-                    {tabName === "stake" && (
+                    {props.location.pathname === "/stake" && (
                       <>
                         {loading ? (
                           <div style={{ margin: "17px 0px" }}>
@@ -554,7 +541,7 @@ const Index = ({
                         </div>
                       </>
                     )}
-                    {tabName === "unstake" && (
+                    {props.location.pathname === "/unstake" && (
                       <>
                         {loading ? (
                           <div style={{ margin: "17px 0px" }}>
@@ -677,4 +664,4 @@ const Index = ({
   );
 };
 
-export default Index;
+export default withRouter(Index);

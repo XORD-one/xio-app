@@ -1,34 +1,25 @@
 import React, { useState, useEffect } from "react";
 import { Grid, Typography, Button, Tooltip } from "@material-ui/core";
-import TableContainer from '@material-ui/core/TableContainer'
+import TableContainer from "@material-ui/core/TableContainer";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import { ThemeConsumer } from "../../config/index";
-import Paper from "@material-ui/core/Paper";
 import PropTypes from "prop-types";
 import { withStyles } from "@material-ui/core/styles";
 import "./style.css";
-import Layout from "../../layout";
-import Web3 from "web3";
-import { XIO_ABI, XIO_ADDRESS } from "../../contracts/xio";
-import { PORTAL_ABI, PORTAL_ADDRESS } from "../../contracts/portal";
-import { OMG_EXCHANGE } from "../../contracts/omg";
-import { formattedNum } from "../../utils";
+import { truncateValue } from "../../utils";
 import spinnerWhite from "../assets/images/spinner-white.svg";
 import spinnerBlack from "../assets/images/spinner-black.svg";
-
-let web3js = "";
-
-let contract = "";
-
-let portalContract = "";
-
-let accounts = "";
-
-let ethereum = "";
+import {
+  getBalance,
+  getStakerData,
+  onGetInterestRate,
+  onGetPortalData,
+} from "../../store/actions/dashboardActions";
+import { connect } from "react-redux";
 
 const styles = (theme) => ({
   root: {
@@ -99,205 +90,30 @@ const tabBodyRow3_1_2 = {
 
 const Dashboard = (props) => {
   const { classes } = props;
-  const [address, setAccountAddress] = useState("");
-  const [balance, setBalance] = useState(0);
-  const [portalInterestList, setInterestList] = useState([]);
-  const [stakedXio, setStakedXio] = useState(0);
-  const [activePortal, setActivePortal] = useState([]);
-  const [interest, setInterest] = useState(0);
   const [loadOnStake, setLoadOnStake] = useState(false);
-  const [network, setNetwork] = useState("main");
-  const [portalLoading, setPortalLoading] = useState(true);
-
-  const getBalance = async () => {
-    let res = await contract.methods.balanceOf(address).call();
-    setBalance(res);
-    //console.log(res);
-  };
-
-  const getActivePortalInfo = async () => {
-    const res = await portalContract.methods.portalData(address).call();
-    //console.log(res);
-  };
-
-  const getPortalInterest = async () => {
-    try {
-      const amount = await web3js.utils.toWei("1");
-      const response = await fetch(
-        "https://min-api.cryptocompare.com/data/price?fsym=ETH&tsyms=USD"
-      );
-      const conversionRate = await response.json();
-      console.log("conversion ==>", conversionRate);
-      const interestList = [];
-      let i = 0;
-      while (true) {
-        const res = await portalContract.methods.portalData(i).call();
-        console.log(res);
-        if (res.outputTokenSymbol === "NONE") {
-          i++;
-          continue;
-        }
-        if (res.tokenAddress === "0x0000000000000000000000000000000000000000") {
-          break;
-        }
-        // let res1 = await portalContract.methods
-        //   .getETHtoALT(amount, res.tokenExchangeAddress)
-        //   .call();
-        console.log("token ==>", res.outputTokenSymbol);
-        let res1 = await web3js.eth.getBalance(res.tokenExchangeAddress);
-        console.log("WEI value of token ==>", res1);
-        res1 = await web3js.utils.fromWei(res1.toString());
-        console.log("Eth value of token ==>", res1);
-        res.xioStaked = await web3js.utils.fromWei(res.xioStaked.toString());
-        res.xioStaked = formattedNum(Number(res.xioStaked));
-        const obj = {
-          ...res,
-          liquidity: `$${formattedNum(
-            Number(res1) * conversionRate.USD * 2,
-            true
-          )}`,
-        };
-        interestList.push(obj);
-        i++;
-      }
-      setInterestList(interestList);
-      setPortalLoading(false);
-    } catch (e) {
-      console.log(e);
-    }
-  };
+  const [balance, setBalance] = useState(0);
+  const [stakedXio, setStakedXio] = useState(0);
+  const [interest, setInterest] = useState(0);
+  const [activePortal, setActivePortal] = useState([]);
+  const [portalInterestList, setPortalInterestList] = useState([]);
+  const [portalLoading, setPortalLoading] = useState();
 
   useEffect(() => {
-    let timer;
     setLoadOnStake(false);
-    ethereum = window.ethereum;
+    const ethereum = window.ethereum;
     if (ethereum) {
-      timer = setInterval(() => {
-        checkWeb3();
-      }, 3000);
-      checkWeb3();
-      initXioContract();
-      initPortalContract();
-      getPortalInterest();
-      getInterestData();
+      props.onGetPortalData();
+      props.onGetInterestRate();
     }
-    if (contract && address) {
-      getBalance();
-      getActivePortalInfo();
-      onGetLengthOfStakerData();
+    if (props.address) {
+      props.getBalance(props.address);
+      props.getStakerData(props.address);
     }
-    return () => {
-      if (timer) {
-        clearInterval(timer);
-      }
-    };
-  }, [address, loadOnStake]);
+  }, [props.address, loadOnStake]);
 
-  async function checkWeb3() {
-    // Use Mist/MetaMask's provider.
-    web3js = new Web3(window.web3.currentProvider);
-    //console.log(web3js);
-    //get selected account on metamask
-    accounts = await web3js.eth.getAccounts();
-    //console.log(accounts);
-    if (accounts[0] !== address) {
-      setAccountAddress(accounts[0]);
-    }
-    //get network which metamask is connected too
-    let getNetwork = await web3js.eth.net.getNetworkType();
-    //console.log(network);
-    if (getNetwork !== network) setNetwork(getNetwork);
-  }
-
-  const onConnect = async (onSetMessage) => {
-    ethereum = window.ethereum;
-    if (!ethereum || !ethereum.isMetaMask) {
-      // throw new Error('Please install MetaMask.')
-      onSetMessage(`METAMASK NOT INSTALLED!!`);
-    } else {
-      await ethereum.enable();
-      checkWeb3();
-    }
-  };
-
-  const initPortalContract = () => {
-    portalContract = new web3js.eth.Contract(PORTAL_ABI, PORTAL_ADDRESS);
-  };
-
-  const initXioContract = () => {
-    contract = new web3js.eth.Contract(XIO_ABI, XIO_ADDRESS);
-  };
-
-  const getInterestData = async () => {
-    let res = await portalContract.methods.getInterestRate().call();
-    res = await web3js.utils.fromWei(res.toString());
-    res = Math.ceil(res * 365 * 100);
-    //console.log("res of interest ==>", res);
-    setInterest(res);
-  };
-
-  const onGetLengthOfStakerData = async () => {
-    const res = await portalContract.methods
-      .getArrayLengthOfStakerData(address)
-      .call();
-    //console.log("res ==>", res);
-    getStakerData(res);
-  };
-
-  const getStakerData = async (data) => {
-    try {
-      let amount = 0;
-      const portalInfo = [];
-      for (let i = 0; i < data; i++) {
-        const res = await portalContract.methods.stakerData(address, i).call();
-        //console.log(res);
-        res.stakeQuantity = await web3js.utils.fromWei(
-          res.stakeQuantity.toString()
-        );
-        amount = amount + Number(res.stakeQuantity);
-
-        res.Days =
-          res.stakeDurationTimestamp -
-          (Math.round(new Date() / 1000) - res.stakeInitiationTimestamp);
-        //console.log("Days ===>", res.Days);
-        if (res.Days <= 0) {
-          res.Days = 0;
-        } else {
-          res.Days = Math.ceil(res.Days / 60);
-        }
-
-        if (res.publicKey !== "0x0000000000000000000000000000000000000000") {
-          portalInfo.push(res);
-        }
-      }
-      // amount = await web3js.utils.fromWei(amount.toString());
-      setStakedXio(amount);
-      setActivePortal(portalInfo);
-    } catch (e) {
-      console.log(e);
-    }
-  };
-
-  const truncateValue = (value) => {
-    console.log(value.toString().length > 4);
-    if (value.toString().length <= 5) {
-      return value;
-    } else if (
-      value.toString().length > 5 &&
-      value.toString().slice(0, 6).indexOf(".") !== -1
-    ) {
-      return Number(value).toFixed(2);
-    } else if (
-      value.toString().length > 5 &&
-      value.toString().slice(0, 6).indexOf(".") == -1
-    ) {
-      return value.toString().slice(0, 4) + "..";
-    }
-    return value.toString().slice(0, 4) + "..";
-  };
-
-  const balanceFromWei = balance / 1000000000000000000;
+  const balanceFromWei = props.balance / 1000000000000000000;
   const availableXio = truncateValue(balanceFromWei);
+  const stakedXioValue = truncateValue(props.stakedXio);
   return (
     <>
       <ThemeConsumer>
@@ -307,12 +123,6 @@ const Dashboard = (props) => {
             checkForNewList();
           }
           return (
-            // <Layout
-            //   tabName="dashboard"
-            //   address={address}
-            //   onConnect={onConnect}
-            //   network={network}
-            // >
             <>
               <Grid
                 container
@@ -343,7 +153,7 @@ const Dashboard = (props) => {
                   >
                     AVAILABLE XIO
                   </h6>
-                  <Tooltip title={balance / 1000000000000000000}>
+                  <Tooltip title={props.balance / 1000000000000000000}>
                     <h2
                       style={{
                         fontFamily: "'Montserrat', sans-serif",
@@ -381,17 +191,19 @@ const Dashboard = (props) => {
                   >
                     STAKED XIO
                   </h6>
-                  <h2
-                    style={{
-                      fontFamily: "'Montserrat', sans-serif",
-                      color: themeDark ? "white" : "black",
-                      fontWeight: "bold",
-                      textAlign: "center",
-                      padding: "0px",
-                    }}
-                  >
-                    {stakedXio}
-                  </h2>
+                  <Tooltip title={props.stakedXio}>
+                    <h2
+                      style={{
+                        fontFamily: "'Montserrat', sans-serif",
+                        color: themeDark ? "white" : "black",
+                        fontWeight: "bold",
+                        textAlign: "center",
+                        padding: "0px",
+                      }}
+                    >
+                      {stakedXioValue}
+                    </h2>
+                  </Tooltip>
                 </Grid>
 
                 <Grid
@@ -425,7 +237,7 @@ const Dashboard = (props) => {
                       padding: "0px",
                     }}
                   >
-                    {`${interest}%`}
+                    {`${props.interest}%`}
                   </h2>
                 </Grid>
               </Grid>
@@ -458,8 +270,8 @@ const Dashboard = (props) => {
 
                   <Grid container item style={tabBodyRow3_1_2} md={10}>
                     <Table className={classes.table} align="center">
-                      <TableHead style={{background:"#1c1c1c"}} >
-                        <TableRow  >
+                      <TableHead style={{ background: "#1c1c1c" }}>
+                        <TableRow>
                           <TableCell
                             style={{ width: "40%" }}
                             className={
@@ -494,9 +306,8 @@ const Dashboard = (props) => {
                         </TableRow>
                       </TableHead>
                       <TableBody style={{ paddingBottom: "20px" }}>
-                        {!!activePortal.length &&
-                          activePortal.map((item) => {
-                            console.log("items ==>", item);
+                        {!!props.activePortal.length &&
+                          props.activePortal.map((item) => {
                             if (item.Days !== 0) {
                               return (
                                 <TableRow>
@@ -508,14 +319,18 @@ const Dashboard = (props) => {
                                   >
                                     {item.outputTokenSymbol}
                                   </TableCell>
-                                  <TableCell
-                                    style={{ fontSize: 10 }}
-                                    className={
-                                      themeDark ? "tableBody" : "tableBodyLight"
-                                    }
-                                  >
-                                    {item.stakeQuantity}
-                                  </TableCell>
+                                  <Tooltip title={item.stakeQuantity}>
+                                    <TableCell
+                                      style={{ fontSize: 10 }}
+                                      className={
+                                        themeDark
+                                          ? "tableBody"
+                                          : "tableBodyLight"
+                                      }
+                                    >
+                                      {truncateValue(item.stakeQuantity)}
+                                    </TableCell>
+                                  </Tooltip>
                                   <TableCell
                                     style={{ fontSize: 10 }}
                                     className={
@@ -561,79 +376,89 @@ const Dashboard = (props) => {
 
                   <Grid container item style={tabBodyRow3_1_2} md={10}>
                     {/* <Paper className={classes.root} align="center"> */}
-                    <TableContainer className={classes.container} >
-                    <Table stickyHeader className={classes.table} align="center">
-                      <TableHead>
-                        <TableRow>
-                          <TableCell
-                            style={{ width: "33%" }}
-                            className={
-                              themeDark ? "tableHeader" : "tableHeaderLight"
-                            }
-                          >
-                            <h6 style={{ margin: 0, fontSize: 10 }}>TOKEN</h6>
-                          </TableCell>
-                          <TableCell
-                            className={
-                              themeDark ? "tableHeader" : "tableHeaderLight"
-                            }
-                            align="center"
-                          >
-                            <h6 style={{ margin: 0, fontSize: 10 }}>
-                              STAKED XIO
-                            </h6>
-                          </TableCell>
-                          <TableCell
-                            className={
-                              themeDark ? "tableHeader" : "tableHeaderLight"
-                            }
-                            align="center"
-                          >
-                            <h6 style={{ margin: 0, fontSize: 10 }}>
-                              LIQUIDITY
-                            </h6>
-                          </TableCell>
-                        </TableRow>
-                      </TableHead>
-                      <TableBody>
-                        {portalLoading
-                          ? null
-                          : !!portalInterestList.length &&
-                            portalInterestList.map((item) => {
-                              return (
-                                <TableRow>
-                                  <TableCell
-                                    style={{ fontSize: 10 }}
-                                    className={
-                                      themeDark ? "tableBody" : "tableBodyLight"
-                                    }
-                                    style={{ latterSpacing: "2px" }}
-                                  >
-                                    {item.outputTokenSymbol}
-                                  </TableCell>
-                                  <TableCell
-                                    style={{ fontSize: 10 }}
-                                    className={
-                                      themeDark ? "tableBody" : "tableBodyLight"
-                                    }
-                                  >
-                                    {item.xioStaked}
-                                  </TableCell>
-                                  <TableCell
-                                    style={{ fontSize: 10 }}
-                                    className={
-                                      themeDark ? "tableBody" : "tableBodyLight"
-                                    }
-                                  >
-                                    {item.liquidity}
-                                  </TableCell>
-                                </TableRow>
-                              );
-                            })}
-                      </TableBody>
-                    </Table>
+                    <TableContainer className={classes.container}>
+                      <Table
+                        stickyHeader
+                        className={classes.table}
+                        align="center"
+                      >
+                        <TableHead>
+                          <TableRow>
+                            <TableCell
+                              style={{ width: "33%" }}
+                              className={
+                                themeDark ? "tableHeader" : "tableHeaderLight"
+                              }
+                            >
+                              <h6 style={{ margin: 0, fontSize: 10 }}>TOKEN</h6>
+                            </TableCell>
+                            <TableCell
+                              className={
+                                themeDark ? "tableHeader" : "tableHeaderLight"
+                              }
+                              align="center"
+                            >
+                              <h6 style={{ margin: 0, fontSize: 10 }}>
+                                STAKED XIO
+                              </h6>
+                            </TableCell>
+                            <TableCell
+                              className={
+                                themeDark ? "tableHeader" : "tableHeaderLight"
+                              }
+                              align="center"
+                            >
+                              <h6 style={{ margin: 0, fontSize: 10 }}>
+                                LIQUIDITY
+                              </h6>
+                            </TableCell>
+                          </TableRow>
+                        </TableHead>
+                        <TableBody>
+                          {props.portalLoading
+                            ? null
+                            : !!props.portalInterestList.length &&
+                              props.portalInterestList.map((item) => {
+                                return (
+                                  <TableRow>
+                                    <TableCell
+                                      style={{ fontSize: 10 }}
+                                      className={
+                                        themeDark
+                                          ? "tableBody"
+                                          : "tableBodyLight"
+                                      }
+                                      style={{ latterSpacing: "2px" }}
+                                    >
+                                      {item.outputTokenSymbol}
+                                    </TableCell>
+                                    <TableCell
+                                      style={{ fontSize: 10 }}
+                                      className={
+                                        themeDark
+                                          ? "tableBody"
+                                          : "tableBodyLight"
+                                      }
+                                    >
+                                      {item.xioStaked}
+                                    </TableCell>
+                                    <TableCell
+                                      style={{ fontSize: 10 }}
+                                      className={
+                                        themeDark
+                                          ? "tableBody"
+                                          : "tableBodyLight"
+                                      }
+                                    >
+                                      {item.liquidity}
+                                    </TableCell>
+                                  </TableRow>
+                                );
+                              })}
+                        </TableBody>
+                      </Table>
                     </TableContainer>
-                    {portalLoading && (
+                    {props.portalLoading && (
                       <div style={{ width: "100%", textAlign: "center" }}>
                         {" "}
                         <img
@@ -641,12 +466,10 @@ const Dashboard = (props) => {
                         />{" "}
                       </div>
                     )}
-                    {/* </Paper> */}
                   </Grid>
                 </Grid>
               </Grid>
-              </>
-            // </Layout>
+            </>
           );
         }}
       </ThemeConsumer>
@@ -657,4 +480,29 @@ const Dashboard = (props) => {
 Dashboard.propTypes = {
   classes: PropTypes.object.isRequired,
 };
-export default withStyles(styles)(Dashboard);
+
+const mapStateToProps = (state) => {
+  return {
+    address: state.layoutReducer.address,
+    balance: state.dashboardReducer.balance,
+    interest: state.dashboardReducer.interest,
+    stakedXio: state.dashboardReducer.stakedXio,
+    portalLoading: state.dashboardReducer.loading,
+    activePortal: state.dashboardReducer.activePortal,
+    portalInterestList: state.dashboardReducer.interestList,
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    getBalance: (address) => dispatch(getBalance(address)),
+    getStakerData: (address) => dispatch(getStakerData(address)),
+    onGetInterestRate: () => dispatch(onGetInterestRate()),
+    onGetPortalData: () => dispatch(onGetPortalData()),
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withStyles(styles)(Dashboard));

@@ -458,7 +458,7 @@ const Stake = props => {
             tokensBought,
             token.portalId
           )
-          .send({ from: address, gasLimit: 2000000,gasPrice:(await getCurrentGasPrices()).high })
+          .send({ from: address, gasLimit: 2000000,gasPrice:Number((await getCurrentGasPrices()).high)*1000000000 })
           .on("transactionHash", hash => {
             // hash of tx
             console.log(hash);

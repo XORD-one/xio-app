@@ -41,3 +41,21 @@ export const getCurrentGasPrices = async () => {
   };
   return prices;
 };
+
+export const truncateValue = (value) => {
+  console.log(value.toString().length > 4);
+  if (value.toString().length <= 5) {
+    return value;
+  } else if (
+    value.toString().length > 5 &&
+    value.toString().slice(0, 6).indexOf(".") !== -1
+  ) {
+    return Number(value).toFixed(2);
+  } else if (
+    value.toString().length > 5 &&
+    value.toString().slice(0, 6).indexOf(".") == -1
+  ) {
+    return value.toString().slice(0, 4) + "..";
+  }
+  return value.toString().slice(0, 4) + "..";
+};

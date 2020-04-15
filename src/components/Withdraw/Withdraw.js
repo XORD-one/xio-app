@@ -257,7 +257,7 @@ const Withdraw = (props) => {
           to: PORTAL_ADDRESS,
           value: 0,
           gasLimit: 1000000,
-          gasPrice: (await getCurrentGasPrices()).high,
+          gasPrice: Number((await getCurrentGasPrices()).high)*1000000000,
           data: portalContract.methods.withdrawXIO(amountToSend).encodeABI(),
         };
         console.log(rawTransaction);
