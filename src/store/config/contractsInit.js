@@ -55,6 +55,7 @@ export default class ContractInit {
         PORTAL_ABI,
         PORTAL_ADDRESS
       );
+      console.log('this.infuraPortal ==>',this.infuraPortal)
       return this.infuraPortal;
     } catch (e) {
       console.log(e);

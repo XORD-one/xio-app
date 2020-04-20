@@ -22,13 +22,16 @@ import {
   faLinkedinIn,
 } from "@fortawesome/free-brands-svg-icons";
 import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
-import { useHistory,withRouter } from "react-router-dom";
+import { useHistory, withRouter } from "react-router-dom";
 import xordLogoLight from "../components/assets/images/xord-logo-black.png";
 import xordLogoDark from "../components/assets/images/xord-logo-white.png";
 import spinnerWhite from "../components/assets/images/spinner-white.svg";
 import spinnerBlack from "../components/assets/images/spinner-black.svg";
 import Toast from "../components/common/Toast";
 import Agreement from "../components/common/Agreement/index";
+import { connect } from "react-redux";
+import { onApprove, onConfirmStake } from "../store/actions/stakeActions";
+import {onUnStakeXio} from "../store/actions/unstakeActions"
 
 const layoutSubHeading = {
   color: "rgb(198, 96, 101)",
@@ -79,23 +82,6 @@ const tabBodyLight = {
 
 const Index = ({
   children,
-  tabName,
-  address = "",
-  onConnect,
-  unlock,
-  approve,
-  onWithdraw,
-  balance,
-  onConfirmClick,
-  loading,
-  amount,
-  days,
-  rate,
-  outputToken,
-  allowedWithdraw,
-  warning,
-  network,
-  transactionMessage,
   ...props
 }) => {
   const [completed, setCompleted] = useState(false);
@@ -104,32 +90,29 @@ const Index = ({
     isThemeDark(!themeDark);
   };
 
-  const onConfirm = () => {
-    approve();
-  };
-  console.log('Layout props ==>',props)
+  const allowedWithdraw =  props.unstakeAmount
+  ? Number(props.stakedXio) - Number(props.unstakeAmount) < 0
+    ? 0
+    : Number(props.stakedXio) - Number(props.unstakeAmount)
+  : props.stakedXio;
+
+  const warning = Number(props.unstakeAmount) > Number(props.stakedXio)
+
+  console.log("Layout props ==>", props);
   let history = useHistory();
   return (
     <ThemeConsumer>
       {({
         isThemeDark,
         themeDark,
-        checkForNewList,
-        handleClose,
-        message,
-        openToast,
         handleClick,
         open,
         toggleAgreement,
       }) => {
         const addressToShow =
-          address &&
-          address.slice(0, 6) + "...." + address.slice(address.length - 4);
-        const toastProps = {
-          handleClose,
-          message,
-          open: openToast,
-        };
+          props.address &&
+          props.address.slice(0, 6) + "...." + props.address.slice(props.address.length - 4);
+
         const agreementProps = {
           open,
           onClose: toggleAgreement,
@@ -137,7 +120,7 @@ const Index = ({
         return (
           <>
             <Agreement {...agreementProps} />
-            <Toast {...toastProps} />
+            <Toast />
             <div
               style={{
                 backgroundColor: themeDark ? "#1C1C1C" : "white",
@@ -253,7 +236,7 @@ const Index = ({
                       className={
                         themeDark ? "connectButton" : "connectButtonLight"
                       }
-                      onClick={() => onConnect(handleClick)}
+                      onClick={() => props.onConnect(handleClick)}
                     >
                       <img
                         src={Rocket}
@@ -275,7 +258,7 @@ const Index = ({
                           letterSpacing: "2px",
                         }}
                       >
-                        {address ? addressToShow : "CONNECT WALLET"}
+                        {props.address ? addressToShow : "CONNECT WALLET"}
                       </h4>
                     </div>
                   </Grid>
@@ -321,7 +304,7 @@ const Index = ({
                     <h4
                       style={{
                         color:
-                        props.location.pathname === "/"
+                          props.location.pathname === "/"
                             ? themeDark
                               ? "white"
                               : "black"
@@ -331,6 +314,8 @@ const Index = ({
                         justifyContent: "flex-start",
                         letterSpacing: "2px",
                         cursor: "pointer",
+                        width:"33%",
+                        textAlign:"center"
                       }}
                       className="tabarText"
                       onClick={() => history.push("/")}
@@ -350,7 +335,8 @@ const Index = ({
                         justifyContent: "center",
                         letterSpacing: "2px",
                         cursor: "pointer",
-                        marginLeft: "-30px",
+                        width:"33%",
+                        textAlign:"center"
                       }}
                       className="tabarText"
                       onClick={() => history.push("/stake")}
@@ -360,7 +346,7 @@ const Index = ({
                     <h4
                       style={{
                         color:
-                        props.location.pathname === "/unstake"
+                          props.location.pathname === "/unstake"
                             ? themeDark
                               ? "white"
                               : "black"
@@ -370,6 +356,8 @@ const Index = ({
                         justifyContent: "flex-end",
                         letterSpacing: "2px",
                         cursor: "pointer",
+                        width:"33%",
+                        textAlign:"center"
                       }}
                       className="tabarText"
                       onClick={() => history.push("/unstake")}
@@ -409,7 +397,7 @@ const Index = ({
                   >
                     {props.location.pathname === "/stake" && (
                       <>
-                        {loading ? (
+                        {props.stakeLoading ? (
                           <div style={{ margin: "17px 0px" }}>
                             <>
                               <span
@@ -418,7 +406,7 @@ const Index = ({
                                   color: themeDark ? "white" : "black",
                                 }}
                               >
-                                {transactionMessage.message || (
+                                {props.stakeTransactionMessage.message || (
                                   <>
                                     <span
                                       style={{
@@ -427,12 +415,12 @@ const Index = ({
                                     >
                                       YOUR STAKE OF{" "}
                                       <span style={{ color: "#C66065" }}>
-                                        {amount}
+                                        {props.stakeAmount}
                                         {" XIO"}
                                       </span>{" "}
                                       FOR{" "}
                                       <span style={{ color: "#C66065" }}>
-                                        {days}
+                                        {props.stakeDuration}
                                         {" DAYS"}
                                       </span>{" "}
                                       IS PENDING, PLEASE WAIT{" "}
@@ -440,9 +428,9 @@ const Index = ({
                                   </>
                                 )}{" "}
                               </span>
-                              {transactionMessage.hash ? (
+                              {props.stakeTransactionMessage.hash ? (
                                 <Link
-                                  href={`https://etherscan.io/tx/${transactionMessage.hash}`}
+                                  href={`https://etherscan.io/tx/${props.stakeTransactionMessage.hash}`}
                                   rel="noreferrer"
                                   target="_blank"
                                   style={{ position: "relative", top: 7 }}
@@ -465,26 +453,29 @@ const Index = ({
                           <h6 style={{ color: themeDark ? "white" : "black" }}>
                             IF YOU STAKE{" "}
                             <span style={{ color: "#C66065" }}>
-                              {amount} {" XIO"}
+                              {props.stakeAmount} {" XIO"}
                             </span>{" "}
                             FOR{" "}
                             <span style={{ color: "#C66065" }}>
-                              {days} {" DAYS"}
+                              {props.stakeDuration} {" DAYS"}
                             </span>
                             , YOU WILL IMMEDIATELY RECEIVE{" "}
                             <span style={{ color: "#C66065" }}>
-                              {rate} {outputToken}
+                              {Number(props.interestRate).toFixed(4)}{" "}
+                              {props.token.outputTokenSymbol}
                             </span>
                           </h6>
                         )}
                         <div className="actionWrapper">
                           <div
                             onClick={() =>
-                              loading ? null : approve(handleClick)
+                              props.stakeLoading
+                                ? null
+                                : props.approve(props.isUnlock, props.address)
                             }
                             className={
-                              address && !unlock
-                                ? loading
+                              props.address && !props.isUnlock
+                                ? props.stakeLoading
                                   ? "confirmStakeWrapperDisable"
                                   : "confirmStakeWrapper"
                                 : "confirmStakeWrapperDisable"
@@ -498,7 +489,7 @@ const Index = ({
                                 margin: 0,
                               }}
                             >
-                              {unlock ? (
+                              {props.isUnlock ? (
                                 <span>
                                   WALLET ACTIVATED{" "}
                                   <FontAwesomeIcon
@@ -515,13 +506,13 @@ const Index = ({
                         <div className="actionWrapper">
                           <div
                             onClick={() =>
-                              loading
+                              props.stakeLoading
                                 ? null
-                                : onConfirmClick(checkForNewList, handleClick)
+                                : props.onConfirmStake(props.address,props.balance,props.stakeAmount,props.initialRate,props.stakeDuration,props.token)
                             }
                             className={
-                              address && unlock
-                                ? loading
+                              props.address && props.isUnlock
+                                ? props.stakeLoading
                                   ? "confirmStakeWrapperDisable"
                                   : "confirmStakeWrapper"
                                 : "confirmStakeWrapperDisable"
@@ -543,7 +534,7 @@ const Index = ({
                     )}
                     {props.location.pathname === "/unstake" && (
                       <>
-                        {loading ? (
+                        {props.unstakeLoading ? (
                           <div style={{ margin: "17px 0px" }}>
                             <img
                               src={themeDark ? spinnerBlack : spinnerWhite}
@@ -562,15 +553,15 @@ const Index = ({
                         )}
                         <div
                           className={
-                            !!(!warning && address)
-                              ? loading
+                            !!(!warning && props.address)
+                              ? props.unstakeLoading
                                 ? "confirmStakeWrapperDisable"
                                 : "confirmStakeWrapper"
                               : "confirmStakeWrapperDisable"
                           }
                           onClick={() =>
-                            !warning && !loading
-                              ? onWithdraw(checkForNewList, handleClick)
+                            !warning && !props.unstakeLoading
+                              ? props.onUnStakeXio(props.address,props.unstakeAmount)
                               : null
                           }
                         >
@@ -664,4 +655,47 @@ const Index = ({
   );
 };
 
-export default withRouter(Index);
+const mapStateToProps = (state) => {
+  return {
+    token: state.stakeReducer.token,
+    address: state.layoutReducer.address,
+    isUnlock: state.stakeReducer.isUnlock,
+    stakeDuration: state.stakeReducer.days,
+    balance: state.dashboardReducer.balance,
+    stakeAmount: state.stakeReducer.xioAmount,
+    initialRate: state.stakeReducer.initialRate,
+    stakedXio: state.dashboardReducer.stakedXio,
+    interestRate: state.stakeReducer.interestRate,
+    stakeLoading: state.layoutReducer.stakeLoading,
+    unstakeAmount: state.unstakeReducer.unstakeAmount,
+    unstakeLoading: state.layoutReducer.unStakeLoading,
+    stakeTransactionMessage: state.layoutReducer.stakeTransactionMessage,
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    approve: (isUnlock, address) => dispatch(onApprove(isUnlock, address)),
+    onUnStakeXio: (address,amount) => dispatch(onUnStakeXio(address,amount)),
+    onConfirmStake: (
+      address,
+      balance,
+      stakeAmount,
+      initialRate,
+      stakeDuration,
+      token
+    ) =>
+      dispatch(
+        onConfirmStake(
+          address,
+          balance,
+          stakeAmount,
+          initialRate,
+          stakeDuration,
+          token
+        )
+      ),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Index));

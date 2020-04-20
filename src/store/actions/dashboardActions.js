@@ -3,10 +3,15 @@ import { formattedNum } from "../../utils";
 
 export const getBalance = (address) => {
   return async (dispatch) => {
-    let res = await (await ContractInits.initXioContract()).methods
+    try{
+      let res = await (await ContractInits.initXioContract()).methods
       .balanceOf(address)
       .call();
-    dispatch({ type: "getBalance", payload: res });
+      dispatch({ type: "getBalance", payload: res });
+    }
+    catch(e){
+      console.log(e)
+    }
   };
 };
 

@@ -59,3 +59,11 @@ export const truncateValue = (value) => {
   }
   return value.toString().slice(0, 4) + "..";
 };
+
+export const get64BytesString = string => {
+  string = string.replace("0x", "");
+  while (string.length < 64) {
+    string = "0".concat(string);
+  }
+  return string;
+};

@@ -60,12 +60,13 @@
 }
 
 .confirmStakeWrapper{
-    background:linear-gradient(#c66065, #cc979e);
+    background: #C66065;
     cursor: pointer;                            
     display: inline-block;
     padding: 10px;
     border-radius: 5px;
     margin-bottom: 10px;
+    width: 251px;
 }
 
 .confirmStakeWrapper:hover{
@@ -79,7 +80,7 @@
     padding: 10px;
     border-radius: 5px;
     margin-bottom: 10px;
-
+    width: 251px;
 }
 
 .actionWrapper{

@@ -4,6 +4,8 @@ import Button from '@material-ui/core/Button';
 import Snackbar from '@material-ui/core/Snackbar';
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
+import {connect} from "react-redux"
+import {handleToastClose} from "../../../store/actions/layoutActions"
 
 const useStyles = makeStyles(theme => ({
   close: {
@@ -11,7 +13,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export default function ConsecutiveSnackbars({type,handleClose,message,open}) {
+function ConsecutiveSnackbars({handleClose,message,open}) {
   // console.log('props ==>',open,message,handleClose)
   const classes = useStyles();
   return (
@@ -41,3 +43,20 @@ export default function ConsecutiveSnackbars({type,handleClose,message,open}) {
     </div>
   );
 }
+
+
+
+const mapStateToProps = (state) => {
+  return{
+    open: state.layoutReducer.toastState,
+    message: state.layoutReducer.toastMessage
+  }
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return{
+    handleClose: () => dispatch(handleToastClose())
+  }
+}
+
+export default connect(mapStateToProps,mapDispatchToProps)(ConsecutiveSnackbars)

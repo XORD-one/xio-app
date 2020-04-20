@@ -11,6 +11,9 @@ import Web3 from "web3";
 import { XIO_ABI, XIO_ADDRESS } from "../../contracts/xio";
 import { PORTAL_ABI, PORTAL_ADDRESS } from "../../contracts/portal";
 import { getCurrentGasPrices } from "../../utils";
+import { connect } from "react-redux";
+import {onSetUnStakeAmount,onAllowedUnstake,onSetWarning} from "../../store/actions/unstakeActions"
+import {getStakerData} from "../../store/actions/dashboardActions"
 
 let web3js = "";
 
@@ -86,214 +89,25 @@ const Withdraw = (props) => {
   const outputToken = "UNSTAKE TOKEN";
   const instantInterest = "UNSTAKE AMOUNT";
   const classes = useStyles();
-
-  const [token, setToken] = useState("OMG");
-  const [open, setOpen] = React.useState(false);
-  const [address, setAccountAddress] = useState("");
   const [amount, setAmount] = useState();
-  const [tokensList, setTokensList] = useState([]);
-  const [stakedXio, setStakedXio] = useState(0);
   const [amountFocus, setAmountFocus] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [network, setNetwork] = useState("main");
 
   useEffect(() => {
-    let timer;
-    ethereum = window.ethereum;
-    if (ethereum) {
-      checkWeb3();
-      timer = setInterval(() => {
-        checkWeb3();
-      }, 3000);
-      initPortalContract();
-      initXioContract();
-      onGetLengthOfStakerData();
-      // getTokensData()
+    props.onUnstakeAmount()
+    if (props.address) {
+      props.getStakerData(props.address);
     }
-    return () => {
-      if (timer) {
-        clearInterval(timer);
-      }
-    };
-  }, [address]);
+  }, [props.address]);
+
+  useEffect(()=>{
+
+  },[amount])
 
   const onToggleFocus = (type = "") => {
     if (type === "focus" && !amount) {
-      setAmount(stakedXio);
+      setAmount(props.stakedXio);
     }
     setAmountFocus(!amountFocus);
-  };
-
-  const onGetLengthOfStakerData = async () => {
-    try {
-      console.log("check ==>", portalContract, address);
-      const res = await portalContract.methods
-        .getArrayLengthOfStakerData(address)
-        .call();
-      console.log("res ==>", res);
-      getStakerData(res);
-    } catch (e) {
-      console.log(e);
-    }
-  };
-
-  const getStakerData = async (data) => {
-    try {
-      let amount = 0;
-      for (let i = 0; i < data; i++) {
-        const res = await portalContract.methods.stakerData(address, i).call();
-        console.log(res);
-        console.log(Math.round(new Date() / 1000));
-        console.log(
-          !!(
-            res.stakeInitiationTimestamp + res.stakeDurationTimestamp <=
-              Math.round(new Date() / 1000) &&
-            res.publicKey != "0x0000000000000000000000000000000000000000"
-          )
-        );
-        if (
-          Number(res.stakeInitiationTimestamp) +
-            Number(res.stakeDurationTimestamp) <=
-            Math.round(new Date() / 1000) &&
-          res.publicKey != "0x0000000000000000000000000000000000000000"
-        ) {
-          res.stakeQuantity = await web3js.utils.fromWei(
-            res.stakeQuantity.toString()
-          );
-          amount = amount + Number(res.stakeQuantity);
-        }
-      }
-      console.log("amount ==>", amount);
-      setStakedXio(amount);
-    } catch (e) {
-      console.log(e);
-    }
-  };
-  // const getTokensData = async () => {
-  //   try{
-  //     const tokenList = [];
-  //     const tokens = {}
-  //     let index = 0;
-  //     while(true){
-  //       const res = await portalContract.methods.portalData(index).call()
-  //       console.log(res)
-  //       if(res.tokenAddress == "0x0000000000000000000000000000000000000000"){
-  //         break;
-  //       }
-  //       if(tokens[res.outputTokenSymbol]){}
-  //       else{
-  //         tokens[res.outputTokenSymbol] = 1
-  //         tokenList.push(res)
-  //       }
-  //       index++;
-  //     }
-  //     setTokensList(tokenList)
-  //   }
-  //   catch(e){
-  //     console.log(e)
-  //   }
-  // }
-
-  async function checkWeb3() {
-    // Use Mist/MetaMask's provider.
-    web3js = new Web3(window.web3.currentProvider);
-    //get selected account on metamask
-    accounts = await web3js.eth.getAccounts();
-    if (accounts[0] !== address) {
-      setAccountAddress(accounts[0]);
-    }
-    //get network which metamask is connected too
-    let getNetwork = await web3js.eth.net.getNetworkType();
-    if (getNetwork !== network) setNetwork(getNetwork);
-  }
-
-  const onConnect = async (onSetMessage) => {
-    ethereum = window.ethereum;
-    if (!ethereum || !ethereum.isMetaMask) {
-      // throw new Error('Please install MetaMask.')
-      onSetMessage(`METAMASK NOT INSTALLED!!`);
-    } else {
-      await ethereum.enable();
-      checkWeb3();
-    }
-  };
-
-  const initPortalContract = () => {
-    portalContract = new web3js.eth.Contract(PORTAL_ABI, PORTAL_ADDRESS);
-  };
-
-  const initXioContract = () => {
-    contract = new web3js.eth.Contract(XIO_ABI, XIO_ADDRESS);
-  };
-
-  const onCanWidthdrawXio = async () => {
-    try {
-      let weiAmount = await web3js.utils.toWei(amount.toString());
-      console.log("weiAmount and Address ==>", weiAmount, address);
-      const res = await portalContract.methods
-        .canWithdrawXIO(weiAmount, address)
-        .call();
-      console.log(res);
-      if (res) {
-        onWithdrawXio();
-      }
-    } catch (e) {
-      console.log(e);
-    }
-  };
-
-  const onWithdrawXio = async (updateList, onSetMessage) => {
-    try {
-      if (address) {
-        if (amount && Number(amount) < 1) {
-          onSetMessage("Please enter the amount of XIO you want to unstake.");
-          return;
-        }
-        setLoading(true);
-        const amountToSend = await web3js.utils.toWei(amount.toString());
-        console.log("amountToSend and amount", amountToSend, amount);
-        let rawTransaction = {
-          from: address,
-          to: PORTAL_ADDRESS,
-          value: 0,
-          gasLimit: 1000000,
-          gasPrice: Number((await getCurrentGasPrices()).high)*1000000000,
-          data: portalContract.methods.withdrawXIO(amountToSend).encodeABI(),
-        };
-        console.log(rawTransaction);
-        web3js.eth
-          .sendTransaction(rawTransaction)
-          .on("transactionHash", function (hash) {
-            console.log("hash ==>", hash);
-          })
-          .on("receipt", function (receipt) {
-            console.log("receipt ==>", receipt);
-          })
-          .on("confirmation", function (confirmationNumber, receipt) {
-            if (confirmationNumber == 1) {
-              onGetLengthOfStakerData();
-              setTimeout(() => {
-                setLoading(false);
-                setAmount(0);
-                onSetMessage("Staked XIO Successfully Unstaked.");
-                updateList();
-              }, 3000);
-              console.log("confirmation ==>", confirmationNumber);
-            }
-          })
-          .on("error", (e) => {
-            console.log(e);
-            setLoading(false);
-            onSetMessage("Oops, something went wrong please try again.");
-          });
-      } else {
-        onSetMessage("PLEASE CONNECT TO METAMASK WALLET !!");
-      }
-    } catch (e) {
-      console.log(e);
-      setLoading(false);
-      onSetMessage("Oops, something went wrong please try again.");
-    }
   };
 
   const onChangeAmount = (e) => {
@@ -302,41 +116,16 @@ const Withdraw = (props) => {
       e.target.value == ""
     ) {
       setAmount(e.target.value);
+      props.onUnstakeAmount(e.target.value)
     } else {
       console.log("nothing");
     }
-  };
-
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
-
-  const onTokenSelect = (data) => {
-    console.log(data);
-    setToken(data);
-    handleClose();
-  };
-
-  const dialogProps = {
-    open,
-    handleClose,
-    onTokenSelect,
-    tokensList,
   };
 
   return (
     <>
       <ThemeConsumer>
         {({ isThemeDark, themeDark }) => {
-          const allowed = amount
-            ? Number(stakedXio) - Number(amount) < 0
-              ? 0
-              : Number(stakedXio) - Number(amount)
-            : stakedXio;
           return (
             <>
               <Grid container item className="firstSectionContainer " md={12}>
@@ -464,7 +253,7 @@ const Withdraw = (props) => {
                         placeholder="0.0"
                         value={amount}
                         style={
-                          Number(amount) > Number(stakedXio)
+                          Number(amount) > Number(props.stakedXio)
                             ? { color: "#C66065" }
                             : {}
                         }
@@ -484,4 +273,23 @@ const Withdraw = (props) => {
   );
 };
 
-export default withStyles(styles)(Withdraw);
+const mapStateToProps = (state) => {
+  return {
+    address: state.layoutReducer.address,
+    balance: state.dashboardReducer.balance,
+    stakedXio: state.dashboardReducer.stakedXio
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    getStakerData: (address) => dispatch(getStakerData(address)),
+    onUnstakeAmount : (amount) => dispatch(onSetUnStakeAmount(amount)),
+    onAllowedUnstake: (allowed) => dispatch(onAllowedUnstake(allowed)),
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withStyles(styles)(Withdraw));

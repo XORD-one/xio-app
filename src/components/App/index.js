@@ -6,16 +6,15 @@ import Layout from "../../layout";
 import NetworkAlert from "../common/NetworkAlert";
 import {connect} from "react-redux"
 import {checkWeb3} from "../../store/actions/layoutActions"
+import {onGetIsUnlock} from "../../store/actions/stakeActions"
 
-function App({address,network,checkWeb3}) {
+function App({address,network,checkWeb3,onGetIsUnlock}) {
   const [themeDark, setToggleTheme] = useState(
     JSON.parse(localStorage.getItem("theme")) !== null
       ? JSON.parse(localStorage.getItem("theme"))
       : true
   );
   const [checkList, setCheckList] = useState(false);
-  const [openToast, setOpenToast] = useState(false);
-  const [message, setMessage] = useState("");
   const [open, setOpen] = useState(true);
     // console.log('app props ==>',props)
 
@@ -30,21 +29,17 @@ function App({address,network,checkWeb3}) {
     setCheckList(!checkList);
   };
 
-  const handleClick = (customMessage) => {
-    setMessage(customMessage);
-    setOpenToast(true);
-  };
 
   const toggleAgreement = () => {
     setOpen(!open);
   };
 
-  const handleClose = (event, reason) => {
-    if (reason === "clickaway") {
-      return;
-    }
-    setOpenToast(false);
-  };
+  // const handleClose = (event, reason) => {
+  //   if (reason === "clickaway") {
+  //     return;
+  //   }
+  //   setOpenToast(false);
+  // };
 
   const onConnect = async () => {
     let ethereum = window.ethereum;
@@ -66,6 +61,9 @@ function App({address,network,checkWeb3}) {
       }, 3000);
       checkWeb3();
     }
+    if(address){
+      onGetIsUnlock(address)
+    }
     return () => {
       if (timer) {
         clearInterval(timer);
@@ -78,10 +76,6 @@ function App({address,network,checkWeb3}) {
     isThemeDark,
     checkList,
     checkForNewList,
-    handleClick,
-    handleClose,
-    openToast,
-    message,
     open,
     toggleAgreement,
   };
@@ -127,7 +121,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return{
-    checkWeb3: () => dispatch(checkWeb3())
+    checkWeb3: () => dispatch(checkWeb3()),
+    onGetIsUnlock: (address) => dispatch(onGetIsUnlock(address))
   }
 }
 
