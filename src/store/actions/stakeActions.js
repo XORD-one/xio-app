@@ -10,36 +10,6 @@ import { get64BytesString, getCurrentGasPrices } from "../../utils";
 import { XIO_ADDRESS } from "../../contracts/xio";
 import firebase from "../../config/firebase";
 import { ERC20_ABI } from "../../contracts/erc20";
-// export const getTokenData = () => {
-//   return async (dispatch) => {
-//     try {
-//       const tokenList = [];
-//       const tokens = {};
-//       let index = 0;
-//       while (true) {
-//         let res = await (await ContractInits.initPortalContract()).methods
-//           .portalData(index)
-//           .call();
-//         if (res.outputTokenSymbol === "NONE") {
-//           index++;
-//           continue;
-//         }
-//         if (res.tokenAddress == "0x0000000000000000000000000000000000000000") {
-//           break;
-//         }
-//         if (tokens[res.outputTokenSymbol]) {
-//         } else {
-//           tokens[res.outputTokenSymbol] = 1;
-//           tokenList.push(res);
-//         }
-//         index++;
-//       }
-//       dispatch({ type: "getTokens", payload: tokenList });
-//     } catch (e) {
-//       console.log(e);
-//     }
-//   };
-// };
 
 export const getTokenData = () => {
   return async (dispatch) => {
@@ -381,6 +351,9 @@ export const onConfirmStake = (
               await fetchEvent(address, receipt.blockNumber);
               console.log("recipt ==>", receipt);
               console.log("confirm ==>", confirmationNumber);
+              dispatch(onSetXio(1))
+              dispatch(onSetDays(1))
+              dispatch(onSetInterestRate(0))
               dispatch(onSetStakeLoading(false));
               dispatch(getStakerData(address))
               dispatch(

@@ -201,6 +201,11 @@ const Stake = (props) => {
     if (!token.outputTokenSymbol) setToken(props.token);
   }, [props.token]);
 
+  useEffect(()=>{
+    setAmountXIO(props.xioAmount);
+    setDurationDays(props.days)
+  },[props.xioAmount,props.days])
+
   const dialogProps = {
     open,
     handleClose: handleClickClose,
@@ -536,11 +541,13 @@ Stake.propTypes = {
 
 const mapStateToProps = (state) => {
   return {
+    days: state.stakeReducer.days,
     token: state.stakeReducer.token,
     initial: state.stakeReducer.initial,
     address: state.layoutReducer.address,
     unitRate: state.stakeReducer.unitRate,
     xioLimit: state.stakeReducer.xioLimit,
+    xioAmount: state.stakeReducer.xioAmount,
     daysLimit: state.stakeReducer.daysLimit,
     balance: state.dashboardReducer.balance,
     tokensList: state.stakeReducer.tokenList,

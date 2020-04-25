@@ -111,8 +111,8 @@ const Dashboard = (props) => {
     }
   }, [props.address, loadOnStake]);
 
-  const balanceFromWei = props.balance / 1000000000000000000;
-  const availableXio = truncateValue(balanceFromWei);
+  // const balanceFromWei = props.balance / 1000000000000000000;
+  const availableXio = truncateValue(props.balance);
   const stakedXioValue = truncateValue(props.stakedXio);
   return (
     <>
@@ -123,7 +123,12 @@ const Dashboard = (props) => {
             checkForNewList();
           }
           return (
-            <>
+            <Grid
+            container
+            item
+            className="firstSectionContainer"
+            md={12}
+            xs={12}>
               <Grid
                 container
                 item
@@ -153,7 +158,7 @@ const Dashboard = (props) => {
                   >
                     AVAILABLE XIO
                   </h6>
-                  <Tooltip title={props.balance / 1000000000000000000}>
+                  <Tooltip title={props.balance}>
                     <h2
                       style={{
                         fontFamily: "'Montserrat', sans-serif",
@@ -269,79 +274,89 @@ const Dashboard = (props) => {
                   </Grid>
 
                   <Grid container item style={tabBodyRow3_1_2} md={10}>
-                  <TableContainer className={classes.container}>
-                    <Table stickyHeader className={classes.table} align="center">
-                      <TableHead style={{ background: "#1c1c1c" }}>
-                        <TableRow>
-                          <TableCell
-                            style={{ width: "40%" }}
-                            className={
-                              themeDark ? "tableHeader" : "tableHeaderLight"
-                            }
-                          >
-                            <h6 style={{ margin: 0, fontSize: 10 }}>
-                              STAKE REWARDS TOKEN
-                            </h6>
-                          </TableCell>
-                          <TableCell
-                            className={
-                              themeDark ? "tableHeader" : "tableHeaderLight"
-                            }
-                            align="center"
-                          >
-                            <h6 style={{ margin: 0, fontSize: 10 }}>
-                              STAKED XIO
-                            </h6>
-                          </TableCell>
+                    <TableContainer className={classes.container}>
+                      <Table
+                        stickyHeader
+                        className={classes.table}
+                        align="center"
+                      >
+                        <TableHead style={{ background: "#1c1c1c" }}>
+                          <TableRow>
+                            <TableCell
+                              style={{ width: "40%" }}
+                              className={
+                                themeDark ? "tableHeader" : "tableHeaderLight"
+                              }
+                            >
+                              <h6 style={{ margin: 0, fontSize: 10 }}>
+                                STAKE REWARDS TOKEN
+                              </h6>
+                            </TableCell>
+                            <TableCell
+                              className={
+                                themeDark ? "tableHeader" : "tableHeaderLight"
+                              }
+                              align="center"
+                            >
+                              <h6 style={{ margin: 0, fontSize: 10 }}>
+                                STAKED XIO
+                              </h6>
+                            </TableCell>
 
-                          <TableCell
-                            className={
-                              themeDark ? "tableHeader" : "tableHeaderLight"
-                            }
-                            align="center"
-                          >
-                            <h6 style={{ margin: 0, fontSize: 10 }}>
-                              DAYS UNTIL XIO RELEASED
-                            </h6>
-                          </TableCell>
-                        </TableRow>
-                      </TableHead>
-                      <TableBody style={{ paddingBottom: "20px" }}>
-                        {!!props.activePortal.length &&
-                          props.activePortal.map((item) => {
-                            if (item.Days !== 0) {
-                              return (
-                                <TableRow>
-                                  <TableCell
-                                    style={{ fontSize: 10 }}
-                                    className={
-                                      themeDark ? "tableBody" : "tableBodyLight"
-                                    }
-                                  >
-                                    {item.outputTokenSymbol}
-                                  </TableCell>
-                                  <TableCell
-                                    style={{ fontSize: 10 }}
-                                    className={
-                                      themeDark ? "tableBody" : "tableBodyLight"
-                                    }
-                                  >
-                                    {item.quantity}
-                                  </TableCell>
-                                  <TableCell
-                                    style={{ fontSize: 10 }}
-                                    className={
-                                      themeDark ? "tableBody" : "tableBodyLight"
-                                    }
-                                  >
-                                    {item.Days}
-                                  </TableCell>
-                                </TableRow>
-                              );
-                            }
-                          })}
-                      </TableBody>
-                    </Table>
+                            <TableCell
+                              className={
+                                themeDark ? "tableHeader" : "tableHeaderLight"
+                              }
+                              align="center"
+                            >
+                              <h6 style={{ margin: 0, fontSize: 10 }}>
+                                DAYS UNTIL XIO RELEASED
+                              </h6>
+                            </TableCell>
+                          </TableRow>
+                        </TableHead>
+                        <TableBody style={{ paddingBottom: "20px" }}>
+                          {!!props.activePortal.length &&
+                            props.activePortal.map((item) => {
+                              if (item.Days !== 0) {
+                                return (
+                                  <TableRow>
+                                    <TableCell
+                                      style={{ fontSize: 10 }}
+                                      className={
+                                        themeDark
+                                          ? "tableBody"
+                                          : "tableBodyLight"
+                                      }
+                                    >
+                                      {item.outputTokenSymbol}
+                                    </TableCell>
+                                    <TableCell
+                                      style={{ fontSize: 10 }}
+                                      className={
+                                        themeDark
+                                          ? "tableBody"
+                                          : "tableBodyLight"
+                                      }
+                                    >
+                                      {item.quantity}
+                                    </TableCell>
+                                    <TableCell
+                                      style={{ fontSize: 10 }}
+                                      className={
+                                        themeDark
+                                          ? "tableBody"
+                                          : "tableBodyLight"
+                                      }
+                                    >
+                                      {item.Days}
+                                    </TableCell>
+                                  </TableRow>
+                                );
+                              }
+                            })}
+                        </TableBody>
+                      </Table>
                     </TableContainer>
                     {props.portalLoading && (
                       <div style={{ width: "100%", textAlign: "center" }}>
@@ -396,7 +411,9 @@ const Dashboard = (props) => {
                                 themeDark ? "tableHeader" : "tableHeaderLight"
                               }
                             >
-                              <h6 style={{ margin: 0, fontSize: 10 }}>STAKE REWARDS TOKEN</h6>
+                              <h6 style={{ margin: 0, fontSize: 10 }}>
+                                STAKE REWARDS TOKEN
+                              </h6>
                             </TableCell>
                             <TableCell
                               className={
@@ -424,44 +441,48 @@ const Dashboard = (props) => {
                           {props.portalLoading
                             ? null
                             : !!props.activePortal.length &&
-                            props.activePortal.map((item) => {
-                              if (item.Days == 0) {
-                                return (
-                                  <TableRow>
-                                    <TableCell
-                                      style={{ fontSize: 10 }}
-                                      className={
-                                        themeDark
-                                          ? "tableBody"
-                                          : "tableBodyLight"
-                                      }
-                                      style={{ latterSpacing: "2px" }}
-                                    >
-                                      {item.outputTokenSymbol}
-                                    </TableCell>
-                                    <TableCell
-                                      style={{ fontSize: 10 }}
-                                      className={
-                                        themeDark
-                                          ? "tableBody"
-                                          : "tableBodyLight"
-                                      }
-                                    >
-                                      {item.quantity}
-                                    </TableCell>
-                                    <TableCell
-                                      style={{ fontSize: 10 }}
-                                      className={
-                                        themeDark
-                                          ? "tableBody"
-                                          : "tableBodyLight"
-                                      }
-                                    >
-                                      {item.boughAmount}
-                                    </TableCell>
-                                  </TableRow>
-                                );
-                                    }
+                              props.activePortal.map((item) => {
+                                if (item.Days == 0) {
+                                  return (
+                                    <TableRow>
+                                      <TableCell
+                                        style={{ fontSize: 10 }}
+                                        className={
+                                          themeDark
+                                            ? "tableBody"
+                                            : "tableBodyLight"
+                                        }
+                                        style={{ latterSpacing: "2px" }}
+                                      >
+                                        {item.outputTokenSymbol}
+                                      </TableCell>
+                                      <TableCell
+                                        style={{ fontSize: 10 }}
+                                        className={
+                                          themeDark
+                                            ? "tableBody"
+                                            : "tableBodyLight"
+                                        }
+                                      >
+                                        {item.quantity}
+                                      </TableCell>
+                                      <TableCell
+                                        style={{ fontSize: 10 }}
+                                        className={
+                                          themeDark
+                                            ? "tableBody"
+                                            : "tableBodyLight"
+                                        }
+                                      >
+                                        <Tooltip title={item.boughAmount}>
+                                          <p style={{margin:0}} >
+                                            {truncateValue(item.boughAmount)}
+                                          </p>
+                                        </Tooltip>
+                                      </TableCell>
+                                    </TableRow>
+                                  );
+                                }
                               })}
                         </TableBody>
                       </Table>
@@ -477,7 +498,7 @@ const Dashboard = (props) => {
                   </Grid>
                 </Grid>
               </Grid>
-            </>
+            </Grid>
           );
         }}
       </ThemeConsumer>

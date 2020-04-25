@@ -99,12 +99,13 @@ const Withdraw = (props) => {
   }, [props.address]);
 
   useEffect(()=>{
-
-  },[amount])
+    setAmount(props.unstakeAmount)
+  },[props.unstakeAmount])
 
   const onToggleFocus = (type = "") => {
     if (type === "focus" && !amount) {
       setAmount(props.stakedXio);
+      props.onUnstakeAmount(props.stakedXio)
     }
     setAmountFocus(!amountFocus);
   };
@@ -126,7 +127,7 @@ const Withdraw = (props) => {
       <ThemeConsumer>
         {({ isThemeDark, themeDark }) => {
           return (
-            <>
+            <Grid container item className="firstSectionContainer " md={12}>
               <Grid container item className="firstSectionContainer " md={12}>
                 <Grid
                   style={{
@@ -264,7 +265,7 @@ const Withdraw = (props) => {
                   </Grid>
                 </Grid>
               </Grid>
-            </>
+            </Grid>
           );
         }}
       </ThemeConsumer>
@@ -276,7 +277,8 @@ const mapStateToProps = (state) => {
   return {
     address: state.layoutReducer.address,
     balance: state.dashboardReducer.balance,
-    stakedXio: state.unstakeReducer.unstakeableXIO
+    stakedXio: state.unstakeReducer.unstakeableXIO,
+    unstakeAmount: state.unstakeReducer.unstakeAmount,
   };
 };
 

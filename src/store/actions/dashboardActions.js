@@ -6,9 +6,14 @@ import { ERC20_ABI } from "../../contracts/erc20";
 export const getBalance = (address) => {
   return async (dispatch) => {
     try {
+      const { web3js } = await ContractInits.init();
       let res = await (await ContractInits.initXioContract()).methods
         .balanceOf(address)
         .call();
+        console.log('before ==>',res)
+      res = await web3js.utils.fromWei(res.toString())
+      console.log('after ==>',res)
+
       dispatch({ type: "getBalance", payload: res });
     } catch (e) {
       console.log(e);
@@ -41,7 +46,7 @@ export const getStakerData = (address) => {
         console.log("before from WEI ==>", res.quantity);
         res.quantity = await web3js.utils.fromWei(res.quantity.toString());
         //   console.log("after from WEI ==>", res.stakeQuantity);
-
+        res.boughAmount = await web3js.utils.fromWei(res.boughAmount.toString());
         amount = amount + Number(res.quantity);
 
         res.Days =

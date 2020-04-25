@@ -4,6 +4,11 @@ import { PORTAL_ADDRESS } from "../../contracts/portal";
 import { ERC20_ABI } from "../../contracts/erc20";
 import { onSetUnStakeLoading } from "./layoutActions";
 import { getStakerData, getStakedData } from "./dashboardActions";
+import {
+  onSetStakeLoading,
+  onSetTransactionMessage,
+  onToast,
+} from "./layoutActions";
 
 export const onCalculateUnstakeXIO = (address) => {
   return async (dispatch) => {
@@ -48,7 +53,7 @@ export const onUnStakeXio = (address, timestampArray ,amount) => {
       const portalContract = await ContractInits.initPortalContract();
       if (address) {
         if (amount && Number(amount) < 1) {
-          alert("Please enter the amount of XIO you want to unstake.");
+          dispatch(onToast("Please enter the amount of XIO you want to unstake."));
           return;
         }
         dispatch(onSetUnStakeLoading(true));
@@ -75,10 +80,11 @@ export const onUnStakeXio = (address, timestampArray ,amount) => {
           })
           .on("confirmation", function (confirmationNumber, receipt) {
             if (confirmationNumber == 1) {
-              dispatch(getStakerData(address));
+              dispatch(onCalculateUnstakeXIO(address));
               setTimeout(() => {
+                dispatch(onSetUnStakeAmount(0))
                 dispatch(onSetUnStakeLoading(false));
-                alert("Staked XIO Successfully Unstaked.");
+                dispatch(onToast("Staked XIO Successfully Unstaked."));
               }, 3000);
               console.log("confirmation ==>", confirmationNumber);
             }
@@ -86,15 +92,15 @@ export const onUnStakeXio = (address, timestampArray ,amount) => {
           .on("error", (e) => {
             console.log(e);
             dispatch(onSetUnStakeLoading(false));
-            alert("Oops, something went wrong please try again.");
+            dispatch(onToast("Oops, something went wrong please try again."));
           });
       } else {
-        alert("PLEASE CONNECT TO METAMASK WALLET !!");
+        dispatch(onToast("PLEASE CONNECT TO METAMASK WALLET !!"));
       }
     } catch (e) {
       console.log(e);
       dispatch(onSetUnStakeLoading(false));
-      alert("Oops, something went wrong please try again.");
+      dispatch(onToast("Oops, something went wrong please try again."));
     }
   };
 };
