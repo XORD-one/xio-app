@@ -12,8 +12,7 @@ import { XIO_ABI, XIO_ADDRESS } from "../../contracts/xio";
 import { PORTAL_ABI, PORTAL_ADDRESS } from "../../contracts/portal";
 import { getCurrentGasPrices } from "../../utils";
 import { connect } from "react-redux";
-import {onSetUnStakeAmount,onAllowedUnstake,onSetWarning} from "../../store/actions/unstakeActions"
-import {getStakerData} from "../../store/actions/dashboardActions"
+import {onSetUnStakeAmount,onAllowedUnstake,onSetWarning,onCalculateUnstakeXIO} from "../../store/actions/unstakeActions"
 
 let web3js = "";
 
@@ -95,7 +94,7 @@ const Withdraw = (props) => {
   useEffect(() => {
     props.onUnstakeAmount()
     if (props.address) {
-      props.getStakerData(props.address);
+      props.onCalculateUnstakeXIO(props.address);
     }
   }, [props.address]);
 
@@ -277,15 +276,15 @@ const mapStateToProps = (state) => {
   return {
     address: state.layoutReducer.address,
     balance: state.dashboardReducer.balance,
-    stakedXio: state.dashboardReducer.stakedXio
+    stakedXio: state.unstakeReducer.unstakeableXIO
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    getStakerData: (address) => dispatch(getStakerData(address)),
     onUnstakeAmount : (amount) => dispatch(onSetUnStakeAmount(amount)),
     onAllowedUnstake: (allowed) => dispatch(onAllowedUnstake(allowed)),
+    onCalculateUnstakeXIO: (address) => dispatch(onCalculateUnstakeXIO(address)),
   };
 };
 

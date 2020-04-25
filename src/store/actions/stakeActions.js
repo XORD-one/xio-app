@@ -1,34 +1,68 @@
 import ContractInits from "../config/contractsInit";
 import { PORTAL_ADDRESS } from "../../contracts/portal";
-import { onSetStakeLoading, onSetTransactionMessage,onToast } from "./layoutActions";
-import { get64BytesString,getCurrentGasPrices } from "../../utils";
+import {
+  onSetStakeLoading,
+  onSetTransactionMessage,
+  onToast,
+} from "./layoutActions";
+import {getStakerData} from "./dashboardActions"
+import { get64BytesString, getCurrentGasPrices } from "../../utils";
 import { XIO_ADDRESS } from "../../contracts/xio";
+import firebase from "../../config/firebase";
+import { ERC20_ABI } from "../../contracts/erc20";
+// export const getTokenData = () => {
+//   return async (dispatch) => {
+//     try {
+//       const tokenList = [];
+//       const tokens = {};
+//       let index = 0;
+//       while (true) {
+//         let res = await (await ContractInits.initPortalContract()).methods
+//           .portalData(index)
+//           .call();
+//         if (res.outputTokenSymbol === "NONE") {
+//           index++;
+//           continue;
+//         }
+//         if (res.tokenAddress == "0x0000000000000000000000000000000000000000") {
+//           break;
+//         }
+//         if (tokens[res.outputTokenSymbol]) {
+//         } else {
+//           tokens[res.outputTokenSymbol] = 1;
+//           tokenList.push(res);
+//         }
+//         index++;
+//       }
+//       dispatch({ type: "getTokens", payload: tokenList });
+//     } catch (e) {
+//       console.log(e);
+//     }
+//   };
+// };
 
 export const getTokenData = () => {
   return async (dispatch) => {
     try {
+      const { web3js } = await ContractInits.init();
+      const portalContract = await ContractInits.initPortalContract();
+      const addresses = await portalContract.methods.getPortalHistory().call();
       const tokenList = [];
-      const tokens = {};
-      let index = 0;
-      while (true) {
-        let res = await (await ContractInits.initPortalContract()).methods
-          .portalData(index)
-          .call();
-        if (res.outputTokenSymbol === "NONE") {
-          index++;
-          continue;
+      const promises = addresses.map(async (address) => {
+        const obj = await portalContract.methods.portalData(address).call();
+        let contract = new web3js.eth.Contract(ERC20_ABI, obj.tokenAddress);
+        let symbol = await contract.methods.symbol().call();
+        obj.outputTokenSymbol = symbol;
+        if (obj.active === true) {
+          tokenList.push(obj);
         }
-        if (res.tokenAddress == "0x0000000000000000000000000000000000000000") {
-          break;
+        return obj;
+      });
+      Promise.all(promises).then((res) => {
+        if (tokenList.length) {
+          dispatch({ type: "getTokens", payload: tokenList });
         }
-        if (tokens[res.outputTokenSymbol]) {
-        } else {
-          tokens[res.outputTokenSymbol] = 1;
-          tokenList.push(res);
-        }
-        index++;
-      }
-      dispatch({ type: "getTokens", payload: tokenList });
+      });
     } catch (e) {
       console.log(e);
     }
@@ -98,6 +132,7 @@ export const onGetInterestRate = (
       const res = await (await ContractInits.initPortalWithInfura()).methods
         .getInterestRate()
         .call();
+      console.log("initial interest ==>", res);
       dispatch({
         type: "onInitialInterestRate",
         payload: res,
@@ -136,11 +171,12 @@ export const onGetInterestRate = (
 
 const getXIOtoETHsAndETHtoALT = async (amount, token) => {
   try {
-    const res = await (await ContractInits.initPortalWithInfura()).methods
-      .getXIOtoETH(amount)
-      .call();
+    console.log("amount ==>", amount);
+    console.log("token ==>", token);
+    const infuraPortal = await ContractInits.initPortalWithInfura();
+    const res = await infuraPortal.methods.getXIOtoETH(amount).call();
     console.log("res of xiotoeth ==>", res);
-    let res1 = await (await ContractInits.initPortalWithInfura()).methods
+    let res1 = await infuraPortal.methods
       .getETHtoALT(res, token.tokenExchangeAddress)
       .call();
     console.log("res of ethToAlt ==>", res);
@@ -158,7 +194,9 @@ export const onApprove = (isUnlock, address) => {
   return async (dispatch) => {
     try {
       if (isUnlock) {
-        dispatch(onToast("Wallet already activated, you can start staking now."));
+        dispatch(
+          onToast("Wallet already activated, you can start staking now.")
+        );
         return;
       }
       if (address) {
@@ -202,10 +240,12 @@ export const onApprove = (isUnlock, address) => {
           .on("confirmation", function (confirmationNumber, receipt) {
             if (confirmationNumber == 1) {
               //console.log("confirmation ==>", confirmationNumber);
-              dispatch(onGetIsUnlock());
-              dispatch(onToast(
-                "You have successfully activated your wallet and can now begin staking XIO"
-              ));
+              dispatch(onGetIsUnlock(address));
+              dispatch(
+                onToast(
+                  "You have successfully activated your wallet and can now begin staking XIO"
+                )
+              );
               dispatch(onSetStakeLoading(false));
               dispatch(onSetTransactionMessage({ message: "", hash: "" }));
             }
@@ -257,25 +297,45 @@ export const onSetToken = (token) => {
   };
 };
 
-
-export const onConfirmStake = (address,balance,amountXioInput,initialRate,durationDaysInput,token) => {
+export const onConfirmStake = (
+  address,
+  balance,
+  amountXioInput,
+  initialRate,
+  durationDaysInput,
+  token
+) => {
   return async (dispatch) => {
     try {
-      const {web3js} = await ContractInits.init()
-      console.log('address,balance,amountXioInput,initialRate,durationDaysInput,token ==>',address,balance,amountXioInput,initialRate,durationDaysInput,token)
+      const { web3js } = await ContractInits.init();
+      console.log(
+        "address,balance,amountXioInput,initialRate,durationDaysInput,token ==>",
+        address,
+        balance,
+        amountXioInput,
+        initialRate,
+        durationDaysInput,
+        token
+      );
       if (address) {
         if (Number(balance) < Number(amountXioInput)) {
-          dispatch(onToast(
-            "You have insuffient amount of XIO to make this transaction."
-          ));
+          dispatch(
+            onToast(
+              "You have insuffient amount of XIO to make this transaction."
+            )
+          );
           return;
         }
         dispatch(onSetStakeLoading(true));
-        dispatch(onSetTransactionMessage({
-          message: "PLEASE CONFIRM STAKE TRANSACTION IN YOUR WALLET",
-          hash: "",
-        }));
+        dispatch(
+          onSetTransactionMessage({
+            message: "PLEASE CONFIRM STAKE TRANSACTION IN YOUR WALLET",
+            hash: "",
+          })
+        );
+        console.log("amount before ==>", amountXioInput);
         const amount = await web3js.utils.toWei(amountXioInput.toString());
+        console.log("amount after ==>", amount);
         const rateFromWei = await web3js.utils.fromWei(initialRate.toString());
         let calculatedValue =
           Number(durationDaysInput) *
@@ -284,7 +344,8 @@ export const onConfirmStake = (address,balance,amountXioInput,initialRate,durati
 
         calculatedValue = calculatedValue.toFixed(18);
         let tokensBought = await getXIOtoETHsAndETHtoALT(
-          await web3js.utils.toWei(calculatedValue.toString()),token
+          await web3js.utils.toWei(calculatedValue.toString()),
+          token
         );
         let resultA = tokensBought;
         let tempA = (Number(resultA) - Number(resultA * 0.0075)).toFixed(18);
@@ -303,13 +364,7 @@ export const onConfirmStake = (address,balance,amountXioInput,initialRate,durati
         console.log("params ==>", params);
 
         await (await ContractInits.initPortalContract()).methods
-          .stakeXIO(
-            token.tokenAddress,
-            durationDaysInput,
-            amount,
-            tokensBought,
-            token.portalId
-          )
+          .stakeXIO(token.tokenAddress, durationDaysInput, amount, tokensBought)
           .send({
             from: address,
             gasLimit: 2000000,
@@ -320,14 +375,19 @@ export const onConfirmStake = (address,balance,amountXioInput,initialRate,durati
             console.log(hash);
             dispatch(onSetTransactionMessage({ message: "", hash }));
           })
-          .on("confirmation", function (confirmationNumber, receipt) {
+          .on("confirmation", async function (confirmationNumber, receipt) {
             if (confirmationNumber === 1) {
               // tx confirmed
-              //console.log(receipt);
+              await fetchEvent(address, receipt.blockNumber);
+              console.log("recipt ==>", receipt);
+              console.log("confirm ==>", confirmationNumber);
               dispatch(onSetStakeLoading(false));
-              dispatch(onToast(
-                `You have successfully staked ${amountXioInput} XIO and can unlock these tokens after ${durationDaysInput} days.`
-              ));
+              dispatch(getStakerData(address))
+              dispatch(
+                onToast(
+                  `You have successfully staked ${amountXioInput} XIO and can unlock these tokens after ${durationDaysInput} days.`
+                )
+              );
             }
           });
       } else {
@@ -338,5 +398,69 @@ export const onConfirmStake = (address,balance,amountXioInput,initialRate,durati
       dispatch(onToast("Oops, something went wrong please try again"));
       dispatch(onSetStakeLoading(false));
     }
+  };
+};
+
+const fetchEvent = async (address, blocknumber) => {
+  try {
+    console.log("number =>", blocknumber);
+    const portalContract = await ContractInits.initPortalContract();
+    await portalContract
+      .getPastEvents("StakeCompleted", {
+        fromBlock: blocknumber - 1,
+        toBlock: blocknumber,
+      })
+      .then((events) => {
+        console.log("eventss ==>", events);
+        // events.forEach(async (event) => console.log('event ==>',event));
+        storeStakedData(address, events[0].returnValues.timestamp);
+      });
+  } catch (e) {
+    console.log(e);
   }
-}
+};
+
+const storeStakedData = (address, timestamp) => {
+  try {
+    firebase
+      .collection("users")
+      .where("address", "==", address)
+      .get()
+      .then((doc) => {
+        try{
+
+          console.log("res ==>", doc);
+          if (doc.empty) {
+            console.log("empty ==>", doc.empty);
+          firebase
+          .collection("users")
+            .add({ address, history: [timestamp], active: [timestamp] })
+            .then((data) => {
+              console.log("data ==>", data);
+              return;
+            });
+        }
+        let editDoc;
+        let docID;
+        doc.forEach((item) => {
+          editDoc = item.data();
+          docID = item.id;
+        });
+        console.log("edit doc ==>", editDoc);
+        editDoc.history.push(timestamp);
+        editDoc.active.push(timestamp);
+        firebase
+        .collection("users")
+        .doc(docID)
+        .set(editDoc).then((addedDoc)=>{
+          console.log('doc updated==>',addedDoc)
+        })
+      }
+      catch(e){
+        console.log(e)
+      }
+      });
+  } catch (e) {
+    console.log(e);
+  }
+};

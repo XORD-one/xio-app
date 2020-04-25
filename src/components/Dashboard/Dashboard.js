@@ -269,7 +269,8 @@ const Dashboard = (props) => {
                   </Grid>
 
                   <Grid container item style={tabBodyRow3_1_2} md={10}>
-                    <Table className={classes.table} align="center">
+                  <TableContainer className={classes.container}>
+                    <Table stickyHeader className={classes.table} align="center">
                       <TableHead style={{ background: "#1c1c1c" }}>
                         <TableRow>
                           <TableCell
@@ -319,18 +320,14 @@ const Dashboard = (props) => {
                                   >
                                     {item.outputTokenSymbol}
                                   </TableCell>
-                                  <Tooltip title={item.stakeQuantity}>
-                                    <TableCell
-                                      style={{ fontSize: 10 }}
-                                      className={
-                                        themeDark
-                                          ? "tableBody"
-                                          : "tableBodyLight"
-                                      }
-                                    >
-                                      {truncateValue(item.stakeQuantity)}
-                                    </TableCell>
-                                  </Tooltip>
+                                  <TableCell
+                                    style={{ fontSize: 10 }}
+                                    className={
+                                      themeDark ? "tableBody" : "tableBodyLight"
+                                    }
+                                  >
+                                    {item.quantity}
+                                  </TableCell>
                                   <TableCell
                                     style={{ fontSize: 10 }}
                                     className={
@@ -345,6 +342,15 @@ const Dashboard = (props) => {
                           })}
                       </TableBody>
                     </Table>
+                    </TableContainer>
+                    {props.portalLoading && (
+                      <div style={{ width: "100%", textAlign: "center" }}>
+                        {" "}
+                        <img
+                          src={themeDark ? spinnerBlack : spinnerWhite}
+                        />{" "}
+                      </div>
+                    )}
                   </Grid>
                 </Grid>
               </Grid>
@@ -385,12 +391,12 @@ const Dashboard = (props) => {
                         <TableHead>
                           <TableRow>
                             <TableCell
-                              style={{ width: "33%" }}
+                              style={{ width: "40%" }}
                               className={
                                 themeDark ? "tableHeader" : "tableHeaderLight"
                               }
                             >
-                              <h6 style={{ margin: 0, fontSize: 10 }}>TOKEN</h6>
+                              <h6 style={{ margin: 0, fontSize: 10 }}>STAKE REWARDS TOKEN</h6>
                             </TableCell>
                             <TableCell
                               className={
@@ -409,7 +415,7 @@ const Dashboard = (props) => {
                               align="center"
                             >
                               <h6 style={{ margin: 0, fontSize: 10 }}>
-                                LIQUIDITY
+                                TOTAL TOKENS EARNED
                               </h6>
                             </TableCell>
                           </TableRow>
@@ -417,8 +423,9 @@ const Dashboard = (props) => {
                         <TableBody>
                           {props.portalLoading
                             ? null
-                            : !!props.portalInterestList.length &&
-                              props.portalInterestList.map((item) => {
+                            : !!props.activePortal.length &&
+                            props.activePortal.map((item) => {
+                              if (item.Days == 0) {
                                 return (
                                   <TableRow>
                                     <TableCell
@@ -440,7 +447,7 @@ const Dashboard = (props) => {
                                           : "tableBodyLight"
                                       }
                                     >
-                                      {item.xioStaked}
+                                      {item.quantity}
                                     </TableCell>
                                     <TableCell
                                       style={{ fontSize: 10 }}
@@ -450,10 +457,11 @@ const Dashboard = (props) => {
                                           : "tableBodyLight"
                                       }
                                     >
-                                      {item.liquidity}
+                                      {item.boughAmount}
                                     </TableCell>
                                   </TableRow>
                                 );
+                                    }
                               })}
                         </TableBody>
                       </Table>

@@ -91,12 +91,12 @@ const Index = ({
   };
 
   const allowedWithdraw =  props.unstakeAmount
-  ? Number(props.stakedXio) - Number(props.unstakeAmount) < 0
+  ? Number(props.unstakeableXIO) - Number(props.unstakeAmount) < 0
     ? 0
-    : Number(props.stakedXio) - Number(props.unstakeAmount)
-  : props.stakedXio;
+    : Number(props.unstakeableXIO) - Number(props.unstakeAmount)
+  : props.unstakeableXIO;
 
-  const warning = Number(props.unstakeAmount) > Number(props.stakedXio)
+  const warning = Number(props.unstakeAmount) > Number(props.unstakeableXIO)
 
   console.log("Layout props ==>", props);
   let history = useHistory();
@@ -561,7 +561,7 @@ const Index = ({
                           }
                           onClick={() =>
                             !warning && !props.unstakeLoading
-                              ? props.onUnStakeXio(props.address,props.unstakeAmount)
+                              ? props.onUnStakeXio(props.address,props.activePortal,props.unstakeAmount)
                               : null
                           }
                         >
@@ -667,8 +667,10 @@ const mapStateToProps = (state) => {
     stakedXio: state.dashboardReducer.stakedXio,
     interestRate: state.stakeReducer.interestRate,
     stakeLoading: state.layoutReducer.stakeLoading,
+    activePortal: state.dashboardReducer.activePortal,
     unstakeAmount: state.unstakeReducer.unstakeAmount,
     unstakeLoading: state.layoutReducer.unStakeLoading,
+    unstakeableXIO: state.unstakeReducer.unstakeableXIO,
     stakeTransactionMessage: state.layoutReducer.stakeTransactionMessage,
   };
 };
@@ -676,7 +678,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     approve: (isUnlock, address) => dispatch(onApprove(isUnlock, address)),
-    onUnStakeXio: (address,amount) => dispatch(onUnStakeXio(address,amount)),
+    onUnStakeXio: (address,timestamp,amount) => dispatch(onUnStakeXio(address,timestamp,amount)),
     onConfirmStake: (
       address,
       balance,

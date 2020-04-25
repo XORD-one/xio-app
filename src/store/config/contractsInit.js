@@ -20,6 +20,10 @@ export default class ContractInit {
 
   static initPortalContract = async () => {
     try {
+      if (!this.web3js) {
+        await this.init();
+      }
+      console.log("in portal ==>", this.web3js);
       this.portalContract = new this.web3js.eth.Contract(
         PORTAL_ABI,
         PORTAL_ADDRESS
@@ -47,7 +51,7 @@ export default class ContractInit {
         transactionBlockTimeout: 5,
       };
       this.InfuraWeb3 = new Web3(
-        "https://mainnet.infura.io/v3/ff4d778692ad42f7966a456564283e9d",
+        "https://rinkeby.infura.io/v3/ff4d778692ad42f7966a456564283e9d",
         null,
         OPTIONS
       );
@@ -55,7 +59,7 @@ export default class ContractInit {
         PORTAL_ABI,
         PORTAL_ADDRESS
       );
-      console.log('this.infuraPortal ==>',this.infuraPortal)
+      console.log("this.infuraPortal ==>", this.infuraPortal);
       return this.infuraPortal;
     } catch (e) {
       console.log(e);

@@ -1,58 +1,76 @@
 import ContractInits from "../config/contractsInit";
 import { formattedNum } from "../../utils";
+import firebase from "../../config/firebase";
+import { ERC20_ABI } from "../../contracts/erc20";
 
 export const getBalance = (address) => {
   return async (dispatch) => {
-    try{
+    try {
       let res = await (await ContractInits.initXioContract()).methods
-      .balanceOf(address)
-      .call();
+        .balanceOf(address)
+        .call();
       dispatch({ type: "getBalance", payload: res });
-    }
-    catch(e){
-      console.log(e)
+    } catch (e) {
+      console.log(e);
     }
   };
 };
 
 export const getStakerData = (address) => {
   return async (dispatch) => {
-    let amount = 0;
-    const portalInfo = [];
-    const len = await (await ContractInits.initPortalContract()).methods
-      .getArrayLengthOfStakerData(address)
-      .call();
-    for (let i = 0; i < len; i++) {
-      const res = await (await ContractInits.initPortalContract()).methods
-        .stakerData(address, i)
-        .call();
-      console.log(res);
-    //   console.log("before from WEI ==>", res.stakeQuantity);
-      res.stakeQuantity = await (
-        await ContractInits.init()
-      ).web3js.utils.fromWei(res.stakeQuantity.toString());
-	//   console.log("after from WEI ==>", res.stakeQuantity);
-	//   if(res.stakeQuantity != "38139616255565092315595030544923549366331929171149274075525.632187701261238278" && res.stakeQuantity != "30872622590356025101965439967658961449911655061062658493477.352019454282694662")
-      amount = amount + Number(res.stakeQuantity);
+    try {
+      const portalContract = await ContractInits.initPortalContract();
+      const { web3js } = await ContractInits.init();
+      let amount = 0;
+      const portalInfo = [];
+      const timestampToRemove = [];
+      const active = await getStakedData(address);
+      console.log("active ==>", active);
+      for (let i = 0; i < active.length; i++) {
+        const res = await portalContract.methods
+          .stakerData(address, active[i])
+          .call();
+        let contract = new web3js.eth.Contract(
+          ERC20_ABI,
+          res.outputTokenAddress
+        );
+        let symbol = await contract.methods.symbol().call();
+        res.outputTokenSymbol = symbol;
+        res.timestamp = active[i];
 
-      res.Days =
-        res.stakeDurationTimestamp -
-        (Math.round(new Date() / 1000) - res.stakeInitiationTimestamp);
-      //console.log("Days ===>", res.Days);
-      if (res.Days <= 0) {
-        res.Days = 0;
-      } else {
-        res.Days = Math.ceil(res.Days / 60);
-      }
+        console.log("before from WEI ==>", res.quantity);
+        res.quantity = await web3js.utils.fromWei(res.quantity.toString());
+        //   console.log("after from WEI ==>", res.stakeQuantity);
 
-      if (res.publicKey !== "0x0000000000000000000000000000000000000000") {
-        portalInfo.push(res);
+        amount = amount + Number(res.quantity);
+
+        res.Days =
+          res.durationTimestamp - (Math.round(new Date() / 1000) - active[i]);
+        // (24 * 60 * 60);
+        console.log("Days ===>", res.Days);
+        if (res.Days <= 0) {
+          res.Days = 0;
+        } else {
+          res.Days = Math.ceil(res.Days / 60);
+        }
+        console.log("res from stakerData ==>", res);
+
+        if (res.unstaked == false) {
+          portalInfo.push(res);
+        }
+        if (res.unstaked == true) {
+          timestampToRemove.push(active[i]);
+        }
       }
+      if (timestampToRemove.length)
+        setFilteredTimestamp(active, timestampToRemove, address);
+      dispatch({
+        type: "stakerData",
+        payload: { stakedXio: amount, activePortal: portalInfo },
+      });
+    } catch (e) {
+      console.log(e);
     }
-    dispatch({
-      type: "stakerData",
-      payload: { stakedXio: amount, activePortal: portalInfo },
-    });
   };
 };
 
@@ -130,4 +148,68 @@ export const onGetPortalData = () => {
       });
     }
   };
+};
+
+export const getStakedData = (address) => {
+  return new Promise((resolve, reject) => {
+    try {
+      firebase
+        .collection("users")
+        .where("address", "==", address)
+        .get()
+        .then((doc) => {
+          console.log("res ==>", doc);
+          if (doc.empty) {
+            console.log("empty ==>", doc.empty);
+            resolve([]);
+          }
+          let editDoc;
+          let docID;
+          doc.forEach((item) => {
+            editDoc = item.data();
+            docID = item.id;
+          });
+          if (editDoc) resolve(editDoc.active);
+        });
+    } catch (e) {
+      reject({ message: e });
+    }
+  });
+};
+
+const setFilteredTimestamp = (active, remove, address) => {
+  try {
+    for (let i = 0; i < active.length; i++) {
+      for (let j = 0; j < remove.length; j++) {
+        if (active[i] == remove[j]) {
+          active.splice(i, 1);
+          break;
+        }
+      }
+    }
+    firebase
+      .collection("users")
+      .where("address", "==", address)
+      .get()
+      .then((doc) => {
+        let editDoc;
+        let docID;
+        doc.forEach((item) => {
+          editDoc = item.data();
+          docID = item.id;
+        });
+        editDoc.active = active;
+        firebase
+          .collection("users")
+          .doc(docID)
+          .set(editDoc)
+          .then((addedDoc) => {
+            console.log("doc updated==>", addedDoc);
+          });
+      });
+
+    console.log("filtered ==>", active);
+  } catch (e) {
+    console.log(e);
+  }
 };
