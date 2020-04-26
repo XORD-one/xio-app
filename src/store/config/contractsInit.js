@@ -51,7 +51,7 @@ export default class ContractInit {
         transactionBlockTimeout: 5,
       };
       this.InfuraWeb3 = new Web3(
-        "https://rinkeby.infura.io/v3/ff4d778692ad42f7966a456564283e9d",
+        "https://mainnet.infura.io/v3/ff4d778692ad42f7966a456564283e9d",
         null,
         OPTIONS
       );
