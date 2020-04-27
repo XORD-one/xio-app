@@ -65,7 +65,7 @@ export const onUnStakeXio = (address, timestampArray ,amount) => {
           from: address,
           to: PORTAL_ADDRESS,
           value: 0,
-          gasLimit: 1000000,
+          // gasLimit: 1000000,
           gasPrice: Number((await getCurrentGasPrices()).high) * 1000000000,
           data: portalContract.methods.withdrawXIO(timestampses,amountToSend).encodeABI(),
         };

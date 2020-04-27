@@ -1,5 +1,5 @@
 import Web3 from "web3";
-import { XIO_ABI, XIO_ADDRESS } from "./xio";
+import { XIO_ABI, XIO_ADDRESS_MAINNET } from "./xio";
 
 let web3js = "";
 let contract = "";
@@ -37,7 +37,7 @@ export const onConnect = async () => {
 };
 
 export const initXioContract = () => {
-  contract = new web3js.eth.Contract(XIO_ABI, XIO_ADDRESS);
+  contract = new web3js.eth.Contract(XIO_ABI, XIO_ADDRESS_MAINNET);
 };
 
 export const getXioBalance = () => {

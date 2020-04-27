@@ -1,6 +1,6 @@
 import Web3 from "web3";
 import { PORTAL_ABI, PORTAL_ADDRESS } from "../../contracts/portal";
-import { XIO_ABI, XIO_ADDRESS } from "../../contracts/xio";
+import { XIO_ABI, XIO_ADDRESS_MAINNET } from "../../contracts/xio";
 
 export default class ContractInit {
   static init = async () => {
@@ -36,7 +36,7 @@ export default class ContractInit {
 
   static initXioContract = async () => {
     try {
-      this.contract = new this.web3js.eth.Contract(XIO_ABI, XIO_ADDRESS);
+      this.contract = new this.web3js.eth.Contract(XIO_ABI, XIO_ADDRESS_MAINNET);
       return this.contract;
     } catch (e) {
       console.log(e);

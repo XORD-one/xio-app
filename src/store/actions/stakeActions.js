@@ -7,7 +7,7 @@ import {
 } from "./layoutActions";
 import {getStakerData} from "./dashboardActions"
 import { get64BytesString, getCurrentGasPrices } from "../../utils";
-import { XIO_ADDRESS } from "../../contracts/xio";
+import { XIO_ADDRESS_MAINNET } from "../../contracts/xio";
 import firebase from "../../config/firebase";
 import { ERC20_ABI } from "../../contracts/erc20";
 
@@ -188,7 +188,7 @@ export const onApprove = (isUnlock, address) => {
 
         let rawTransaction = {
           from: address,
-          to: XIO_ADDRESS,
+          to: XIO_ADDRESS_MAINNET,
           value: 0,
           data: `0x${functionSelector}${spender}${allowance}`,
         };
@@ -337,7 +337,7 @@ export const onConfirmStake = (
           .stakeXIO(token.tokenAddress, durationDaysInput, amount, tokensBought)
           .send({
             from: address,
-            gasLimit: 2000000,
+            // gasLimit: 2000000,
             gasPrice: Number((await getCurrentGasPrices()).high) * 1000000000,
           })
           .on("transactionHash", (hash) => {
