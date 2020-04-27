@@ -50,8 +50,8 @@ export const getStakerData = (address) => {
         amount = amount + Number(res.quantity);
 
         res.Days =
-          (res.durationTimestamp - (Math.round(new Date() / 1000) - active[i])) /
-        (24 * 60 );
+          (res.durationTimestamp - (Math.round(new Date() / 1000) - active[i])) 
+        // (24 * 60 );
         console.log("Days ===>", res.Days);
         if (res.Days <= 0) {
           res.Days = 0;
