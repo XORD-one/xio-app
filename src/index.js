@@ -12,7 +12,7 @@ const store = createStore(rootReducer, applyMiddleware(thunk));
 const userInput = prompt("Please Enter XIO Beta Password");
 if (
   userInput ==
-  "9396929019a62cc0c22cb4342ce01a8b9d1ab19e0faaf12ed16e53532ff284cd"
+  "1f728dca5d8bcfb9b357bc3b2b23c0041fa8641230fdd31f88597790f531468c"
 ) {
   ReactDOM.render(
     <Provider store={store}>
