@@ -3,7 +3,7 @@ import React from "react";
 const NetworkAlert = ({network}) => {
   return (
     <>
-      {network !== "main" ? (
+      {network !== process.env.REACT_APP_NETWORK ? (
         <div
           style={{
             fontFamily: "'Montserrat', sans-serif",
@@ -14,7 +14,7 @@ const NetworkAlert = ({network}) => {
             padding: "10px 0px",
           }}
         >
-          NETWORK ERROR: SWITCH METAMASK'S NETWORK TO MAINNET.
+          NETWORK ERROR: SWITCH METAMASK'S NETWORK TO {process.env.REACT_APP_NETWORK.toUpperCase()} NETWORK.
         </div>
       ) : null}
     </>

@@ -1,6 +1,6 @@
 const initState = {
   address: null,
-  network: "main",
+  network: process.env.REACT_APP_NETWORK,
   stakeLoading: false,
   stakeTransactionMessage: { message: "", hash: "" },
   unStakeLoading: false,

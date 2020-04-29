@@ -19,6 +19,7 @@ const dashboardReducer = (state = initState, action) => {
         ...state,
         stakedXio: action.payload.stakedXio,
         activePortal: action.payload.activePortal,
+        loading: false,
       };
     case "getInterest":
       return {
@@ -28,10 +29,13 @@ const dashboardReducer = (state = initState, action) => {
     case "interestList":
       return {
         ...state,
-		interestList: action.payload,
-		loading: false
+        interestList: action.payload,
       };
-
+    case "setLoading":
+      return {
+        ...state,
+        loading: false
+      }
     default:
       return state;
   }

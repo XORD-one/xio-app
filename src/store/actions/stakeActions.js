@@ -7,7 +7,7 @@ import {
 } from "./layoutActions";
 import {getStakerData} from "./dashboardActions"
 import { get64BytesString, getCurrentGasPrices } from "../../utils";
-import { XIO_ADDRESS_MAINNET } from "../../contracts/xio";
+import { XIO_ADDRESS } from "../../contracts/xio";
 import firebase from "../../config/firebase";
 import { ERC20_ABI } from "../../contracts/erc20";
 
@@ -188,7 +188,7 @@ export const onApprove = (isUnlock, address) => {
 
         let rawTransaction = {
           from: address,
-          to: XIO_ADDRESS_MAINNET,
+          to: XIO_ADDRESS,
           value: 0,
           data: `0x${functionSelector}${spender}${allowance}`,
         };
@@ -398,6 +398,7 @@ const storeStakedData = (address, timestamp) => {
     firebase
       .collection("users")
       .where("address", "==", address)
+      .where("network","==",process.env.REACT_APP_NETWORK)
       .get()
       .then((doc) => {
         try{
@@ -407,7 +408,7 @@ const storeStakedData = (address, timestamp) => {
             console.log("empty ==>", doc.empty);
           firebase
           .collection("users")
-            .add({ address, history: [timestamp], active: [timestamp] })
+            .add({ address, history: [timestamp], active: [timestamp], network:process.env.REACT_APP_NETWORK })
             .then((data) => {
               console.log("data ==>", data);
               return;

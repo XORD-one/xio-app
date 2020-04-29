@@ -1,4 +1,5 @@
-export const PORTAL_ADDRESS = "0x81cb87636e09694a8b6893254154c546f0b81833"
+export const PORTAL_ADDRESS = "0x81cb87636e09694a8b6893254154c546f0b81833" //mainnet
+// export const PORTAL_ADDRESS = "0xDa943019E00f498be92CBdFE4FD708b7A0867145" //rinkeby
 export const PORTAL_ABI =  [
 	{
 		"constant": false,

@@ -1,6 +1,6 @@
 import Web3 from "web3";
 import { PORTAL_ABI, PORTAL_ADDRESS } from "../../contracts/portal";
-import { XIO_ABI, XIO_ADDRESS_MAINNET } from "../../contracts/xio";
+import { XIO_ABI, XIO_ADDRESS } from "../../contracts/xio";
 
 export default class ContractInit {
   static init = async () => {
@@ -36,7 +36,7 @@ export default class ContractInit {
 
   static initXioContract = async () => {
     try {
-      this.contract = new this.web3js.eth.Contract(XIO_ABI, XIO_ADDRESS_MAINNET);
+      this.contract = new this.web3js.eth.Contract(XIO_ABI, XIO_ADDRESS);
       return this.contract;
     } catch (e) {
       console.log(e);
@@ -51,7 +51,7 @@ export default class ContractInit {
         transactionBlockTimeout: 5,
       };
       this.InfuraWeb3 = new Web3(
-        "https://mainnet.infura.io/v3/ff4d778692ad42f7966a456564283e9d",
+        `https://mainnet.infura.io/v3/ff4d778692ad42f7966a456564283e9d`,
         null,
         OPTIONS
       );

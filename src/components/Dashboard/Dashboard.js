@@ -102,13 +102,13 @@ const Dashboard = (props) => {
     setLoadOnStake(false);
     const ethereum = window.ethereum;
     if (ethereum) {
-      props.onGetPortalData();
+      // props.onGetPortalData();
       props.onGetInterestRate();
     }
     if (props.address) {
       props.getBalance(props.address);
-      props.getStakerData(props.address);
     }
+    props.getStakerData(props.address);
   }, [props.address, loadOnStake]);
 
   // const balanceFromWei = props.balance / 1000000000000000000;

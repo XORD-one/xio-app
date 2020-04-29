@@ -24,8 +24,12 @@ export const getBalance = (address) => {
 export const getStakerData = (address) => {
   return async (dispatch) => {
     try {
-      const portalContract = await ContractInits.initPortalContract();
-      const { web3js } = await ContractInits.init();
+      if(address){
+
+        const portalContract = await ContractInits.initPortalContract();
+        const { web3js } = await ContractInits.init();
+        console.log('portalContract ==>',portalContract)
+      console.log('web3js ==>',web3js)
       let amount = 0;
       const portalInfo = [];
       const timestampToRemove = [];
@@ -33,24 +37,27 @@ export const getStakerData = (address) => {
       console.log("active ==>", active);
       for (let i = 0; i < active.length; i++) {
         const res = await portalContract.methods
-          .stakerData(address, active[i])
+        .stakerData(address, active[i])
           .call();
-        let contract = new web3js.eth.Contract(
+      console.log('res from staker ==>',res)
+      let contract = new web3js.eth.Contract(
           ERC20_ABI,
           res.outputTokenAddress
-        );
+          );
+        console.log('erc contract ==>',contract)
         let symbol = await contract.methods.symbol().call();
+        console.log('symbol ==>',symbol)
         res.outputTokenSymbol = symbol;
         res.timestamp = active[i];
-
+        
         console.log("before from WEI ==>", res.quantity);
         res.quantity = await web3js.utils.fromWei(res.quantity.toString());
         //   console.log("after from WEI ==>", res.stakeQuantity);
         res.boughAmount = await web3js.utils.fromWei(res.boughAmount.toString());
         amount = amount + Number(res.quantity);
-
+        
         res.Days =
-          (res.durationTimestamp - (Math.round(new Date() / 1000) - active[i])) 
+        (res.durationTimestamp - (Math.round(new Date() / 1000) - active[i])) 
         // (24 * 60 );
         console.log("Days ===>", res.Days);
         if (res.Days <= 0) {
@@ -59,7 +66,7 @@ export const getStakerData = (address) => {
           res.Days = Math.ceil(res.Days / 60);
         }
         console.log("res from stakerData ==>", res);
-
+        
         if (res.unstaked == false) {
           portalInfo.push(res);
         }
@@ -68,13 +75,20 @@ export const getStakerData = (address) => {
         }
       }
       if (timestampToRemove.length)
-        setFilteredTimestamp(active, timestampToRemove, address);
+      setFilteredTimestamp(active, timestampToRemove, address);
       dispatch({
         type: "stakerData",
         payload: { stakedXio: amount, activePortal: portalInfo },
       });
+    }
+    dispatch({
+      type: "setLoading"
+    })
     } catch (e) {
       console.log(e);
+      dispatch({
+        type: "setLoading"
+      })
     }
   };
 };
@@ -161,6 +175,7 @@ export const getStakedData = (address) => {
       firebase
         .collection("users")
         .where("address", "==", address)
+        .where("network","==",process.env.REACT_APP_NETWORK)
         .get()
         .then((doc) => {
           console.log("res ==>", doc);
@@ -195,6 +210,7 @@ const setFilteredTimestamp = (active, remove, address) => {
     firebase
       .collection("users")
       .where("address", "==", address)
+      .where("network","==",process.env.REACT_APP_NETWORK)
       .get()
       .then((doc) => {
         let editDoc;

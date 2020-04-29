@@ -176,8 +176,8 @@ const Stake = (props) => {
   };
 
   useEffect(() => {
-    props.onSetXio(amountXioInput);
-    props.onSetDays(durationDaysInput);
+    // props.onSetXio(amountXioInput);
+    // props.onSetDays(durationDaysInput);
     props.getTokensData();
     props.onGetXioLimit();
     props.onGetDaysLimit();
@@ -287,6 +287,7 @@ const Stake = (props) => {
                             ? "white"
                             : "#414141",
                         }}
+                        disabled={props.stakeLoading}
                         placeholder="0.0"
                         value={amountXioInput}
                         onFocus={() => onToggleFocus("amount")}
@@ -368,6 +369,7 @@ const Stake = (props) => {
                         }
                         value={durationDaysInput}
                         placeholder="0"
+                        disabled={props.stakeLoading}
                         xs={12}
                         onFocus={() => onToggleFocus("days")}
                         onBlur={() => onToggleFocus("days")}
@@ -437,7 +439,7 @@ const Stake = (props) => {
                                 position: "relative",
                               }
                         }
-                        onClick={() => handleClickOpen()}
+                        onClick={() => props.stakeLoading ? null : handleClickOpen()}
                         item
                       >
                         <input
@@ -551,6 +553,7 @@ const mapStateToProps = (state) => {
     daysLimit: state.stakeReducer.daysLimit,
     balance: state.dashboardReducer.balance,
     tokensList: state.stakeReducer.tokenList,
+    stakeLoading: state.layoutReducer.stakeLoading,
     interestRate: state.stakeReducer.interestRate,
   };
 };

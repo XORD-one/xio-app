@@ -8,7 +8,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { ThemeConsumer } from "../../config/index";
 import CustomDialog from "../common/Dialog";
 import Web3 from "web3";
-import { XIO_ABI, XIO_ADDRESS_MAINNET } from "../../contracts/xio";
+import { XIO_ABI, XIO_ADDRESS } from "../../contracts/xio";
 import { PORTAL_ABI, PORTAL_ADDRESS } from "../../contracts/portal";
 import { getCurrentGasPrices } from "../../utils";
 import { connect } from "react-redux";
@@ -92,7 +92,7 @@ const Withdraw = (props) => {
   const [amountFocus, setAmountFocus] = useState(false);
 
   useEffect(() => {
-    props.onUnstakeAmount()
+    // props.onUnstakeAmount()
     if (props.address) {
       props.onCalculateUnstakeXIO(props.address);
     }
