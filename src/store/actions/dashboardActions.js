@@ -2,6 +2,7 @@ import ContractInits from "../config/contractsInit";
 import { formattedNum } from "../../utils";
 import firebase from "../../config/firebase";
 import { ERC20_ABI } from "../../contracts/erc20";
+import { storeStakedData } from "./stakeActions";
 
 export const getBalance = (address) => {
   return async (dispatch) => {
@@ -10,9 +11,9 @@ export const getBalance = (address) => {
       let res = await (await ContractInits.initXioContract()).methods
         .balanceOf(address)
         .call();
-        console.log('before ==>',res)
-      res = await web3js.utils.fromWei(res.toString())
-      console.log('after ==>',res)
+      console.log("before ==>", res);
+      res = await web3js.utils.fromWei(res.toString());
+      console.log("after ==>", res);
 
       dispatch({ type: "getBalance", payload: res });
     } catch (e) {
@@ -21,74 +22,151 @@ export const getBalance = (address) => {
   };
 };
 
+export const checkRemainingTransactions = (address) => {
+  return async (dispatch) => {
+
+  try {
+    if (address) {
+      const timestamps = [];
+      const promises = []
+      const portalContract = await ContractInits.initPortalContract();
+      const { web3js } = await ContractInits.init();
+      const data = await getStakedData(address);
+      const active = data.active;
+      const hashes = data.hashes;
+      if (hashes && hashes.length) {
+        for (let i = 0; i < hashes.length; i++) {
+          const recipt = await web3js.eth.getTransactionReceipt(hashes[i]);
+          console.log("recipt ==>", recipt);
+          const blocknumber = recipt.blockNumber;
+          if(recipt.status){
+            promises.push(portalContract
+              .getPastEvents("StakeCompleted", {
+                fromBlock: blocknumber - 1,
+                toBlock: blocknumber,
+              })
+            .then((events) => {
+              console.log("eventss ==>", events);
+              // events.forEach(async (event) => console.log('event ==>',event));
+              timestamps.push(events[0].returnValues.timestamp);
+            }))
+          }
+        }
+        Promise.all(promises).then(()=>{
+          dispatch(updateTimestamps(address,timestamps))
+        })
+      }
+    }
+  } catch (e) {
+    console.log(e)
+  }
+}
+
+};
+
+const updateTimestamps = (address,actives) => {
+  return async (dispatch) => {
+    try{
+      firebase
+      .collection("users")
+      .where("address", "==", address)
+      .where("network", "==", process.env.REACT_APP_NETWORK)
+      .get()
+      .then((doc) => {
+        let editDoc;
+        let docID;
+        doc.forEach((item) => {
+          editDoc = item.data();
+          docID = item.id;
+        });
+        editDoc.active.push(...actives);
+        delete editDoc.hashes
+        firebase
+        .collection("users")
+        .doc(docID)
+          .set(editDoc)
+          .then((addedDoc) => {
+            console.log("doc updated==>", addedDoc);
+            dispatch(getStakerData(address))
+          });
+        });
+      }
+      catch(e){
+        console.log(e)
+      }
+  }
+}
+
 export const getStakerData = (address) => {
   return async (dispatch) => {
     try {
-      if(address){
-
+      if (address) {
         const portalContract = await ContractInits.initPortalContract();
         const { web3js } = await ContractInits.init();
-        console.log('portalContract ==>',portalContract)
-      console.log('web3js ==>',web3js)
-      let amount = 0;
-      const portalInfo = [];
-      const timestampToRemove = [];
-      const active = await getStakedData(address);
-      console.log("active ==>", active);
-      for (let i = 0; i < active.length; i++) {
-        const res = await portalContract.methods
-        .stakerData(address, active[i])
-          .call();
-      console.log('res from staker ==>',res)
-      let contract = new web3js.eth.Contract(
-          ERC20_ABI,
-          res.outputTokenAddress
+        console.log("portalContract ==>", portalContract);
+        console.log("web3js ==>", web3js);
+        let amount = 0;
+        const portalInfo = [];
+        const timestampToRemove = [];
+        const data = await getStakedData(address);
+        const active = data.active;
+        console.log("active ==>", active);
+        for (let i = 0; i < active.length; i++) {
+          const res = await portalContract.methods
+            .stakerData(address, active[i])
+            .call();
+          console.log("res from staker ==>", res);
+          let contract = new web3js.eth.Contract(
+            ERC20_ABI,
+            res.outputTokenAddress
           );
-        console.log('erc contract ==>',contract)
-        let symbol = await contract.methods.symbol().call();
-        console.log('symbol ==>',symbol)
-        res.outputTokenSymbol = symbol;
-        res.timestamp = active[i];
-        
-        console.log("before from WEI ==>", res.quantity);
-        res.quantity = await web3js.utils.fromWei(res.quantity.toString());
-        //   console.log("after from WEI ==>", res.stakeQuantity);
-        res.boughAmount = await web3js.utils.fromWei(res.boughAmount.toString());
-        amount = amount + Number(res.quantity);
-        
-        res.Days =
-        (res.durationTimestamp - (Math.round(new Date() / 1000) - active[i])) 
-        // (24 * 60 );
-        console.log("Days ===>", res.Days);
-        if (res.Days <= 0) {
-          res.Days = 0;
-        } else {
-          res.Days = Math.ceil(res.Days / 60);
+          console.log("erc contract ==>", contract);
+          let symbol = await contract.methods.symbol().call();
+          console.log("symbol ==>", symbol);
+          res.outputTokenSymbol = symbol;
+          res.timestamp = active[i];
+
+          console.log("before from WEI ==>", res.quantity);
+          res.quantity = await web3js.utils.fromWei(res.quantity.toString());
+          //   console.log("after from WEI ==>", res.stakeQuantity);
+          res.boughAmount = await web3js.utils.fromWei(
+            res.boughAmount.toString()
+          );
+          amount = amount + Number(res.quantity);
+
+          res.Days =
+            res.durationTimestamp - (Math.round(new Date() / 1000) - active[i]);
+          // (24 * 60 );
+          console.log("Days ===>", res.Days);
+          if (res.Days <= 0) {
+            res.Days = 0;
+          } else {
+            res.Days = Math.ceil(res.Days / 60);
+          }
+          console.log("res from stakerData ==>", res);
+
+          if (res.unstaked == false) {
+            portalInfo.push(res);
+          }
+          if (res.unstaked == true) {
+            timestampToRemove.push(active[i]);
+          }
         }
-        console.log("res from stakerData ==>", res);
-        
-        if (res.unstaked == false) {
-          portalInfo.push(res);
-        }
-        if (res.unstaked == true) {
-          timestampToRemove.push(active[i]);
-        }
+        if (timestampToRemove.length)
+          setFilteredTimestamp(active, timestampToRemove, address);
+        dispatch({
+          type: "stakerData",
+          payload: { stakedXio: amount, activePortal: portalInfo },
+        });
       }
-      if (timestampToRemove.length)
-      setFilteredTimestamp(active, timestampToRemove, address);
       dispatch({
-        type: "stakerData",
-        payload: { stakedXio: amount, activePortal: portalInfo },
+        type: "setLoading",
       });
-    }
-    dispatch({
-      type: "setLoading"
-    })
     } catch (e) {
       console.log(e);
       dispatch({
-        type: "setLoading"
-      })
+        type: "setLoading",
+      });
     }
   };
 };
@@ -175,7 +253,7 @@ export const getStakedData = (address) => {
       firebase
         .collection("users")
         .where("address", "==", address)
-        .where("network","==",process.env.REACT_APP_NETWORK)
+        .where("network", "==", process.env.REACT_APP_NETWORK)
         .get()
         .then((doc) => {
           console.log("res ==>", doc);
@@ -189,7 +267,7 @@ export const getStakedData = (address) => {
             editDoc = item.data();
             docID = item.id;
           });
-          if (editDoc) resolve(editDoc.active);
+          if (editDoc) resolve(editDoc);
         });
     } catch (e) {
       reject({ message: e });
@@ -210,7 +288,7 @@ const setFilteredTimestamp = (active, remove, address) => {
     firebase
       .collection("users")
       .where("address", "==", address)
-      .where("network","==",process.env.REACT_APP_NETWORK)
+      .where("network", "==", process.env.REACT_APP_NETWORK)
       .get()
       .then((doc) => {
         let editDoc;

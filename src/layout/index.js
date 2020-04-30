@@ -32,7 +32,7 @@ import Agreement from "../components/common/Agreement/index";
 import { connect } from "react-redux";
 import { onApprove, onConfirmStake } from "../store/actions/stakeActions";
 import {onUnStakeXio} from "../store/actions/unstakeActions"
-import {getStakerData} from "../store/actions/dashboardActions"
+import {getStakerData,checkRemainingTransactions} from "../store/actions/dashboardActions"
 
 const layoutSubHeading = {
   color: "rgb(198, 96, 101)",
@@ -94,6 +94,7 @@ const Index = ({
   useEffect(()=>{
     if(props.address)
     props.getStakerData(props.address)
+    props.checkRemainingTransactions(props.address)
   },[props.address])
 
   const allowedWithdraw =  props.unstakeAmount
@@ -685,6 +686,7 @@ const mapDispatchToProps = (dispatch) => {
   return {
     getStakerData: (address) => dispatch(getStakerData(address)),
     approve: (isUnlock, address) => dispatch(onApprove(isUnlock, address)),
+    checkRemainingTransactions: (address) => dispatch(checkRemainingTransactions(address)),
     onUnStakeXio: (address,timestamp,amount) => dispatch(onUnStakeXio(address,timestamp,amount)),
     onConfirmStake: (
       address,

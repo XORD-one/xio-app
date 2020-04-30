@@ -17,6 +17,7 @@ import {
   getBalance,
   getStakerData,
   onGetInterestRate,
+  checkRemainingTransactions,
   onGetPortalData,
 } from "../../store/actions/dashboardActions";
 import { connect } from "react-redux";
@@ -109,6 +110,7 @@ const Dashboard = (props) => {
       props.getBalance(props.address);
     }
     props.getStakerData(props.address);
+    props.checkRemainingTransactions(props.address)
   }, [props.address, loadOnStake]);
 
   // const balanceFromWei = props.balance / 1000000000000000000;
@@ -526,6 +528,7 @@ const mapDispatchToProps = (dispatch) => {
   return {
     getBalance: (address) => dispatch(getBalance(address)),
     getStakerData: (address) => dispatch(getStakerData(address)),
+    checkRemainingTransactions: (address) => dispatch(checkRemainingTransactions(address)),
     onGetInterestRate: () => dispatch(onGetInterestRate()),
     onGetPortalData: () => dispatch(onGetPortalData()),
   };

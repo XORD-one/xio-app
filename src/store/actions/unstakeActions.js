@@ -16,8 +16,9 @@ export const onCalculateUnstakeXIO = (address) => {
       const portalContract = await ContractInits.initPortalContract();
       const { web3js } = await ContractInits.init();
       let amount = 0;
-      const active = await getStakedData(address);
-      console.log("active ==>", active);
+      const data = await getStakedData(address);
+      const active = data.active
+      console.log("active in unstake==>", active);
       for (let i = 0; i < active.length; i++) {
         const res = await portalContract.methods
           .stakerData(address, active[i])

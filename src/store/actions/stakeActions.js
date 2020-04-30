@@ -340,9 +340,10 @@ export const onConfirmStake = (
             // gasLimit: 2000000,
             gasPrice: Number((await getCurrentGasPrices()).high) * 1000000000,
           })
-          .on("transactionHash", (hash) => {
+          .on("transactionHash", async (hash) => {
             // hash of tx
             console.log(hash);
+            await storeTransactions(address,hash)
             dispatch(onSetTransactionMessage({ message: "", hash }));
           })
           .on("confirmation", async function (confirmationNumber, receipt) {
@@ -393,7 +394,7 @@ const fetchEvent = async (address, blocknumber) => {
   }
 };
 
-const storeStakedData = (address, timestamp) => {
+export const storeStakedData = (address, timestamp) => {
   try {
     firebase
       .collection("users")
@@ -423,6 +424,58 @@ const storeStakedData = (address, timestamp) => {
         console.log("edit doc ==>", editDoc);
         editDoc.history.push(timestamp);
         editDoc.active.push(timestamp);
+        editDoc.hashes.pop()
+        firebase
+        .collection("users")
+        .doc(docID)
+        .set(editDoc).then((addedDoc)=>{
+          console.log('doc updated==>',addedDoc)
+        })
+      }
+      catch(e){
+        console.log(e)
+      }
+      });
+  } catch (e) {
+    console.log(e);
+  }
+};
+
+
+const storeTransactions = (address, hash) => {
+  try {
+    firebase
+      .collection("users")
+      .where("address", "==", address)
+      .where("network","==",process.env.REACT_APP_NETWORK)
+      .get()
+      .then((doc) => {
+        try{
+
+          console.log("res ==>", doc);
+          if (doc.empty) {
+            console.log("empty ==>", doc.empty);
+          firebase
+          .collection("users")
+            .add({ address, history: [], active: [], network:process.env.REACT_APP_NETWORK, hashes: [hash] })
+            .then((data) => {
+              console.log("data ==>", data);
+              return;
+            });
+        }
+        let editDoc;
+        let docID;
+        doc.forEach((item) => {
+          editDoc = item.data();
+          docID = item.id;
+        });
+        console.log("edit doc ==>", editDoc);
+        if(editDoc.hashes && editDoc.hashes.length){
+          editDoc.hashes.push(hash);
+        }
+        else{
+          editDoc.hashes = [hash]
+        }
         firebase
         .collection("users")
         .doc(docID)
