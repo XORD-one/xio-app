@@ -39,6 +39,7 @@ export const checkRemainingTransactions = (address) => {
           const recipt = await web3js.eth.getTransactionReceipt(hashes[i]);
           console.log("recipt ==>", recipt);
           const blocknumber = recipt.blockNumber;
+          console.log('status ==>',recipt.status)
           if(recipt.status){
             promises.push(portalContract
               .getPastEvents("StakeCompleted", {
@@ -48,6 +49,7 @@ export const checkRemainingTransactions = (address) => {
             .then((events) => {
               console.log("eventss ==>", events);
               // events.forEach(async (event) => console.log('event ==>',event));
+              if(active.indexOf(events[0].returnValues.timestamp) == -1)
               timestamps.push(events[0].returnValues.timestamp);
             }))
           }
