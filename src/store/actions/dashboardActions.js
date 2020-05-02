@@ -24,80 +24,79 @@ export const getBalance = (address) => {
 
 export const checkRemainingTransactions = (address) => {
   return async (dispatch) => {
-
-  try {
-    if (address) {
-      const timestamps = [];
-      const promises = []
-      const portalContract = await ContractInits.initPortalContract();
-      const { web3js } = await ContractInits.init();
-      const data = await getStakedData(address);
-      const active = data.active;
-      const hashes = data.hashes;
-      if (hashes && hashes.length) {
-        for (let i = 0; i < hashes.length; i++) {
-          const recipt = await web3js.eth.getTransactionReceipt(hashes[i]);
-          console.log("recipt ==>", recipt);
-          const blocknumber = recipt.blockNumber;
-          console.log('status ==>',recipt.status)
-          if(recipt.status){
-            promises.push(portalContract
-              .getPastEvents("StakeCompleted", {
-                fromBlock: blocknumber - 1,
-                toBlock: blocknumber,
-              })
-            .then((events) => {
-              console.log("eventss ==>", events);
-              // events.forEach(async (event) => console.log('event ==>',event));
-              if(active.indexOf(events[0].returnValues.timestamp) == -1)
-              timestamps.push(events[0].returnValues.timestamp);
-            }))
+    try {
+      if (address) {
+        const timestamps = [];
+        const promises = [];
+        const portalContract = await ContractInits.initPortalContract();
+        const { web3js } = await ContractInits.init();
+        const data = await getStakedData(address);
+        const active = data.active;
+        const hashes = data.hashes;
+        if (hashes && hashes.length) {
+          for (let i = 0; i < hashes.length; i++) {
+            const recipt = await web3js.eth.getTransactionReceipt(hashes[i]);
+            console.log("recipt ==>", recipt);
+            const blocknumber = recipt.blockNumber;
+            console.log("status ==>", recipt.status);
+            if (recipt.status) {
+              promises.push(
+                portalContract
+                  .getPastEvents("StakeCompleted", {
+                    fromBlock: blocknumber - 1,
+                    toBlock: blocknumber,
+                  })
+                  .then((events) => {
+                    console.log("eventss ==>", events);
+                    // events.forEach(async (event) => console.log('event ==>',event));
+                    if (active.indexOf(events[0].returnValues.timestamp) == -1)
+                      timestamps.push(events[0].returnValues.timestamp);
+                  })
+              );
+            }
           }
+          Promise.all(promises).then(() => {
+            dispatch(updateTimestamps(address, timestamps));
+          });
         }
-        Promise.all(promises).then(()=>{
-          dispatch(updateTimestamps(address,timestamps))
-        })
       }
+    } catch (e) {
+      console.log(e);
     }
-  } catch (e) {
-    console.log(e)
-  }
-}
-
+  };
 };
 
-const updateTimestamps = (address,actives) => {
+const updateTimestamps = (address, actives) => {
   return async (dispatch) => {
-    try{
+    try {
       firebase
-      .collection("users")
-      .where("address", "==", address)
-      .where("network", "==", process.env.REACT_APP_NETWORK)
-      .get()
-      .then((doc) => {
-        let editDoc;
-        let docID;
-        doc.forEach((item) => {
-          editDoc = item.data();
-          docID = item.id;
-        });
-        editDoc.active.push(...actives);
-        delete editDoc.hashes
-        firebase
         .collection("users")
-        .doc(docID)
-          .set(editDoc)
-          .then((addedDoc) => {
-            console.log("doc updated==>", addedDoc);
-            dispatch(getStakerData(address))
+        .where("address", "==", address)
+        .where("network", "==", process.env.REACT_APP_NETWORK)
+        .get()
+        .then((doc) => {
+          let editDoc;
+          let docID;
+          doc.forEach((item) => {
+            editDoc = item.data();
+            docID = item.id;
           });
+          editDoc.active.push(...actives);
+          delete editDoc.hashes;
+          firebase
+            .collection("users")
+            .doc(docID)
+            .set(editDoc)
+            .then((addedDoc) => {
+              console.log("doc updated==>", addedDoc);
+              dispatch(getStakerData(address));
+            });
         });
-      }
-      catch(e){
-        console.log(e)
-      }
-  }
-}
+    } catch (e) {
+      console.log(e);
+    }
+  };
+};
 
 export const getStakerData = (address) => {
   return async (dispatch) => {
@@ -137,7 +136,9 @@ export const getStakerData = (address) => {
           amount = amount + Number(res.quantity);
 
           res.Days =
-            res.durationTimestamp - (Math.round(new Date() / 1000) - active[i]);
+            (res.durationTimestamp -
+              (Math.round(new Date() / 1000) - active[i])) /
+            60;
           // (24 * 60 );
           console.log("Days ===>", res.Days);
           if (res.Days <= 0) {

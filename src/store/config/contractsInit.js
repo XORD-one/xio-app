@@ -50,8 +50,9 @@ export default class ContractInit {
         transactionConfirmationBlocks: 1,
         transactionBlockTimeout: 5,
       };
+      const infuraLink = process.env.REACT_APP_NETWORK === 'main' ? `https://mainnet.infura.io/v3/ff4d778692ad42f7966a456564283e9d` : `https://rinkeby.infura.io/v3/ff4d778692ad42f7966a456564283e9d`
       this.InfuraWeb3 = new Web3(
-        `https://mainnet.infura.io/v3/ff4d778692ad42f7966a456564283e9d`,
+        infuraLink,
         null,
         OPTIONS
       );
