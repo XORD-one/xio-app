@@ -35,7 +35,16 @@ export const checkRemainingTransactions = (address) => {
         const hashes = data.hashes;
         if (hashes && hashes.length) {
           for (let i = 0; i < hashes.length; i++) {
-            const recipt = await web3js.eth.getTransactionReceipt(hashes[i]);
+            console.log('hashes ==>',hashes[i])
+            let recipt;
+            try{
+              recipt = await web3js.eth.getTransactionReceipt(hashes[i]);
+            }
+            catch(e){
+              console.log(e)
+              removeDropHash(address,hashes[i])
+              continue
+            }
             console.log("recipt ==>", recipt);
             const blocknumber = recipt.blockNumber;
             console.log("status ==>", recipt.status);
@@ -66,12 +75,40 @@ export const checkRemainingTransactions = (address) => {
   };
 };
 
+const removeDropHash = (address,hash) => {
+  try {
+    firebase
+      .collection("users")
+      .where("address", "==", address.toLowerCase())
+      .where("network", "==", process.env.REACT_APP_NETWORK)
+      .get()
+      .then((doc) => {
+        let editDoc;
+        let docID;
+        doc.forEach((item) => {
+          editDoc = item.data();
+          docID = item.id;
+        });
+         editDoc.hashes.splice(editDoc.hashes.indexOf(hash),1)
+        firebase
+          .collection("users")
+          .doc(docID)
+          .set(editDoc)
+          .then((addedDoc) => {
+            console.log("doc updated==>", addedDoc);
+          });
+      });
+  } catch (e) {
+    console.log(e);
+  }
+}
+
 const updateTimestamps = (address, actives) => {
   return async (dispatch) => {
     try {
       firebase
         .collection("users")
-        .where("address", "==", address)
+        .where("address", "==", address.toLowerCase())
         .where("network", "==", process.env.REACT_APP_NETWORK)
         .get()
         .then((doc) => {
@@ -82,6 +119,7 @@ const updateTimestamps = (address, actives) => {
             docID = item.id;
           });
           editDoc.active.push(...actives);
+          editDoc.history.push(...actives)
           delete editDoc.hashes;
           firebase
             .collection("users")
@@ -255,7 +293,7 @@ export const getStakedData = (address) => {
     try {
       firebase
         .collection("users")
-        .where("address", "==", address)
+        .where("address", "==", address.toLowerCase())
         .where("network", "==", process.env.REACT_APP_NETWORK)
         .get()
         .then((doc) => {
@@ -290,7 +328,7 @@ const setFilteredTimestamp = (active, remove, address) => {
     }
     firebase
       .collection("users")
-      .where("address", "==", address)
+      .where("address", "==", address.toLowerCase())
       .where("network", "==", process.env.REACT_APP_NETWORK)
       .get()
       .then((doc) => {

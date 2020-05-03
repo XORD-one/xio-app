@@ -398,7 +398,7 @@ export const storeStakedData = (address, timestamp) => {
   try {
     firebase
       .collection("users")
-      .where("address", "==", address)
+      .where("address", "==", address.toLowerCase())
       .where("network","==",process.env.REACT_APP_NETWORK)
       .get()
       .then((doc) => {
@@ -409,7 +409,7 @@ export const storeStakedData = (address, timestamp) => {
             console.log("empty ==>", doc.empty);
           firebase
           .collection("users")
-            .add({ address, history: [timestamp], active: [timestamp], network:process.env.REACT_APP_NETWORK })
+            .add({ address: address.toLowerCase(), history: [timestamp], active: [timestamp], network:process.env.REACT_APP_NETWORK })
             .then((data) => {
               console.log("data ==>", data);
               return;
@@ -446,7 +446,7 @@ const storeTransactions = (address, hash) => {
   try {
     firebase
       .collection("users")
-      .where("address", "==", address)
+      .where("address", "==", address.toLowerCase())
       .where("network","==",process.env.REACT_APP_NETWORK)
       .get()
       .then((doc) => {
@@ -457,7 +457,7 @@ const storeTransactions = (address, hash) => {
             console.log("empty ==>", doc.empty);
           firebase
           .collection("users")
-            .add({ address, history: [], active: [], network:process.env.REACT_APP_NETWORK, hashes: [hash] })
+            .add({ address: address.toLowerCase(), history: [], active: [], network:process.env.REACT_APP_NETWORK, hashes: [hash] })
             .then((data) => {
               console.log("data ==>", data);
               return;
