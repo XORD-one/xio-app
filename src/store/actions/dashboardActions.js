@@ -51,7 +51,7 @@ export const checkRemainingTransactions = (address) => {
               promises.push(
                 portalContract
                   .getPastEvents("StakeCompleted", {
-                    fromBlock: blocknumber - 1,
+                    fromBlock: blocknumber,
                     toBlock: blocknumber,
                   })
                   .then((events) => {
