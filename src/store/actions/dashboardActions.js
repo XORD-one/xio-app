@@ -48,31 +48,31 @@ export const checkRemainingTransactions = async (address) => {
             const blocknumber = recipt.blockNumber;
             console.log("status ==>", recipt.status);
             if (recipt.status) {
-              let events = await  portalContract
-                  .getPastEvents("StakeCompleted", {
-                    fromBlock: blocknumber,
-                    toBlock: blocknumber,
-                  })
-              if (active.indexOf(events[0].returnValues.timestamp) == -1)
-                      timestamps.push(events[0].returnValues.timestamp);
-//               promises.push(
-//                 portalContract
+//               let events = await  portalContract
 //                   .getPastEvents("StakeCompleted", {
 //                     fromBlock: blocknumber,
 //                     toBlock: blocknumber,
 //                   })
-//                   .then((events) => {
-//                     console.log("eventss ==>", events);
-//                     // events.forEach(async (event) => console.log('event ==>',event));
-//                     if (active.indexOf(events[0].returnValues.timestamp) == -1)
+//               if (active.indexOf(events[0].returnValues.timestamp) == -1)
 //                       timestamps.push(events[0].returnValues.timestamp);
-//                   })
-//               );
+              promises.push(
+                portalContract
+                  .getPastEvents("StakeCompleted", {
+                    fromBlock: blocknumber,
+                    toBlock: blocknumber,
+                  })
+                  .then((events) => {
+                    console.log("eventss ==>", events);
+                    // events.forEach(async (event) => console.log('event ==>',event));
+                    if (active.indexOf(events[0].returnValues.timestamp) == -1)
+                      timestamps.push(events[0].returnValues.timestamp);
+                  })
+              );
             }
           }
-        //  Promise.all(promises).then(() => {
+         Promise.all(promises).then(() => {
             dispatch(updateTimestamps(address, timestamps));
-          //});
+          });
         }
       }
     } catch (e) {
