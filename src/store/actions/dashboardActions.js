@@ -22,7 +22,7 @@ export const getBalance = (address) => {
   };
 };
 
-export const checkRemainingTransactions = async (address) => {
+export const checkRemainingTransactions = (address) => {
   return async (dispatch) => {
     try {
       if (address) {
