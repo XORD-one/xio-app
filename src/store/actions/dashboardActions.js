@@ -35,15 +35,14 @@ export const checkRemainingTransactions = (address) => {
         const hashes = data.hashes;
         if (hashes && hashes.length) {
           for (let i = 0; i < hashes.length; i++) {
-            console.log('hashes ==>',hashes[i])
+            console.log("hashes ==>", hashes[i]);
             let recipt;
-            try{
+            try {
               recipt = await web3js.eth.getTransactionReceipt(hashes[i]);
-            }
-            catch(e){
-              console.log(e)
-              removeDropHash(address,hashes[i])
-              continue
+            } catch (e) {
+              console.log(e);
+              removeDropHash(address, hashes[i]);
+              continue;
             }
             console.log("recipt ==>", recipt);
             const blocknumber = recipt.blockNumber;
@@ -75,7 +74,7 @@ export const checkRemainingTransactions = (address) => {
   };
 };
 
-const removeDropHash = (address,hash) => {
+const removeDropHash = (address, hash) => {
   try {
     firebase
       .collection("users")
@@ -89,7 +88,7 @@ const removeDropHash = (address,hash) => {
           editDoc = item.data();
           docID = item.id;
         });
-         editDoc.hashes.splice(editDoc.hashes.indexOf(hash),1)
+        editDoc.hashes.splice(editDoc.hashes.indexOf(hash), 1);
         firebase
           .collection("users")
           .doc(docID)
@@ -101,7 +100,7 @@ const removeDropHash = (address,hash) => {
   } catch (e) {
     console.log(e);
   }
-}
+};
 
 const updateTimestamps = (address, actives) => {
   return async (dispatch) => {
@@ -119,7 +118,7 @@ const updateTimestamps = (address, actives) => {
             docID = item.id;
           });
           editDoc.active.push(...actives);
-          editDoc.history.push(...actives)
+          editDoc.history.push(...actives);
           delete editDoc.hashes;
           firebase
             .collection("users")
@@ -150,49 +149,52 @@ export const getStakerData = (address) => {
         const data = await getStakedData(address);
         const active = data.active;
         console.log("active ==>", active);
-        for (let i = 0; i < active.length; i++) {
-          const res = await portalContract.methods
-            .stakerData(address, active[i])
-            .call();
-          console.log("res from staker ==>", res);
-          let contract = new web3js.eth.Contract(
-            ERC20_ABI,
-            res.outputTokenAddress
-          );
-          console.log("erc contract ==>", contract);
-          let symbol = await contract.methods.symbol().call();
-          console.log("symbol ==>", symbol);
-          res.outputTokenSymbol = symbol;
-          res.timestamp = active[i];
+        if (active) {
+          for (let i = 0; i < active.length; i++) {
+            const res = await portalContract.methods
+              .stakerData(address, active[i])
+              .call();
+            console.log("res from staker ==>", res);
+            let contract = new web3js.eth.Contract(
+              ERC20_ABI,
+              res.outputTokenAddress
+            );
+            console.log("erc contract ==>", contract);
+            let symbol = await contract.methods.symbol().call();
+            console.log("symbol ==>", symbol);
+            res.outputTokenSymbol = symbol;
+            res.timestamp = active[i];
 
-          console.log("before from WEI ==>", res.quantity);
-          res.quantity = await web3js.utils.fromWei(res.quantity.toString());
-          //   console.log("after from WEI ==>", res.stakeQuantity);
-          res.boughAmount = await web3js.utils.fromWei(
-            res.boughAmount.toString()
-          );
-          amount = amount + Number(res.quantity);
+            console.log("before from WEI ==>", res.quantity);
+            res.quantity = await web3js.utils.fromWei(res.quantity.toString());
+            //   console.log("after from WEI ==>", res.stakeQuantity);
+            res.boughAmount = await web3js.utils.fromWei(
+              res.boughAmount.toString()
+            );
+            amount = amount + Number(res.quantity);
 
-          res.Days =
-            (res.durationTimestamp -
-              (Math.round(new Date() / 1000) - active[i])) /
-            60;
-          // (24 * 60 );
-          console.log("Days ===>", res.Days);
-          if (res.Days <= 0) {
-            res.Days = 0;
-          } else {
-            res.Days = Math.ceil(res.Days / 60);
-          }
-          console.log("res from stakerData ==>", res);
+            res.Days =
+              (res.durationTimestamp -
+                (Math.round(new Date() / 1000) - active[i])) /
+              60;
+            // (24 * 60 );
+            console.log("Days ===>", res.Days);
+            if (res.Days <= 0) {
+              res.Days = 0;
+            } else {
+              res.Days = Math.ceil(res.Days / 60);
+            }
+            console.log("res from stakerData ==>", res);
 
-          if (res.unstaked == false) {
-            portalInfo.push(res);
-          }
-          if (res.unstaked == true) {
-            timestampToRemove.push(active[i]);
+            if (res.unstaked == false) {
+              portalInfo.push(res);
+            }
+            if (res.unstaked == true) {
+              timestampToRemove.push(active[i]);
+            }
           }
         }
+
         if (timestampToRemove.length)
           setFilteredTimestamp(active, timestampToRemove, address);
         dispatch({
