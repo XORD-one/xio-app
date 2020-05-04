@@ -64,8 +64,10 @@ export const checkRemainingTransactions = (address) => {
                   .then((events) => {
                     console.log("eventss ==>", events);
                     // events.forEach(async (event) => console.log('event ==>',event));
-                    if (active.indexOf(events[events.length-1].returnValues.timestamp.toString()) == -1)
-                      timestamps.push(events[events.length-1].returnValues.timestamp.toString());
+                    if (active.indexOf(events[events.length-1].returnValues.timestamp.toString()) == -1){
+                        console.log("IN CONDITION");
+                        timestamps.push(events[events.length-1].returnValues.timestamp.toString()); 
+                    }
                   })
               );
             }
