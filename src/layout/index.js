@@ -92,9 +92,11 @@ const Index = ({
   };
 
   useEffect(()=>{
-    if(props.address)
-    props.getStakerData(props.address)
-    props.checkRemainingTransactions(props.address)
+    if(props.address && props.location.pathname !== '/'){
+      console.log('dashboard nhi ha yeh --><--')
+      props.getStakerData(props.address)
+      props.checkRemainingTransactions(props.address)
+    }
   },[props.address])
 
   const allowedWithdraw =  props.unstakeAmount
