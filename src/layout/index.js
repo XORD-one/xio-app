@@ -30,9 +30,9 @@ import spinnerBlack from "../components/assets/images/spinner-black.svg";
 import Toast from "../components/common/Toast";
 import Agreement from "../components/common/Agreement/index";
 import { connect } from "react-redux";
-import { onApprove, onConfirmStake } from "../store/actions/stakeActions";
+import { onApprove, onConfirmStake,getTokenData } from "../store/actions/stakeActions";
 import {onUnStakeXio} from "../store/actions/unstakeActions"
-import {getStakerData,checkRemainingTransactions} from "../store/actions/dashboardActions"
+import {getStakerData,checkRemainingTransactions,checkHashesAndExtractTimestamp} from "../store/actions/dashboardActions"
 
 const layoutSubHeading = {
   color: "rgb(198, 96, 101)",
@@ -92,10 +92,10 @@ const Index = ({
   };
 
   useEffect(()=>{
+    props.getTokensData()
     if(props.address && props.location.pathname !== '/'){
       console.log('dashboard nhi ha yeh --><--')
-      props.getStakerData(props.address)
-      props.checkRemainingTransactions(props.address)
+      props.checkHashesAndExtractTimestamp(props.address)
     }
   },[props.address])
 
@@ -686,10 +686,12 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
+    getTokensData: () => dispatch(getTokenData()),
     getStakerData: (address) => dispatch(getStakerData(address)),
     approve: (isUnlock, address) => dispatch(onApprove(isUnlock, address)),
     checkRemainingTransactions: (address) => dispatch(checkRemainingTransactions(address)),
     onUnStakeXio: (address,timestamp,amount) => dispatch(onUnStakeXio(address,timestamp,amount)),
+    checkHashesAndExtractTimestamp: (address) => dispatch(checkHashesAndExtractTimestamp(address)),
     onConfirmStake: (
       address,
       balance,

@@ -99,6 +99,10 @@ export const onGetInterestRate = (
 ) => {
   return async (dispatch) => {
     try {
+      console.log('console on render ==>',  initial,
+      amountXioInput,
+      durationDaysInput,
+      token)
       const res = await (await ContractInits.initPortalWithInfura()).methods
         .getInterestRate()
         .call();
@@ -349,7 +353,6 @@ export const onConfirmStake = (
           .on("confirmation", async function (confirmationNumber, receipt) {
             if (confirmationNumber === 1) {
               // tx confirmed
-              await fetchEvent(address, receipt.blockNumber);
               console.log("recipt ==>", receipt);
               console.log("confirm ==>", confirmationNumber);
               dispatch(onSetXio(1))
@@ -397,7 +400,7 @@ const fetchEvent = async (address, blocknumber) => {
 export const storeStakedData = (address, timestamp) => {
   try {
     firebase
-      .collection("users")
+      .collection("testusers")
       .where("address", "==", address.toLowerCase())
       .where("network","==",process.env.REACT_APP_NETWORK)
       .get()
@@ -445,7 +448,7 @@ export const storeStakedData = (address, timestamp) => {
 const storeTransactions = (address, hash) => {
   try {
     firebase
-      .collection("users")
+      .collection("testusers")
       .where("address", "==", address.toLowerCase())
       .where("network","==",process.env.REACT_APP_NETWORK)
       .get()
@@ -456,8 +459,8 @@ const storeTransactions = (address, hash) => {
           if (doc.empty) {
             console.log("empty ==>", doc.empty);
           firebase
-          .collection("users")
-            .add({ address: address.toLowerCase(), history: [], active: [], network:process.env.REACT_APP_NETWORK, hashes: [hash] })
+          .collection("testusers")
+            .add({ address: address.toLowerCase(), network:process.env.REACT_APP_NETWORK, hashes: [{hash,status:'pending'}] })
             .then((data) => {
               console.log("data ==>", data);
               return;
@@ -471,13 +474,13 @@ const storeTransactions = (address, hash) => {
         });
         console.log("edit doc ==>", editDoc);
         if(editDoc.hashes && editDoc.hashes.length){
-          editDoc.hashes.push(hash);
+          editDoc.hashes.push({hash,status:'pending'});
         }
         else{
-          editDoc.hashes = [hash]
+          editDoc.hashes = [{hash,status:'pending'}]
         }
         firebase
-        .collection("users")
+        .collection("testusers")
         .doc(docID)
         .set(editDoc).then((addedDoc)=>{
           console.log('doc updated==>',addedDoc)

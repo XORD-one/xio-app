@@ -178,7 +178,7 @@ const Stake = (props) => {
   useEffect(() => {
     // props.onSetXio(amountXioInput);
     // props.onSetDays(durationDaysInput);
-    props.getTokensData();
+    // props.getTokensData();
     props.onGetXioLimit();
     props.onGetDaysLimit();
     if (props.address) {

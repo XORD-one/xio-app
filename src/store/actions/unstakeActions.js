@@ -3,7 +3,7 @@ import { getCurrentGasPrices } from "../../utils";
 import { PORTAL_ADDRESS } from "../../contracts/portal";
 import { ERC20_ABI } from "../../contracts/erc20";
 import { onSetUnStakeLoading } from "./layoutActions";
-import { getStakerData, getStakedData } from "./dashboardActions";
+import { checkHashesAndExtractTimestamp, getStakedData } from "./dashboardActions";
 import {
   onSetStakeLoading,
   onSetTransactionMessage,
@@ -37,10 +37,7 @@ export const onCalculateUnstakeXIO = (address) => {
           amount = amount + Number(res.quantity);
         }
       }
-      dispatch({
-        type: "unstakeableXIO",
-        payload: amount,
-      });
+
     } catch (e) {
       console.log(e)
     }
@@ -81,7 +78,7 @@ export const onUnStakeXio = (address, timestampArray ,amount) => {
           })
           .on("confirmation", function (confirmationNumber, receipt) {
             if (confirmationNumber == 1) {
-              dispatch(onCalculateUnstakeXIO(address));
+              dispatch(checkHashesAndExtractTimestamp(address));
               setTimeout(() => {
                 dispatch(onSetUnStakeAmount(0))
                 dispatch(onSetUnStakeLoading(false));
