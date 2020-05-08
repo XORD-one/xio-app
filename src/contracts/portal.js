@@ -1,5 +1,5 @@
 // export const PORTAL_ADDRESS = "0x81cb87636e09694a8b6893254154c546f0b81833" //mainnet
-export const PORTAL_ADDRESS = process.env.REACT_APP_NETWORK === 'main' ? "0x81cb87636e09694a8b6893254154c546f0b81833" : "0x4Eaf337d9490BF6b30BF68843F9a344d5c7C8a79" //rinkeby
+export const PORTAL_ADDRESS = process.env.REACT_APP_NETWORK === 'main' ? "0x9aAE609BF897aE049f33959690310776d4D0C734" : "0x4Eaf337d9490BF6b30BF68843F9a344d5c7C8a79" //rinkeby
 export const PORTAL_ABI = process.env.REACT_APP_NETWORK === 'main' ? ([
 	{
 		"constant": false,
