@@ -167,6 +167,12 @@ const getXIOtoETHsAndETHtoALT = async (amount, token) => {
 export const onApprove = (isUnlock, address) => {
   return async (dispatch) => {
     try {
+      if (!address) {
+        dispatch(
+          onToast("PLEASE CONNECT TO METAMASK TO CONTINUE")
+        );
+        return;
+      }
       if (isUnlock) {
         dispatch(
           onToast("Wallet already activated, you can start staking now.")
@@ -277,7 +283,8 @@ export const onConfirmStake = (
   amountXioInput,
   initialRate,
   durationDaysInput,
-  token
+  token,
+  isUnlock
 ) => {
   return async (dispatch) => {
     try {
@@ -292,6 +299,15 @@ export const onConfirmStake = (
         token
       );
       if (address) {
+        console.log('isUnlock on confirm ==>',isUnlock)
+        if(!isUnlock){
+          dispatch(
+            onToast(
+              "Activate Wallet to continue."
+            )
+          );
+          return;
+        }
         if (Number(balance) < Number(amountXioInput)) {
           dispatch(
             onToast(

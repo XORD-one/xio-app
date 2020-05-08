@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect,useRef } from "react";
 import { Grid, Typography, Button } from "@material-ui/core";
 import PropTypes from "prop-types";
 import { withStyles } from "@material-ui/core/styles";
@@ -112,6 +112,8 @@ const Stake = (props) => {
   const [daysFocus, setDaysFocus] = useState(false);
   const [isAmountLimit, setIsAmountLimit] = useState(false);
 
+  const loadingRef = useRef(props.stakeLoading)
+
   const onToggleFocus = (field) => {
     if (field === "amount") {
       setAmountFocus(!amountFocus);
@@ -174,6 +176,25 @@ const Stake = (props) => {
     props.onSetToken(data);
     handleClickClose();
   };
+
+  useEffect(()=>{
+    window.addEventListener('beforeunload',(e)=>{
+      console.log('porps.stakeLoading ==>',props.stakeLoading)
+      if(loadingRef.current){
+        var confirmationMessage = 'Are you sure to leave the page?';
+        (e || window.event).returnValue = confirmationMessage;
+        return confirmationMessage;
+      }
+    })
+
+    return () => {
+      window.removeEventListener('beforeunload',(e)=>{})
+    }
+  },[])
+
+  useEffect(()=>{
+    loadingRef.current = props.stakeLoading
+  },[props.stakeLoading])
 
   useEffect(() => {
     // props.onSetXio(amountXioInput);

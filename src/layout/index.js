@@ -517,7 +517,7 @@ const Index = ({
                             onClick={() =>
                               props.stakeLoading
                                 ? null
-                                : props.onConfirmStake(props.address,props.balance,props.stakeAmount,props.initialRate,props.stakeDuration,props.token)
+                                : props.onConfirmStake(props.address,props.balance,props.stakeAmount,props.initialRate,props.stakeDuration,props.token,props.isUnlock)
                             }
                             className={
                               props.address && props.isUnlock
@@ -698,7 +698,8 @@ const mapDispatchToProps = (dispatch) => {
       stakeAmount,
       initialRate,
       stakeDuration,
-      token
+      token,
+      isUnlock
     ) =>
       dispatch(
         onConfirmStake(
@@ -707,7 +708,8 @@ const mapDispatchToProps = (dispatch) => {
           stakeAmount,
           initialRate,
           stakeDuration,
-          token
+          token,
+          isUnlock
         )
       ),
   };

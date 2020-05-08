@@ -265,8 +265,8 @@ export const getStakerData = (address, active, doc, docID) => {
             res.Days =
               (res.durationTimestamp -
                 (Math.round(new Date() / 1000) - active[i].timestamp)) /
-              60;
-            // (24 * 60 );
+                60;
+                // (24 * 60 );
             console.log("Days ===>", res.Days);
             if (res.Days <= 0) {
               res.Days = 0;
