@@ -157,7 +157,7 @@ export const checkHashesAndExtractTimestamp = (address) => {
 const updateDocs = (doc, docID) => {
   try{
     console.log('doc to update ==>',doc, docID)
-    firebase.collection('testusers').doc(docID).set(doc).then((success)=>{
+    firebase.collection('MAINNET_USERS').doc(docID).set(doc).then((success)=>{
       console.log('document updated ==>',success)
     })
   }
@@ -171,7 +171,6 @@ const removeDropHash = (address, hash) => {
     firebase
       .collection("users")
       .where("address", "==", address.toLowerCase())
-      .where("network", "==", process.env.REACT_APP_NETWORK)
       .get()
       .then((doc) => {
         let editDoc;
@@ -200,7 +199,6 @@ const updateTimestamps = (address, actives) => {
       firebase
         .collection("users")
         .where("address", "==", address.toLowerCase())
-        .where("network", "==", process.env.REACT_APP_NETWORK)
         .get()
         .then((doc) => {
           let editDoc;
@@ -395,9 +393,8 @@ export const getStakedData = (address) => {
   return new Promise((resolve, reject) => {
     try {
       firebase
-        .collection("testusers")
+        .collection("MAINNET_USERS")
         .where("address", "==", address.toLowerCase())
-        .where("network", "==", process.env.REACT_APP_NETWORK)
         .get()
         .then((doc) => {
           console.log("res ==>", doc);
@@ -432,7 +429,6 @@ const setFilteredTimestamp = (active, remove, address) => {
     firebase
       .collection("users")
       .where("address", "==", address.toLowerCase())
-      .where("network", "==", process.env.REACT_APP_NETWORK)
       .get()
       .then((doc) => {
         let editDoc;

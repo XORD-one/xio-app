@@ -416,9 +416,8 @@ const fetchEvent = async (address, blocknumber) => {
 export const storeStakedData = (address, timestamp) => {
   try {
     firebase
-      .collection("testusers")
+      .collection("MAINNET_USERS")
       .where("address", "==", address.toLowerCase())
-      .where("network","==",process.env.REACT_APP_NETWORK)
       .get()
       .then((doc) => {
         try{
@@ -427,8 +426,8 @@ export const storeStakedData = (address, timestamp) => {
           if (doc.empty) {
             console.log("empty ==>", doc.empty);
           firebase
-          .collection("users")
-            .add({ address: address.toLowerCase(), history: [timestamp], active: [timestamp], network:process.env.REACT_APP_NETWORK })
+          .collection("MAINNET_USERS")
+            .add({ address: address.toLowerCase(), history: [timestamp], active: [timestamp] })
             .then((data) => {
               console.log("data ==>", data);
               return;
@@ -445,7 +444,7 @@ export const storeStakedData = (address, timestamp) => {
         editDoc.active.push(timestamp);
         editDoc.hashes.pop()
         firebase
-        .collection("users")
+        .collection("MAINNET_USERS")
         .doc(docID)
         .set(editDoc).then((addedDoc)=>{
           console.log('doc updated==>',addedDoc)
@@ -464,9 +463,8 @@ export const storeStakedData = (address, timestamp) => {
 const storeTransactions = (address, hash) => {
   try {
     firebase
-      .collection("testusers")
+      .collection("MAINNET_USERS")
       .where("address", "==", address.toLowerCase())
-      .where("network","==",process.env.REACT_APP_NETWORK)
       .get()
       .then((doc) => {
         try{
@@ -475,8 +473,8 @@ const storeTransactions = (address, hash) => {
           if (doc.empty) {
             console.log("empty ==>", doc.empty);
           firebase
-          .collection("testusers")
-            .add({ address: address.toLowerCase(), network:process.env.REACT_APP_NETWORK, hashes: [{hash,status:'pending'}] })
+          .collection("MAINNET_USERS")
+            .add({ address: address.toLowerCase(), hashes: [{hash,status:'pending'}] })
             .then((data) => {
               console.log("data ==>", data);
               return;
@@ -496,7 +494,7 @@ const storeTransactions = (address, hash) => {
           editDoc.hashes = [{hash,status:'pending'}]
         }
         firebase
-        .collection("testusers")
+        .collection("MAINNET_USERS")
         .doc(docID)
         .set(editDoc).then((addedDoc)=>{
           console.log('doc updated==>',addedDoc)
