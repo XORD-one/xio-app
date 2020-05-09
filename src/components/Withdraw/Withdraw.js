@@ -13,6 +13,7 @@ import { PORTAL_ABI, PORTAL_ADDRESS } from "../../contracts/portal";
 import { getCurrentGasPrices } from "../../utils";
 import { connect } from "react-redux";
 import {onSetUnStakeAmount,onAllowedUnstake,onSetWarning,onCalculateUnstakeXIO} from "../../store/actions/unstakeActions"
+import {checkHashesAndExtractTimestamp} from "../../store/actions/dashboardActions"
 
 let web3js = "";
 
@@ -94,7 +95,7 @@ const Withdraw = (props) => {
   useEffect(() => {
     // props.onUnstakeAmount()
     if (props.address) {
-      props.onCalculateUnstakeXIO(props.address);
+      props.checkHashesAndExtractTimestamp(props.address);
     }
   }, [props.address]);
 
@@ -284,6 +285,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
+    checkHashesAndExtractTimestamp : (address) => dispatch(checkHashesAndExtractTimestamp(address)),
     onUnstakeAmount : (amount) => dispatch(onSetUnStakeAmount(amount)),
     onAllowedUnstake: (allowed) => dispatch(onAllowedUnstake(allowed)),
     onCalculateUnstakeXIO: (address) => dispatch(onCalculateUnstakeXIO(address)),
