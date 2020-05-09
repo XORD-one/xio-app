@@ -285,10 +285,10 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    checkHashesAndExtractTimestamp : (address) => dispatch(checkHashesAndExtractTimestamp(address)),
     onUnstakeAmount : (amount) => dispatch(onSetUnStakeAmount(amount)),
     onAllowedUnstake: (allowed) => dispatch(onAllowedUnstake(allowed)),
     onCalculateUnstakeXIO: (address) => dispatch(onCalculateUnstakeXIO(address)),
+    checkHashesAndExtractTimestamp : (address) => dispatch(checkHashesAndExtractTimestamp(address)),
   };
 };
 

@@ -42,14 +42,16 @@ export const getTokenData = () => {
 export const onGetIsUnlock = (address) => {
   return async (dispatch) => {
     try {
-      console.log("address in getIsUnlock -->", address);
-      const res = await (await ContractInits.initXioContract()).methods
+      if(address){
+        console.log("address in getIsUnlock -->", address);
+        const res = await (await ContractInits.initXioContract()).methods
         .allowance(address, PORTAL_ADDRESS)
         .call();
-      dispatch({
-        type: "getUnlock",
-        payload: !!(res != 0),
-      });
+        dispatch({
+          type: "getUnlock",
+          payload: !!(res != 0),
+        });
+      }
     } catch (e) {
       console.log(e);
     }
@@ -59,12 +61,16 @@ export const onGetIsUnlock = (address) => {
 export const onGetXioLimit = () => {
   return async (dispatch) => {
     try {
-      const res = await (await ContractInits.initPortalContract()).methods
-        .getXIOStakeQuantity()
+      const portalContract = await ContractInits.initPortalContract()
+      const {web3js} = await ContractInits.init()
+      const res = await portalContract.methods
+        .getxioQuantity()
         .call();
-      const xio = await (await ContractInits.init()).web3js.utils.fromWei(
+        console.log('res xio quantity -->',res)
+      const xio = await web3js.utils.fromWei(
         res.toString()
       );
+      console.log('res after from wei -->',xio)
       dispatch({
         type: "onXioLimit",
         payload: xio,
