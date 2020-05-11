@@ -61,7 +61,7 @@ export const onGetIsUnlock = (address) => {
 export const onGetXioLimit = () => {
   return async (dispatch) => {
     try {
-      const portalContract = await ContractInits.initPortalContract()
+      const portalContract = await ContractInits.initPortalWithInfura()
       const {web3js} = await ContractInits.init()
       const res = await portalContract.methods
         .getxioQuantity()
