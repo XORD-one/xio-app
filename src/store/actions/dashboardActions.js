@@ -64,9 +64,19 @@ export const checkRemainingTransactions = (address) => {
                   .then((events) => {
                     console.log("eventss ==>", events);
                     // events.forEach(async (event) => console.log('event ==>',event));
-                    if (active.indexOf(events[events.length-1].returnValues.timestamp.toString()) == -1){
-                        console.log("IN CONDITION");
-                        timestamps.push(events[events.length-1].returnValues.timestamp.toString()); 
+                    if (
+                      active.indexOf(
+                        events[
+                          events.length - 1
+                        ].returnValues.timestamp.toString()
+                      ) == -1
+                    ) {
+                      console.log("IN CONDITION");
+                      timestamps.push(
+                        events[
+                          events.length - 1
+                        ].returnValues.timestamp.toString()
+                      );
                     }
                   })
               );
@@ -90,60 +100,78 @@ export const checkHashesAndExtractTimestamp = (address) => {
         const portalContract = await ContractInits.initPortalContract();
         const { web3js } = await ContractInits.init();
         const data = await getStakedData(address);
-        console.log('data from firebase ==>',data)
+        console.log("data from firebase ==>", data);
 
         const doc = data.doc;
-        const hashes = doc.hashes;
-        const timestamps = [];
-        const promises = [];
-        if (hashes) {
-          console.log('hashes ==>',hashes)
-          for (let i = 0; i < hashes.length; i++) {
-            let recipt;
-            try {
-              console.log('particular hash ==>',hashes[i].hash)
-              recipt = await web3js.eth.getTransactionReceipt(hashes[i].hash);
-            } catch (e) {
-              console.log(e);
-              hashes[i].status = "dropped";
-              continue;
+        if (doc) {
+          const hashes = doc.hashes;
+          const timestamps = [];
+          const promises = [];
+          if (hashes) {
+            console.log("hashes ==>", hashes);
+            for (let i = 0; i < hashes.length; i++) {
+              let recipt;
+              try {
+                console.log("particular hash ==>", hashes[i].hash);
+                recipt = await web3js.eth.getTransactionReceipt(hashes[i].hash);
+              } catch (e) {
+                console.log(e);
+                hashes[i].status = "dropped";
+                continue;
+              }
+              if (!recipt.status) {
+                hashes[i].status = "failed";
+                continue;
+              }
+              if (recipt.status) {
+                if (hashes[i].status !== "completed")
+                  hashes[i].status = "success";
+                promises.push(
+                  portalContract
+                    .getPastEvents("StakeCompleted", {
+                      fromBlock: recipt.blockNumber,
+                      toBlock: recipt.blockNumber,
+                    })
+                    .then((events) => {
+                      console.log("eventss ==>", events);
+                      events.forEach(async (event) => {
+                        console.log("event ==>", event);
+                        if (event.transactionHash === hashes[i].hash)
+                          timestamps.push({
+                            timestamp: events[0].returnValues.timestamp,
+                            hash: hashes[i].hash,
+                          });
+                      });
+                    })
+                );
+              }
             }
-            if (!recipt.status) {
-              hashes[i].status = "failed";
-              continue;
-            }
-            if (recipt.status) {
-              if(hashes[i].status !== 'completed' )
-              hashes[i].status = "success";
-              promises.push(
-                portalContract
-                  .getPastEvents("StakeCompleted", {
-                    fromBlock: recipt.blockNumber,
-                    toBlock: recipt.blockNumber,
-                  })
-                  .then((events) => {
-                    console.log("eventss ==>", events);
-                    events.forEach(async (event) => {
-                      console.log('event ==>',event)
-                      if(event.transactionHash === hashes[i].hash)
-                      timestamps.push({timestamp:events[0].returnValues.timestamp,hash:hashes[i].hash});
-                    });
-                  })
-              );
-            }
+            Promise.all(promises).then(() => {
+              doc.hashes = hashes;
+              dispatch(getStakerData(address, timestamps, doc, data.docID));
+            });
+          } else {
+            dispatch(getStakerData(address, timestamps, doc, data.docID));
           }
-          Promise.all(promises).then(() => {
-            doc.hashes = hashes;
-            dispatch(getStakerData(address, timestamps,doc,data.docID));
-          });
         } else {
-          dispatch(getStakerData(address, timestamps,doc,data.docID));
+          dispatch({
+            type: "stakerData",
+            payload: { stakedXio: 0, activePortal: [] },
+          });
+          dispatch({
+            type: "unstakeableXIO",
+            payload: 0,
+          });
+          dispatch({
+            type: "setLoading",
+          });
         }
-      }
-      else{
-        dispatch({
-          type: "setLoading",
-        });
+      } else {
+        setTimeout(() => {
+          dispatch({
+            type: "setLoading",
+          });
+        }, 4000);
       }
     } catch (e) {
       console.log(e);
@@ -155,16 +183,19 @@ export const checkHashesAndExtractTimestamp = (address) => {
 };
 
 const updateDocs = (doc, docID) => {
-  try{
-    console.log('doc to update ==>',doc, docID)
-    firebase.collection('MAINNET_USERS').doc(docID).set(doc).then((success)=>{
-      console.log('document updated ==>',success)
-    })
+  try {
+    console.log("doc to update ==>", doc, docID);
+    firebase
+      .collection("MAINNET_USERS")
+      .doc(docID)
+      .set(doc)
+      .then((success) => {
+        console.log("document updated ==>", success);
+      });
+  } catch (e) {
+    console.log(e);
   }
-  catch(e){
-    console.log(e)
-  }
-}
+};
 
 const removeDropHash = (address, hash) => {
   try {
@@ -263,8 +294,8 @@ export const getStakerData = (address, active, doc, docID) => {
             res.Days =
               (res.durationTimestamp -
                 (Math.round(new Date() / 1000) - active[i].timestamp)) /
-                60;
-                // (24 * 60 );
+              60;
+            // (24 * 60 );
             console.log("Days ===>", res.Days);
             if (res.Days <= 0) {
               res.Days = 0;
@@ -275,19 +306,23 @@ export const getStakerData = (address, active, doc, docID) => {
 
             if (res.unstaked == false) {
               portalInfo.push(res);
-              if(res.Days<=0)
-              unstakeAmount = unstakeAmount + Number(res.quantity)
+              if (res.Days <= 0)
+                unstakeAmount = unstakeAmount + Number(res.quantity);
             }
             if (res.unstaked == true) {
-              console.log('active hash -->',active[i].hash)
-              console.log('index-->',doc.hashes.findIndex((item)=>{
-                return item.hash == active[i].hash
-              }))
-              console.log('hashes after unstake true -->',doc.hashes)
-              doc.hashes[doc.hashes.findIndex((item)=>{
-                return item.hash == active[i].hash
-              })].status = 'completed'
-
+              console.log("active hash -->", active[i].hash);
+              console.log(
+                "index-->",
+                doc.hashes.findIndex((item) => {
+                  return item.hash == active[i].hash;
+                })
+              );
+              console.log("hashes after unstake true -->", doc.hashes);
+              doc.hashes[
+                doc.hashes.findIndex((item) => {
+                  return item.hash == active[i].hash;
+                })
+              ].status = "completed";
             }
           }
         }
@@ -299,7 +334,7 @@ export const getStakerData = (address, active, doc, docID) => {
           type: "unstakeableXIO",
           payload: unstakeAmount,
         });
-        updateDocs(doc,docID)
+        updateDocs(doc, docID);
       }
       dispatch({
         type: "setLoading",
@@ -408,7 +443,7 @@ export const getStakedData = (address) => {
             editDoc = item.data();
             docID = item.id;
           });
-          if (editDoc) resolve({doc:editDoc,docID});
+          if (editDoc) resolve({ doc: editDoc, docID });
         });
     } catch (e) {
       reject({ message: e });

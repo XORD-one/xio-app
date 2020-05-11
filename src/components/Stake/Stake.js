@@ -111,7 +111,7 @@ const Stake = (props) => {
   const [amountFocus, setAmountFocus] = useState(false);
   const [daysFocus, setDaysFocus] = useState(false);
   const [isAmountLimit, setIsAmountLimit] = useState(false);
-
+  const [initial,setInitial] = useState(true)
   const loadingRef = useRef(props.stakeLoading)
 
   const onToggleFocus = (field) => {
@@ -177,6 +177,10 @@ const Stake = (props) => {
     handleClickClose();
   };
 
+  const onSetInitial = () => {
+    setInitial(false)
+  }
+
   useEffect(()=>{
     window.addEventListener('beforeunload',(e)=>{
       console.log('porps.stakeLoading ==>',props.stakeLoading)
@@ -211,11 +215,13 @@ const Stake = (props) => {
   useEffect(() => {
     if (token.outputTokenSymbol)
       props.onGetInterestRate(
-        props.initial,
+        initial,
         amountXioInput,
         durationDaysInput,
-        token
+        token,
+        onSetInitial
       );
+
   }, [token.outputTokenSymbol]);
 
   useEffect(() => {
@@ -591,8 +597,8 @@ const mapDispatchToProps = (dispatch) => {
     getBalance: (address) => dispatch(getBalance(address)),
     onGetIsUnlock: (address) => dispatch(onGetIsUnlock(address)),
     onSetInterestRate: (interest) => dispatch(onSetInterestRate(interest)),
-    onGetInterestRate: (initial, xio, days, token) =>
-      dispatch(onGetInterestRate(initial, xio, days, token)),
+    onGetInterestRate: (initial, xio, days, token,setInitial) =>
+      dispatch(onGetInterestRate(initial, xio, days, token,setInitial)),
   };
 };
 

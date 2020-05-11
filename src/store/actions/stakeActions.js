@@ -18,21 +18,21 @@ export const getTokenData = () => {
       const portalContract = await ContractInits.initPortalContract();
       const addresses = await portalContract.methods.getPortalHistory().call();
       const tokenList = [];
-      const promises = addresses.map(async (address) => {
-        const obj = await portalContract.methods.portalData(address).call();
+      for(let i = 0; i<addresses.length ; i++ ){
+        const obj = await portalContract.methods.portalData(addresses[i]).call();
         let contract = new web3js.eth.Contract(ERC20_ABI, obj.tokenAddress);
         let symbol = await contract.methods.symbol().call();
         obj.outputTokenSymbol = symbol;
+        console.log('symbol in getTokenData -->',symbol)
         if (obj.active === true) {
           tokenList.push(obj);
         }
-        return obj;
-      });
-      Promise.all(promises).then((res) => {
+      };
+      // Promise.all(promises).then((res) => {
         if (tokenList.length) {
           dispatch({ type: "getTokens", payload: tokenList });
         }
-      });
+      // });
     } catch (e) {
       console.log(e);
     }
@@ -101,7 +101,8 @@ export const onGetInterestRate = (
   initial,
   amountXioInput,
   durationDaysInput,
-  token
+  token,
+  onSetInitial
 ) => {
   return async (dispatch) => {
     try {
@@ -142,6 +143,7 @@ export const onGetInterestRate = (
           type: "onInitial",
           payload: false,
         });
+        onSetInitial()
       }
     } catch (e) {
       console.log(e);
