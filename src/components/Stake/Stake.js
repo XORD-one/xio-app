@@ -172,6 +172,7 @@ const Stake = (props) => {
 
   const onTokenSelect = (data) => {
     props.onSetInitial();
+    setInitial(true)
     setToken(data);
     props.onSetToken(data);
     handleClickClose();
