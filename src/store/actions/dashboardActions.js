@@ -114,9 +114,16 @@ export const checkHashesAndExtractTimestamp = (address) => {
               try {
                 console.log("particular hash ==>", hashes[i].hash);
                 recipt = await web3js.eth.getTransactionReceipt(hashes[i].hash);
+                console.log("before catch -->", recipt === false);
+                if (recipt === null) {
+                  hashes[i].status = "dropped";
+                  console.log("hashes -->", hashes);
+                  continue;
+                }
               } catch (e) {
-                console.log(e);
+                console.log("caught error -->", e);
                 hashes[i].status = "dropped";
+                console.log("hashes -->", hashes);
                 continue;
               }
               if (!recipt.status) {
@@ -186,7 +193,7 @@ const updateDocs = (doc, docID) => {
   try {
     console.log("doc to update ==>", doc, docID);
     firebase
-      .collection("MAINNET_USERS")
+      .collection(process.env.REACT_APP_COLLECTION)
       .doc(docID)
       .set(doc)
       .then((success) => {
@@ -428,7 +435,7 @@ export const getStakedData = (address) => {
   return new Promise((resolve, reject) => {
     try {
       firebase
-        .collection("MAINNET_USERS")
+        .collection(process.env.REACT_APP_COLLECTION)
         .where("address", "==", address.toLowerCase())
         .get()
         .then((doc) => {

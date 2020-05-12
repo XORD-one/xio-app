@@ -424,7 +424,7 @@ const fetchEvent = async (address, blocknumber) => {
 export const storeStakedData = (address, timestamp) => {
   try {
     firebase
-      .collection("MAINNET_USERS")
+      .collection(process.env.REACT_APP_COLLECTION)
       .where("address", "==", address.toLowerCase())
       .get()
       .then((doc) => {
@@ -434,7 +434,7 @@ export const storeStakedData = (address, timestamp) => {
           if (doc.empty) {
             console.log("empty ==>", doc.empty);
           firebase
-          .collection("MAINNET_USERS")
+          .collection(process.env.REACT_APP_COLLECTION)
             .add({ address: address.toLowerCase(), history: [timestamp], active: [timestamp] })
             .then((data) => {
               console.log("data ==>", data);
@@ -452,7 +452,7 @@ export const storeStakedData = (address, timestamp) => {
         editDoc.active.push(timestamp);
         editDoc.hashes.pop()
         firebase
-        .collection("MAINNET_USERS")
+        .collection(process.env.REACT_APP_COLLECTION)
         .doc(docID)
         .set(editDoc).then((addedDoc)=>{
           console.log('doc updated==>',addedDoc)
@@ -471,7 +471,7 @@ export const storeStakedData = (address, timestamp) => {
 const storeTransactions = (address, hash) => {
   try {
     firebase
-      .collection("MAINNET_USERS")
+      .collection(process.env.REACT_APP_COLLECTION)
       .where("address", "==", address.toLowerCase())
       .get()
       .then((doc) => {
@@ -481,7 +481,7 @@ const storeTransactions = (address, hash) => {
           if (doc.empty) {
             console.log("empty ==>", doc.empty);
           firebase
-          .collection("MAINNET_USERS")
+          .collection(process.env.REACT_APP_COLLECTION)
             .add({ address: address.toLowerCase(), hashes: [{hash,status:'pending'}] })
             .then((data) => {
               console.log("data ==>", data);
@@ -502,7 +502,7 @@ const storeTransactions = (address, hash) => {
           editDoc.hashes = [{hash,status:'pending'}]
         }
         firebase
-        .collection("MAINNET_USERS")
+        .collection(process.env.REACT_APP_COLLECTION)
         .doc(docID)
         .set(editDoc).then((addedDoc)=>{
           console.log('doc updated==>',addedDoc)
