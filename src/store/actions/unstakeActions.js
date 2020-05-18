@@ -50,7 +50,7 @@ export const onUnStakeXio = (address, timestampArray ,amount) => {
       const { web3js } = await ContractInits.init();
       const portalContract = await ContractInits.initPortalContract();
       if (address) {
-        if (amount && Number(amount) < 1) {
+        if (!Number(amount)) {
           dispatch(onToast("Please enter the amount of XIO you want to unstake."));
           return;
         }

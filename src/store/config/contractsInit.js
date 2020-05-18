@@ -61,7 +61,10 @@ export default class ContractInit {
         PORTAL_ADDRESS
       );
       console.log("this.infuraPortal ==>", this.infuraPortal);
-      return this.infuraPortal;
+      return {
+        infuraPortal: this.infuraPortal,
+        infuraWeb3: this.InfuraWeb3
+      };
     } catch (e) {
       console.log(e);
     }

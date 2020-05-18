@@ -9,7 +9,8 @@ const initState = {
   unitRate: 0,
   initial: true,
   xioAmount: 1,
-  days: 1
+  days: 1,
+  minimumStake: 1
 };
 
 const stakeReducer = (state = initState, action) => {
@@ -70,6 +71,11 @@ const stakeReducer = (state = initState, action) => {
       return {
         ...state,
         token: action.payload
+      }
+    case "minimumStake":
+      return {
+        ...state,
+        minimumStake: action.payload
       }
     default:
       return state;

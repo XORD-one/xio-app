@@ -22,76 +22,76 @@ export const getBalance = (address) => {
   };
 };
 
-export const checkRemainingTransactions = (address) => {
-  return async (dispatch) => {
-    try {
-      if (address) {
-        const timestamps = [];
-        const promises = [];
-        const portalContract = await ContractInits.initPortalContract();
-        const { web3js } = await ContractInits.init();
-        const data = await getStakedData(address);
-        const active = data.active;
-        const hashes = data.hashes;
-        if (hashes && hashes.length) {
-          for (let i = 0; i < hashes.length; i++) {
-            console.log("hashes ==>", hashes[i]);
-            let recipt;
-            try {
-              recipt = await web3js.eth.getTransactionReceipt(hashes[i]);
-            } catch (e) {
-              console.log(e);
-              removeDropHash(address, hashes[i]);
-              continue;
-            }
-            console.log("recipt ==>", recipt);
-            const blocknumber = recipt.blockNumber;
-            console.log("status ==>", recipt.status);
-            if (recipt.status) {
-              //               let events = await  portalContract
-              //                   .getPastEvents("StakeCompleted", {
-              //                     fromBlock: blocknumber,
-              //                     toBlock: blocknumber,
-              //                   })
-              //               if (active.indexOf(events[0].returnValues.timestamp) == -1)
-              //                       timestamps.push(events[0].returnValues.timestamp);
-              promises.push(
-                portalContract
-                  .getPastEvents("StakeCompleted", {
-                    fromBlock: blocknumber,
-                    toBlock: blocknumber,
-                  })
-                  .then((events) => {
-                    console.log("eventss ==>", events);
-                    // events.forEach(async (event) => console.log('event ==>',event));
-                    if (
-                      active.indexOf(
-                        events[
-                          events.length - 1
-                        ].returnValues.timestamp.toString()
-                      ) == -1
-                    ) {
-                      console.log("IN CONDITION");
-                      timestamps.push(
-                        events[
-                          events.length - 1
-                        ].returnValues.timestamp.toString()
-                      );
-                    }
-                  })
-              );
-            }
-          }
-          Promise.all(promises).then(() => {
-            dispatch(updateTimestamps(address, timestamps));
-          });
-        }
-      }
-    } catch (e) {
-      console.log(e);
-    }
-  };
-};
+// export const checkRemainingTransactions = (address) => {
+//   return async (dispatch) => {
+//     try {
+//       if (address) {
+//         const timestamps = [];
+//         const promises = [];
+//         const portalContract = await ContractInits.initPortalContract();
+//         const { web3js } = await ContractInits.init();
+//         const data = await getStakedData(address);
+//         const active = data.active;
+//         const hashes = data.hashes;
+//         if (hashes && hashes.length) {
+//           for (let i = 0; i < hashes.length; i++) {
+//             console.log("hashes ==>", hashes[i]);
+//             let recipt;
+//             try {
+//               recipt = await web3js.eth.getTransactionReceipt(hashes[i]);
+//             } catch (e) {
+//               console.log(e);
+//               removeDropHash(address, hashes[i]);
+//               continue;
+//             }
+//             console.log("recipt ==>", recipt);
+//             const blocknumber = recipt.blockNumber;
+//             console.log("status ==>", recipt.status);
+//             if (recipt.status) {
+//               //               let events = await  portalContract
+//               //                   .getPastEvents("StakeCompleted", {
+//               //                     fromBlock: blocknumber,
+//               //                     toBlock: blocknumber,
+//               //                   })
+//               //               if (active.indexOf(events[0].returnValues.timestamp) == -1)
+//               //                       timestamps.push(events[0].returnValues.timestamp);
+//               promises.push(
+//                 portalContract
+//                   .getPastEvents("StakeCompleted", {
+//                     fromBlock: blocknumber,
+//                     toBlock: blocknumber,
+//                   })
+//                   .then((events) => {
+//                     console.log("eventss ==>", events);
+//                     // events.forEach(async (event) => console.log('event ==>',event));
+//                     if (
+//                       active.indexOf(
+//                         events[
+//                           events.length - 1
+//                         ].returnValues.timestamp.toString()
+//                       ) == -1
+//                     ) {
+//                       console.log("IN CONDITION");
+//                       timestamps.push(
+//                         events[
+//                           events.length - 1
+//                         ].returnValues.timestamp.toString()
+//                       );
+//                     }
+//                   })
+//               );
+//             }
+//           }
+//           Promise.all(promises).then(() => {
+//             dispatch(updateTimestamps(address, timestamps));
+//           });
+//         }
+//       }
+//     } catch (e) {
+//       console.log(e);
+//     }
+//   };
+// };
 
 export const checkHashesAndExtractTimestamp = (address) => {
   return async (dispatch) => {
@@ -269,6 +269,7 @@ export const getStakerData = (address, active, doc, docID) => {
       if (address) {
         const portalContract = await ContractInits.initPortalContract();
         const { web3js } = await ContractInits.init();
+        const {infuraWeb3} = await ContractInits.initPortalWithInfura()
         console.log("portalContract ==>", portalContract);
         console.log("web3js ==>", web3js);
         let amount = 0;
@@ -280,7 +281,7 @@ export const getStakerData = (address, active, doc, docID) => {
               .stakerData(address, active[i].timestamp)
               .call();
             console.log("res from staker ==>", res);
-            let contract = new web3js.eth.Contract(
+            let contract = new infuraWeb3.eth.Contract(
               ERC20_ABI,
               res.outputTokenAddress
             );
@@ -300,8 +301,8 @@ export const getStakerData = (address, active, doc, docID) => {
 
             res.Days =
               (res.durationTimestamp -
-                (Math.round(new Date() / 1000) - active[i].timestamp)) /
-              60;
+                (Math.round(new Date() / 1000) - active[i].timestamp)) 
+              // 60;
             // (24 * 60 );
             console.log("Days ===>", res.Days);
             if (res.Days <= 0) {

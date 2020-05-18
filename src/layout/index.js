@@ -32,7 +32,7 @@ import Agreement from "../components/common/Agreement/index";
 import { connect } from "react-redux";
 import { onApprove, onConfirmStake,getTokenData } from "../store/actions/stakeActions";
 import {onUnStakeXio} from "../store/actions/unstakeActions"
-import {getStakerData,checkRemainingTransactions,checkHashesAndExtractTimestamp} from "../store/actions/dashboardActions"
+import {getStakerData,checkHashesAndExtractTimestamp} from "../store/actions/dashboardActions"
 
 const layoutSubHeading = {
   color: "rgb(198, 96, 101)",
@@ -517,7 +517,7 @@ const Index = ({
                             onClick={() =>
                               props.stakeLoading
                                 ? null
-                                : props.onConfirmStake(props.address,props.balance,props.stakeAmount,props.initialRate,props.stakeDuration,props.token,props.isUnlock)
+                                : props.onConfirmStake(props.address,props.balance,props.stakeAmount,props.initialRate,props.stakeDuration,props.token,props.isUnlock,props.minimumStake)
                             }
                             className={
                               props.address && props.isUnlock
@@ -675,6 +675,7 @@ const mapStateToProps = (state) => {
     initialRate: state.stakeReducer.initialRate,
     stakedXio: state.dashboardReducer.stakedXio,
     interestRate: state.stakeReducer.interestRate,
+    minimumStake: state.stakeReducer.minimumStake,
     stakeLoading: state.layoutReducer.stakeLoading,
     activePortal: state.dashboardReducer.activePortal,
     unstakeAmount: state.unstakeReducer.unstakeAmount,
@@ -689,7 +690,7 @@ const mapDispatchToProps = (dispatch) => {
     getTokensData: () => dispatch(getTokenData()),
     getStakerData: (address) => dispatch(getStakerData(address)),
     approve: (isUnlock, address) => dispatch(onApprove(isUnlock, address)),
-    checkRemainingTransactions: (address) => dispatch(checkRemainingTransactions(address)),
+    // checkRemainingTransactions: (address) => dispatch(checkRemainingTransactions(address)),
     onUnStakeXio: (address,timestamp,amount) => dispatch(onUnStakeXio(address,timestamp,amount)),
     checkHashesAndExtractTimestamp: (address) => dispatch(checkHashesAndExtractTimestamp(address)),
     onConfirmStake: (
@@ -699,7 +700,8 @@ const mapDispatchToProps = (dispatch) => {
       initialRate,
       stakeDuration,
       token,
-      isUnlock
+      isUnlock,
+      minimumStake
     ) =>
       dispatch(
         onConfirmStake(
@@ -709,7 +711,8 @@ const mapDispatchToProps = (dispatch) => {
           initialRate,
           stakeDuration,
           token,
-          isUnlock
+          isUnlock,
+          minimumStake
         )
       ),
   };

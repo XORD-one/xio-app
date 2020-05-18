@@ -241,6 +241,7 @@ const Stake = (props) => {
     tokensList: props.tokensList,
   };
 
+  const displayInterest = (props.interestRate).toString().indexOf('.') > 3 ? Number(props.interestRate).toFixed(2) : (props.interestRate).toString().indexOf('.') > 2 ? Number(props.interestRate).toFixed(3) : Number(props.interestRate).toFixed(4)
   return (
     <>
       <ThemeConsumer>
@@ -551,7 +552,7 @@ const Stake = (props) => {
                         }
                         disabled="true"
                         placeholder="0.0"
-                        value={Number(props.interestRate).toFixed(4)}
+                        value={displayInterest}
                       />
                     </Grid>
                   </Grid>

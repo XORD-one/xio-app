@@ -22,6 +22,9 @@ export const getTokenData = () => {
         const obj = await portalContract.methods.portalData(addresses[i]).call();
         let contract = new web3js.eth.Contract(ERC20_ABI, obj.tokenAddress);
         let symbol = await contract.methods.symbol().call();
+        let decimals = await contract.methods.decimals().call();
+        console.log('decimals -->',decimals)
+        obj.decimals = decimals;
         obj.outputTokenSymbol = symbol;
         console.log('symbol in getTokenData -->',symbol)
         if (obj.active === true) {
@@ -61,7 +64,7 @@ export const onGetIsUnlock = (address) => {
 export const onGetXioLimit = () => {
   return async (dispatch) => {
     try {
-      const portalContract = await ContractInits.initPortalWithInfura()
+      const portalContract = await ContractInits.initPortalWithInfura().infuraPortal
       const {web3js} = await ContractInits.init()
       const res = await portalContract.methods
         .getxioQuantity()
@@ -110,7 +113,7 @@ export const onGetInterestRate = (
       amountXioInput,
       durationDaysInput,
       token)
-      const res = await (await ContractInits.initPortalWithInfura()).methods
+      const res = await (await ContractInits.initPortalWithInfura().infuraPortal).methods
         .getInterestRate()
         .call();
       console.log("initial interest ==>", res);
@@ -118,8 +121,25 @@ export const onGetInterestRate = (
         type: "onInitialInterestRate",
         payload: res,
       });
-      const result = await getXIOtoETHsAndETHtoALT(res, token);
+      let result = await getXIOtoETHsAndETHtoALT(res, token);
       console.log("result ==>", result);
+      let minimum = 1;
+      while(result == 0){
+        let index = 1;
+        minimum = 10 * index
+        console.log('inside the while')
+        result = await getXIOtoETHsAndETHtoALT(Number(res)*(minimum), token)
+        console.log('result in while -->',result)
+        if(result != 0){
+          break;
+        }
+        index++
+      }
+      console.log('minimum stake amount -->',minimum)
+      dispatch({
+        type: 'minimumStake',
+        payload: minimum
+      })
       dispatch({
         type: "onInterestRate",
         payload: result,
@@ -155,16 +175,14 @@ const getXIOtoETHsAndETHtoALT = async (amount, token) => {
   try {
     console.log("amount ==>", amount);
     console.log("token ==>", token);
-    const infuraPortal = await ContractInits.initPortalWithInfura();
+    const {infuraPortal} = await ContractInits.initPortalWithInfura();
     const res = await infuraPortal.methods.getXIOtoETH(amount).call();
     console.log("res of xiotoeth ==>", res);
     let res1 = await infuraPortal.methods
       .getETHtoALT(res, token.tokenExchangeAddress)
       .call();
-    console.log("res of ethToAlt ==>", res);
-    res1 = await (await ContractInits.init()).web3js.utils.fromWei(
-      res1.toString()
-    );
+    console.log("res of ethToAlt ==>", res1);
+    res1 = Number(res1) / Math.pow(10,token.decimals)
 
     return res1;
   } catch (e) {
@@ -292,7 +310,8 @@ export const onConfirmStake = (
   initialRate,
   durationDaysInput,
   token,
-  isUnlock
+  isUnlock,
+  minimumStake
 ) => {
   return async (dispatch) => {
     try {
@@ -320,6 +339,14 @@ export const onConfirmStake = (
           dispatch(
             onToast(
               "You have insuffient amount of XIO to make this transaction."
+            )
+          );
+          return;
+        }
+        if(Number(amountXioInput) < Number(minimumStake)){
+          dispatch(
+            onToast(
+              `You can stake minimum ${minimumStake} XIO for token ${token.outputTokenSymbol}`
             )
           );
           return;

@@ -261,6 +261,7 @@ const Withdraw = (props) => {
                         onChange={(e) => onChangeAmount(e)}
                         onFocus={() => onToggleFocus("focus")}
                         onBlur={() => onToggleFocus()}
+                        disabled={props.unstakeLoading}
                       />
                     </Grid>
                   </Grid>
@@ -280,6 +281,7 @@ const mapStateToProps = (state) => {
     balance: state.dashboardReducer.balance,
     stakedXio: state.unstakeReducer.unstakeableXIO,
     unstakeAmount: state.unstakeReducer.unstakeAmount,
+    unstakeLoading: state.layoutReducer.unStakeLoading,
   };
 };
 

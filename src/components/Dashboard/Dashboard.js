@@ -17,7 +17,6 @@ import {
   getBalance,
   getStakerData,
   onGetInterestRate,
-  checkRemainingTransactions,
   onGetPortalData,
   checkHashesAndExtractTimestamp
 } from "../../store/actions/dashboardActions";
@@ -529,7 +528,7 @@ const mapDispatchToProps = (dispatch) => {
     getBalance: (address) => dispatch(getBalance(address)),
     getStakerData: (address) => dispatch(getStakerData(address)),
     checkHashesAndExtractTimestamp: (address) => dispatch(checkHashesAndExtractTimestamp(address)),
-    checkRemainingTransactions: (address) => dispatch(checkRemainingTransactions(address)),
+    // checkRemainingTransactions: (address) => dispatch(checkRemainingTransactions(address)),
     onGetInterestRate: () => dispatch(onGetInterestRate()),
     onGetPortalData: () => dispatch(onGetPortalData()),
   };
