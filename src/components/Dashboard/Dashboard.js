@@ -244,7 +244,7 @@ const Dashboard = (props) => {
                     }}
                   >
                     {/* {`${props.interest}%`} */}
-                    1.9%
+                    5%
                   </h2>
                 </Grid>
               </Grid>
