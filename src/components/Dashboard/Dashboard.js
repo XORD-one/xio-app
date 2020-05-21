@@ -232,7 +232,7 @@ const Dashboard = (props) => {
                     }}
                     className="firstSectionHeadings"
                   >
-                    INTEREST RATE
+                    MINIMUM INTEREST RATE
                   </h6>
                   <h2
                     style={{

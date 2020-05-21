@@ -1,5 +1,6 @@
 import ContractInits from "../config/contractsInit";
 import { PORTAL_ADDRESS } from "../../contracts/portal";
+import {XIO_EXCHANGE_ADDRESS} from "../../contracts/xio"
 import {
   onSetStakeLoading,
   onSetTransactionMessage,
@@ -121,20 +122,20 @@ export const onGetInterestRate = (
         type: "onInitialInterestRate",
         payload: res,
       });
-      let result = await getXIOtoETHsAndETHtoALT(res, token);
+      let result = await calculationBeforeStake(res, token);
       console.log("result ==>", result);
       let minimum = 1;
-      while(result == 0){
-        let index = 1;
-        minimum = 10 * index
-        console.log('inside the while')
-        result = await getXIOtoETHsAndETHtoALT(Number(res)*(minimum), token)
-        console.log('result in while -->',result)
-        if(result != 0){
-          break;
-        }
-        index++
-      }
+      // while(result == 0){
+      //   let index = 1;
+      //   minimum = 10 * index
+      //   console.log('inside the while')
+      //   result = await getXIOtoETHsAndETHtoALT(Number(res)*(minimum), token)
+      //   console.log('result in while -->',result)
+      //   if(result != 0){
+      //     break;
+      //   }
+      //   index++
+      // }
       console.log('minimum stake amount -->',minimum)
       dispatch({
         type: 'minimumStake',
@@ -170,6 +171,45 @@ export const onGetInterestRate = (
     }
   };
 };
+
+const calculationBeforeStake = async (initialRate,token,xio=1,DAYS=1) => {
+  try {
+    const {web3js:web3} = await ContractInits.init();
+    const contract = await ContractInits.initXioContract()
+    xio = await web3.utils.toWei(xio.toString());
+    const inputAmountA = initialRate
+    console.log('inputAmountA ==>',inputAmountA)
+    const inputReserveA = await contract.methods
+      .balanceOf(XIO_EXCHANGE_ADDRESS)
+      .call();
+    console.log('inputReserveA ==>',inputReserveA)
+    const outputReserveA = await web3.eth.getBalance(XIO_EXCHANGE_ADDRESS);
+    console.log("outputReserveA ==>",outputReserveA)
+    const numeratorA = inputAmountA * outputReserveA * 997;
+    const denominatorA = inputReserveA * 1000 + inputAmountA * 997;
+    const outputAmountA = numeratorA / denominatorA;
+    console.log("outputAmountA ==>",outputAmountA)
+    // ETH to TokenB conversion
+    const inputAmountB = ((outputAmountA * xio * DAYS ) / 1000000000000000000);
+    const inputReserveB = await web3.eth.getBalance(token.tokenExchangeAddress);
+    console.log("inputReserveB ==>",inputReserveB)
+    const tokenContract = new web3.eth.Contract(ERC20_ABI, token.tokenAddress)
+    const outputReserveB = await tokenContract.methods
+      .balanceOf(token.tokenExchangeAddress)
+      .call();
+    console.log("outputReserveB ==>",outputReserveB)
+    const numeratorB = inputAmountB * outputReserveB * 997;
+    const denominatorB = inputReserveB * 1000 + inputAmountB * 997;
+    const outputAmountB = numeratorB / denominatorB;
+    console.log('retured outputAmountB ==>',outputAmountB)
+    const res = Number(outputAmountB) / Math.pow(10,token.decimals)
+    return res
+  } catch (e) {
+    console.log(e);
+    return null
+  }
+};
+
 
 const getXIOtoETHsAndETHtoALT = async (amount, token) => {
   try {
@@ -373,7 +413,7 @@ export const onConfirmStake = (
           token
         );
         let resultA = tokensBought;
-        let tempA = (Number(resultA) - Number(resultA * 0.0075)).toFixed(18);
+        let tempA = (Number(resultA) - Number(resultA * 0.05)).toFixed(18);
         tokensBought = await web3js.utils.toWei(tempA.toString());
         console.log("tokens bought ==>", tokensBought);
 
@@ -462,7 +502,7 @@ export const storeStakedData = (address, timestamp) => {
             console.log("empty ==>", doc.empty);
           firebase
           .collection(process.env.REACT_APP_COLLECTION)
-            .add({ address: address.toLowerCase(), history: [timestamp], active: [timestamp] })
+            .add({ address: address.toLowerCase(), history: [timestamp], active: [timestamp], insertedBy: 'DAPP' , createdAt: Date.now() })
             .then((data) => {
               console.log("data ==>", data);
               return;
@@ -509,7 +549,7 @@ const storeTransactions = (address, hash) => {
             console.log("empty ==>", doc.empty);
           firebase
           .collection(process.env.REACT_APP_COLLECTION)
-            .add({ address: address.toLowerCase(), hashes: [{hash,status:'pending'}] })
+            .add({ address: address.toLowerCase(), hashes: [{hash,status:'pending'}], insertedBy: 'DAPP', createdAt: Date.now() })
             .then((data) => {
               console.log("data ==>", data);
               return;

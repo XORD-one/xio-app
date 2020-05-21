@@ -30,9 +30,16 @@ import spinnerBlack from "../components/assets/images/spinner-black.svg";
 import Toast from "../components/common/Toast";
 import Agreement from "../components/common/Agreement/index";
 import { connect } from "react-redux";
-import { onApprove, onConfirmStake,getTokenData } from "../store/actions/stakeActions";
-import {onUnStakeXio} from "../store/actions/unstakeActions"
-import {getStakerData,checkHashesAndExtractTimestamp} from "../store/actions/dashboardActions"
+import {
+  onApprove,
+  onConfirmStake,
+  getTokenData,
+} from "../store/actions/stakeActions";
+import { onUnStakeXio } from "../store/actions/unstakeActions";
+import {
+  getStakerData,
+  checkHashesAndExtractTimestamp,
+} from "../store/actions/dashboardActions";
 
 const layoutSubHeading = {
   color: "rgb(198, 96, 101)",
@@ -81,46 +88,39 @@ const tabBodyLight = {
   borderBottom: "1px solid #DADADA",
 };
 
-const Index = ({
-  children,
-  ...props
-}) => {
+const Index = ({ children, ...props }) => {
   const [completed, setCompleted] = useState(false);
 
   const handleThemeState = (isThemeDark, themeDark) => {
     isThemeDark(!themeDark);
   };
 
-  useEffect(()=>{
-    props.getTokensData()
-    if(props.address && props.location.pathname !== '/'){
-      console.log('dashboard nhi ha yeh --><--')
-      props.checkHashesAndExtractTimestamp(props.address)
+  useEffect(() => {
+    props.getTokensData();
+    if (props.address && props.location.pathname !== "/") {
+      console.log("dashboard nhi ha yeh --><--");
+      props.checkHashesAndExtractTimestamp(props.address);
     }
-  },[props.address])
+  }, [props.address]);
 
-  const allowedWithdraw =  props.unstakeAmount
-  ? Number(props.unstakeableXIO) - Number(props.unstakeAmount) < 0
-    ? 0
-    : Number(props.unstakeableXIO) - Number(props.unstakeAmount)
-  : props.unstakeableXIO;
+  const allowedWithdraw = props.unstakeAmount
+    ? Number(props.unstakeableXIO) - Number(props.unstakeAmount) < 0
+      ? 0
+      : Number(props.unstakeableXIO) - Number(props.unstakeAmount)
+    : props.unstakeableXIO;
 
-  const warning = Number(props.unstakeAmount) > Number(props.unstakeableXIO)
+  const warning = Number(props.unstakeAmount) > Number(props.unstakeableXIO);
 
   console.log("Layout props ==>", props);
   let history = useHistory();
   return (
     <ThemeConsumer>
-      {({
-        isThemeDark,
-        themeDark,
-        handleClick,
-        open,
-        toggleAgreement,
-      }) => {
+      {({ isThemeDark, themeDark, handleClick, open, toggleAgreement }) => {
         const addressToShow =
           props.address &&
-          props.address.slice(0, 6) + "...." + props.address.slice(props.address.length - 4);
+          props.address.slice(0, 6) +
+            "...." +
+            props.address.slice(props.address.length - 4);
 
         const agreementProps = {
           open,
@@ -323,8 +323,8 @@ const Index = ({
                         justifyContent: "flex-start",
                         letterSpacing: "2px",
                         cursor: "pointer",
-                        width:"33%",
-                        textAlign:"center"
+                        width: "33%",
+                        textAlign: "center",
                       }}
                       className="tabarText"
                       onClick={() => history.push("/")}
@@ -344,8 +344,8 @@ const Index = ({
                         justifyContent: "center",
                         letterSpacing: "2px",
                         cursor: "pointer",
-                        width:"33%",
-                        textAlign:"center"
+                        width: "33%",
+                        textAlign: "center",
                       }}
                       className="tabarText"
                       onClick={() => history.push("/stake")}
@@ -365,8 +365,8 @@ const Index = ({
                         justifyContent: "flex-end",
                         letterSpacing: "2px",
                         cursor: "pointer",
-                        width:"33%",
-                        textAlign:"center"
+                        width: "33%",
+                        textAlign: "center",
                       }}
                       className="tabarText"
                       onClick={() => history.push("/unstake")}
@@ -517,7 +517,16 @@ const Index = ({
                             onClick={() =>
                               props.stakeLoading
                                 ? null
-                                : props.onConfirmStake(props.address,props.balance,props.stakeAmount,props.initialRate,props.stakeDuration,props.token,props.isUnlock,props.minimumStake)
+                                : props.onConfirmStake(
+                                    props.address,
+                                    props.balance,
+                                    props.stakeAmount,
+                                    props.initialRate,
+                                    props.stakeDuration,
+                                    props.token,
+                                    props.isUnlock,
+                                    props.minimumStake
+                                  )
                             }
                             className={
                               props.address && props.isUnlock
@@ -538,6 +547,18 @@ const Index = ({
                               {"CONFIRM STAKE"}
                             </h4>
                           </div>
+                        </div>
+                        <div style={{ padding: 20 }}>
+                          <p
+                            style={{
+                              color: "#C66065",
+                              display: "inline-block",
+                              fontFamily: "'Montserrat', sans-serif",
+                              margin: 0,
+                            }}
+                          >
+                            Note: The default slippage rate is 5%
+                          </p>
                         </div>
                       </>
                     )}
@@ -570,7 +591,11 @@ const Index = ({
                           }
                           onClick={() =>
                             !warning && !props.unstakeLoading
-                              ? props.onUnStakeXio(props.address,props.activePortal,props.unstakeAmount)
+                              ? props.onUnStakeXio(
+                                  props.address,
+                                  props.activePortal,
+                                  props.unstakeAmount
+                                )
                               : null
                           }
                         >
@@ -691,8 +716,10 @@ const mapDispatchToProps = (dispatch) => {
     getStakerData: (address) => dispatch(getStakerData(address)),
     approve: (isUnlock, address) => dispatch(onApprove(isUnlock, address)),
     // checkRemainingTransactions: (address) => dispatch(checkRemainingTransactions(address)),
-    onUnStakeXio: (address,timestamp,amount) => dispatch(onUnStakeXio(address,timestamp,amount)),
-    checkHashesAndExtractTimestamp: (address) => dispatch(checkHashesAndExtractTimestamp(address)),
+    onUnStakeXio: (address, timestamp, amount) =>
+      dispatch(onUnStakeXio(address, timestamp, amount)),
+    checkHashesAndExtractTimestamp: (address) =>
+      dispatch(checkHashesAndExtractTimestamp(address)),
     onConfirmStake: (
       address,
       balance,
