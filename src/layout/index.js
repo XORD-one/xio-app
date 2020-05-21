@@ -557,7 +557,7 @@ const Index = ({ children, ...props }) => {
                               margin: 0,
                             }}
                           >
-                            Note: The default slippage rate is 5%
+                            NOTE: THE DEFAULT SLIPPAGE RATE IS 5%
                           </p>
                         </div>
                       </>

@@ -243,7 +243,8 @@ const Dashboard = (props) => {
                       padding: "0px",
                     }}
                   >
-                    {`${props.interest}%`}
+                    {/* {`${props.interest}%`} */}
+                    1.9%
                   </h2>
                 </Grid>
               </Grid>
