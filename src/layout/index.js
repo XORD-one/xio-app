@@ -548,7 +548,7 @@ const Index = ({ children, ...props }) => {
                             </h4>
                           </div>
                         </div>
-                        <div style={{ padding: 20 }}>
+                        {/* <div style={{ padding: 20 }}>
                           <p
                             style={{
                               color: "#C66065",
@@ -559,7 +559,7 @@ const Index = ({ children, ...props }) => {
                           >
                             NOTE: THE DEFAULT SLIPPAGE RATE IS 5%
                           </p>
-                        </div>
+                        </div> */}
                       </>
                     )}
                     {props.location.pathname === "/unstake" && (
