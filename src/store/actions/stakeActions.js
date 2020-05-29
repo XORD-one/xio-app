@@ -413,8 +413,14 @@ export const onConfirmStake = (
           token
         );
         let resultA = tokensBought;
-        let tempA = (Number(resultA) - Number(resultA * 0.05)).toFixed(18);
-        tokensBought = await web3js.utils.toWei(tempA.toString());
+        let tempA = (Number(resultA) - Number(resultA * 0.05)).toFixed(token.decimals);
+        console.log('tempA before -->',tempA)
+        if(token.decimals !== 18){
+          tokensBought = (Math.ceil(tempA * Math.pow(10,token.decimals))).toString()
+        }
+        else{
+          tokensBought = await web3js.utils.toWei(tempA.toString());
+        }
         console.log("tokens bought ==>", tokensBought);
 
         const params = {
