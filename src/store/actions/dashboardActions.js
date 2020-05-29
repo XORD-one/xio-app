@@ -94,7 +94,7 @@ export const getBalance = (address) => {
 // };
 
 export const checkHashesAndExtractTimestamp = (address) => {
-  return async (dispatch) => {
+  return async (dispatch, getState) => {
     try {
       if (address) {
         const portalContract = await ContractInits.initPortalContract();
@@ -175,10 +175,12 @@ export const checkHashesAndExtractTimestamp = (address) => {
         }
       } else {
         setTimeout(() => {
-          dispatch({
-            type: "setLoading",
-          });
-        }, 4000);
+          if (!getState().layoutReducer.address) {
+            dispatch({
+              type: "setLoading",
+            });
+          }
+        }, 6000);
       }
     } catch (e) {
       console.log(e);
@@ -269,7 +271,7 @@ export const getStakerData = (address, active, doc, docID) => {
       if (address) {
         const portalContract = await ContractInits.initPortalContract();
         const { web3js } = await ContractInits.init();
-        const {infuraWeb3} = await ContractInits.initPortalWithInfura()
+        const { infuraWeb3 } = await ContractInits.initPortalWithInfura();
         console.log("portalContract ==>", portalContract);
         console.log("web3js ==>", web3js);
         let amount = 0;
