@@ -18,7 +18,7 @@ import {
   getStakerData,
   onGetInterestRate,
   onGetPortalData,
-  checkHashesAndExtractTimestamp
+  checkHashesAndExtractTimestamp,
 } from "../../store/actions/dashboardActions";
 import { connect } from "react-redux";
 
@@ -109,7 +109,7 @@ const Dashboard = (props) => {
     if (props.address) {
       props.getBalance(props.address);
     }
-    props.checkHashesAndExtractTimestamp(props.address)
+    props.checkHashesAndExtractTimestamp(props.address);
   }, [props.address, loadOnStake]);
 
   // const balanceFromWei = props.balance / 1000000000000000000;
@@ -125,11 +125,12 @@ const Dashboard = (props) => {
           }
           return (
             <Grid
-            container
-            item
-            className="firstSectionContainer"
-            md={12}
-            xs={12}>
+              container
+              item
+              className="firstSectionContainer"
+              md={12}
+              xs={12}
+            >
               <Grid
                 container
                 item
@@ -477,7 +478,7 @@ const Dashboard = (props) => {
                                         }
                                       >
                                         <Tooltip title={item.boughAmount}>
-                                          <p style={{margin:0}} >
+                                          <p style={{ margin: 0 }}>
                                             {truncateValue(item.boughAmount)}
                                           </p>
                                         </Tooltip>
@@ -528,7 +529,8 @@ const mapDispatchToProps = (dispatch) => {
   return {
     getBalance: (address) => dispatch(getBalance(address)),
     getStakerData: (address) => dispatch(getStakerData(address)),
-    checkHashesAndExtractTimestamp: (address) => dispatch(checkHashesAndExtractTimestamp(address)),
+    checkHashesAndExtractTimestamp: (address) =>
+      dispatch(checkHashesAndExtractTimestamp(address)),
     // checkRemainingTransactions: (address) => dispatch(checkRemainingTransactions(address)),
     onGetInterestRate: () => dispatch(onGetInterestRate()),
     onGetPortalData: () => dispatch(onGetPortalData()),
