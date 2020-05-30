@@ -6,15 +6,16 @@ import Dialog from "@material-ui/core/Dialog";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
+import { Box } from "@material-ui/core";
 
-const CustomDialog = props => {
+const CustomDialog = (props) => {
   const [search, setSearch] = useState("");
   const [searchList, setSearchList] = useState([]);
 
-  const onChange = e => {
+  const onChange = (e) => {
     const toSearch = e.target.value;
     setSearch(toSearch);
-    const searchData = props.tokensList.filter(item => {
+    const searchData = props.tokensList.filter((item) => {
       console.log(item);
       return (
         item.outputTokenSymbol.substring(0, toSearch.length).toLowerCase() ===
@@ -40,7 +41,7 @@ const CustomDialog = props => {
             border: "2px solid #3E3E3E",
             backgroundColor: "#363636",
             color: "#030303",
-            padding: "0px 50px"
+            padding: "0px 50px",
           }}
           justify="center"
         >
@@ -54,10 +55,29 @@ const CustomDialog = props => {
               textAlign: "center",
 
               padding: "0px",
-              marginTop: "18px"
+              marginTop: "18px",
             }}
           >
-            <Grid container direction="row" justify="center">
+            <Box display="flex" alignItems="center" justifyContent="center">
+              <SearchIcon
+                item
+                style={{
+                  color: "#DADADA",
+                  cursor: "pointer",
+                  fontSize: "24px",
+                  // position: "relative",
+                  // top: 4,
+                }}
+              />
+              <input
+                className="searchText"
+                style={{ textAlign: "center" }}
+                value={search}
+                onChange={(e) => onChange(e)}
+                placeholder="SEARCH TOKEN NAME"
+              />
+            </Box>
+            {/* <Grid container direction="row" justify="center">
               <Grid item md={3} style={{ textAlign: "right", paddingRight: 7 }}>
                 <SearchIcon
                   item
@@ -66,7 +86,7 @@ const CustomDialog = props => {
                     cursor: "pointer",
                     fontSize: "24px",
                     position: "relative",
-                    top: 4
+                    top: 4,
                   }}
                 />
               </Grid>
@@ -74,11 +94,11 @@ const CustomDialog = props => {
                 <input
                   className="searchText"
                   value={search}
-                  onChange={e => onChange(e)}
+                  onChange={(e) => onChange(e)}
                   placeholder="SEARCH TOKEN NAME"
                 />
               </Grid>
-            </Grid>
+            </Grid> */}
           </DialogContentText>
         </DialogTitle>
 
@@ -90,7 +110,7 @@ const CustomDialog = props => {
             border: "2px solid #3E3E3E",
             borderTop: "0px",
             paddingTop: "25px",
-            height:170
+            height: 170,
           }}
           className="listContain"
         >
@@ -102,7 +122,7 @@ const CustomDialog = props => {
                   fontWeight: "bolder",
                   backgroundColor: "#1C1C1C",
                   color: "#D4D4D4",
-                  cursor: "pointer"
+                  cursor: "pointer",
                 }}
                 onClick={() => props.onTokenSelect(item)}
                 key={i}
@@ -111,17 +131,19 @@ const CustomDialog = props => {
               </DialogContentText>
             );
           })}
-          {!list.length && <DialogContentText
-            style={{
-              fontFamily: "'Montserrat', sans-serif",
-              fontWeight: "bolder",
-              backgroundColor: "#1C1C1C",
-              color: "#D4D4D4",
-              cursor: "pointer"
-            }}
-          >
-            No Data Found
-          </DialogContentText>}
+          {!list.length && (
+            <DialogContentText
+              style={{
+                fontFamily: "'Montserrat', sans-serif",
+                fontWeight: "bolder",
+                backgroundColor: "#1C1C1C",
+                color: "#D4D4D4",
+                cursor: "pointer",
+              }}
+            >
+              No Data Found
+            </DialogContentText>
+          )}
         </DialogContent>
       </Dialog>
     </React.Fragment>

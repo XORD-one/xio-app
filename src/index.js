@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
-import App from "./components/App";
+// import App from "./components/App";
 import * as serviceWorker from "./serviceWorker";
 import { createStore, applyMiddleware, compose } from "redux";
 import rootReducer from "./store/reducers/rootReducer";
@@ -21,7 +21,6 @@ const store = createStore(rootReducer, applyMiddleware(thunk));
 // if (userInput == process.env.REACT_APP_PASSWORD) {
 ReactDOM.render(
   <Provider store={store}>
-    {/* <App /> */}
     <LoadingFullPage />
   </Provider>,
   document.getElementById("root")
