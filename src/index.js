@@ -21,8 +21,8 @@ const store = createStore(rootReducer, applyMiddleware(thunk));
 // if (userInput == process.env.REACT_APP_PASSWORD) {
 ReactDOM.render(
   <Provider store={store}>
-    {/* <App /> */}
-    <LoadingFullPage />
+    <App />
+    {/* <LoadingFullPage /> */}
   </Provider>,
   document.getElementById("root")
 );

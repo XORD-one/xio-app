@@ -1,5 +1,5 @@
-import React, { useState, useEffect,useRef } from "react";
-import { Grid, Typography, Button } from "@material-ui/core";
+import React, { useState, useEffect, useRef } from "react";
+import { Grid, Typography, Button, Tooltip } from "@material-ui/core";
 import PropTypes from "prop-types";
 import { withStyles } from "@material-ui/core/styles";
 import "./style.css";
@@ -21,7 +21,6 @@ import {
   onSetToken,
 } from "../../store/actions/stakeActions";
 import { getBalance } from "../../store/actions/dashboardActions";
-
 
 const styles = (theme) => ({
   root: {
@@ -111,8 +110,8 @@ const Stake = (props) => {
   const [amountFocus, setAmountFocus] = useState(false);
   const [daysFocus, setDaysFocus] = useState(false);
   const [isAmountLimit, setIsAmountLimit] = useState(false);
-  const [initial,setInitial] = useState(true)
-  const loadingRef = useRef(props.stakeLoading)
+  const [initial, setInitial] = useState(true);
+  const loadingRef = useRef(props.stakeLoading);
 
   const onToggleFocus = (field) => {
     if (field === "amount") {
@@ -172,34 +171,34 @@ const Stake = (props) => {
 
   const onTokenSelect = (data) => {
     props.onSetInitial();
-    setInitial(true)
+    setInitial(true);
     setToken(data);
     props.onSetToken(data);
     handleClickClose();
   };
 
   const onSetInitial = () => {
-    setInitial(false)
-  }
+    setInitial(false);
+  };
 
-  useEffect(()=>{
-    window.addEventListener('beforeunload',(e)=>{
-      console.log('porps.stakeLoading ==>',props.stakeLoading)
-      if(loadingRef.current){
-        var confirmationMessage = 'Are you sure to leave the page?';
+  useEffect(() => {
+    window.addEventListener("beforeunload", (e) => {
+      console.log("porps.stakeLoading ==>", props.stakeLoading);
+      if (loadingRef.current) {
+        var confirmationMessage = "Are you sure to leave the page?";
         (e || window.event).returnValue = confirmationMessage;
         return confirmationMessage;
       }
-    })
+    });
 
     return () => {
-      window.removeEventListener('beforeunload',(e)=>{})
-    }
-  },[])
+      window.removeEventListener("beforeunload", (e) => {});
+    };
+  }, []);
 
-  useEffect(()=>{
-    loadingRef.current = props.stakeLoading
-  },[props.stakeLoading])
+  useEffect(() => {
+    loadingRef.current = props.stakeLoading;
+  }, [props.stakeLoading]);
 
   useEffect(() => {
     // props.onSetXio(amountXioInput);
@@ -222,17 +221,16 @@ const Stake = (props) => {
         token,
         onSetInitial
       );
-
   }, [token.outputTokenSymbol]);
 
   useEffect(() => {
     if (!token.outputTokenSymbol) setToken(props.token);
   }, [props.token]);
 
-  useEffect(()=>{
+  useEffect(() => {
     setAmountXIO(props.xioAmount);
-    setDurationDays(props.days)
-  },[props.xioAmount,props.days])
+    setDurationDays(props.days);
+  }, [props.xioAmount, props.days]);
 
   const dialogProps = {
     open,
@@ -241,7 +239,12 @@ const Stake = (props) => {
     tokensList: props.tokensList,
   };
 
-  const displayInterest = (props.interestRate).toString().indexOf('.') > 3 ? Number(props.interestRate).toFixed(2) : (props.interestRate).toString().indexOf('.') > 2 ? Number(props.interestRate).toFixed(3) : Number(props.interestRate).toFixed(4)
+  const displayInterest =
+    props.interestRate.toString().indexOf(".") > 3
+      ? Number(props.interestRate).toFixed(2)
+      : props.interestRate.toString().indexOf(".") > 2
+      ? Number(props.interestRate).toFixed(3)
+      : Number(props.interestRate).toFixed(4);
   return (
     <>
       <ThemeConsumer>
@@ -468,7 +471,9 @@ const Stake = (props) => {
                                 position: "relative",
                               }
                         }
-                        onClick={() => props.stakeLoading ? null : handleClickOpen()}
+                        onClick={() =>
+                          props.stakeLoading ? null : handleClickOpen()
+                        }
                         item
                       >
                         <input
@@ -546,14 +551,16 @@ const Stake = (props) => {
                           : firstStakeSectionItemLight
                       }
                     >
-                      <input
-                        className={
-                          themeDark ? "inputTextStake" : "inputTextStakeLight"
-                        }
-                        disabled="true"
-                        placeholder="0.0"
-                        value={displayInterest}
-                      />
+                      <Tooltip title={props.interestRate}>
+                        <input
+                          className={
+                            themeDark ? "inputTextStake" : "inputTextStakeLight"
+                          }
+                          disabled="true"
+                          placeholder="0.0"
+                          value={displayInterest}
+                        />
+                      </Tooltip>
                     </Grid>
                   </Grid>
                 </Grid>
@@ -599,8 +606,8 @@ const mapDispatchToProps = (dispatch) => {
     getBalance: (address) => dispatch(getBalance(address)),
     onGetIsUnlock: (address) => dispatch(onGetIsUnlock(address)),
     onSetInterestRate: (interest) => dispatch(onSetInterestRate(interest)),
-    onGetInterestRate: (initial, xio, days, token,setInitial) =>
-      dispatch(onGetInterestRate(initial, xio, days, token,setInitial)),
+    onGetInterestRate: (initial, xio, days, token, setInitial) =>
+      dispatch(onGetInterestRate(initial, xio, days, token, setInitial)),
   };
 };
 
