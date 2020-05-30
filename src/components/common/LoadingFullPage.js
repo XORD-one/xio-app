@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, lazy, Suspense } from "react";
 import { Typography, Box } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import App from "../App";
+const App = lazy(() => import("../App"));
+// import App from "../App";
 
 const useStyles = makeStyles((theme) => ({
   mainContainerStyles: {
@@ -30,13 +31,20 @@ export default function LoadingFullPage() {
     }, 500);
   }, []);
 
-  return authenticated ? (
-    <App />
-  ) : (
+  const loadingMessage = (msg) => (
     <Box className={classes.mainContainerStyles}>
       <Typography variant="body1" className={classes.textStyle}>
-        LOADING...
+        {msg || "LOADING..."}
       </Typography>
     </Box>
+  );
+  return authenticated ? (
+    <Suspense
+      fallback={loadingMessage("AUTHENTICATION SUCCESSFUL, PLEASE WAIT...")}
+    >
+      <App />
+    </Suspense>
+  ) : (
+    loadingMessage()
   );
 }
