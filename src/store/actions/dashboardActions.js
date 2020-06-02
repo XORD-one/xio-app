@@ -296,7 +296,6 @@ export const getStakerData = (address, active, doc, docID) => {
             console.log("before from WEI ==>", res.quantity);
             res.quantity = await web3js.utils.fromWei(res.quantity.toString());
             //   console.log("after from WEI ==>", res.stakeQuantity);
-            console.log("~~~~~~~~~~~~!!", res, decimals);
             if (res.boughAmount !== 18) {
               res.boughAmount =
                 res.boughAmount / Math.pow(10, decimals).toString();
