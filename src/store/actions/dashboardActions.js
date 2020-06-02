@@ -289,16 +289,22 @@ export const getStakerData = (address, active, doc, docID) => {
             );
             console.log("erc contract ==>", contract);
             let symbol = await contract.methods.symbol().call();
+            let decimals = await contract.methods.decimals().call();
             console.log("symbol ==>", symbol);
             res.outputTokenSymbol = symbol;
             res.timestamp = active[i].timestamp;
-
             console.log("before from WEI ==>", res.quantity);
             res.quantity = await web3js.utils.fromWei(res.quantity.toString());
             //   console.log("after from WEI ==>", res.stakeQuantity);
-            res.boughAmount = await web3js.utils.fromWei(
-              res.boughAmount.toString()
-            );
+            console.log("~~~~~~~~~~~~!!", res, decimals);
+            if (res.boughAmount !== 18) {
+              res.boughAmount =
+                res.boughAmount / Math.pow(10, decimals).toString();
+            } else {
+              res.boughAmount = await web3js.utils.fromWei(
+                res.boughAmount.toString()
+              );
+            }
             amount = amount + Number(res.quantity);
 
             res.Days =
