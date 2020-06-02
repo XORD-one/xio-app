@@ -113,6 +113,10 @@ const Stake = (props) => {
   const [initial, setInitial] = useState(true);
   const loadingRef = useRef(props.stakeLoading);
 
+  useEffect(() => {
+    setIsAmountLimit(Number(amountXioInput) > Number(props.balance));
+  }, [props.balance, amountXioInput]);
+
   const onToggleFocus = (field) => {
     if (field === "amount") {
       setAmountFocus(!amountFocus);
