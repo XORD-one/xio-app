@@ -479,7 +479,10 @@ const Dashboard = (props) => {
                                       >
                                         <Tooltip title={item.boughAmount}>
                                           <p style={{ margin: 0 }}>
-                                            {truncateValue(item.boughAmount)}
+                                            {truncateValue(
+                                              item.boughAmount,
+                                              true
+                                            )}
                                           </p>
                                         </Tooltip>
                                       </TableCell>

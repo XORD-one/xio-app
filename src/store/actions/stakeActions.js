@@ -1,12 +1,12 @@
 import ContractInits from "../config/contractsInit";
 import { PORTAL_ADDRESS } from "../../contracts/portal";
-import {XIO_EXCHANGE_ADDRESS} from "../../contracts/xio"
+import { XIO_EXCHANGE_ADDRESS } from "../../contracts/xio";
 import {
   onSetStakeLoading,
   onSetTransactionMessage,
   onToast,
 } from "./layoutActions";
-import {getStakerData} from "./dashboardActions"
+import { getStakerData } from "./dashboardActions";
 import { get64BytesString, getCurrentGasPrices } from "../../utils";
 import { XIO_ADDRESS } from "../../contracts/xio";
 import firebase from "../../config/firebase";
@@ -19,23 +19,25 @@ export const getTokenData = () => {
       const portalContract = await ContractInits.initPortalContract();
       const addresses = await portalContract.methods.getPortalHistory().call();
       const tokenList = [];
-      for(let i = 0; i<addresses.length ; i++ ){
-        const obj = await portalContract.methods.portalData(addresses[i]).call();
+      for (let i = 0; i < addresses.length; i++) {
+        const obj = await portalContract.methods
+          .portalData(addresses[i])
+          .call();
         let contract = new web3js.eth.Contract(ERC20_ABI, obj.tokenAddress);
         let symbol = await contract.methods.symbol().call();
         let decimals = await contract.methods.decimals().call();
-        console.log('decimals -->',decimals)
+        console.log("decimals -->", decimals);
         obj.decimals = decimals;
         obj.outputTokenSymbol = symbol;
-        console.log('symbol in getTokenData -->',symbol)
+        console.log("symbol in getTokenData -->", symbol);
         if (obj.active === true) {
           tokenList.push(obj);
         }
-      };
+      }
       // Promise.all(promises).then((res) => {
-        if (tokenList.length) {
-          dispatch({ type: "getTokens", payload: tokenList });
-        }
+      if (tokenList.length) {
+        dispatch({ type: "getTokens", payload: tokenList });
+      }
       // });
     } catch (e) {
       console.log(e);
@@ -46,11 +48,11 @@ export const getTokenData = () => {
 export const onGetIsUnlock = (address) => {
   return async (dispatch) => {
     try {
-      if(address){
+      if (address) {
         console.log("address in getIsUnlock -->", address);
         const res = await (await ContractInits.initXioContract()).methods
-        .allowance(address, PORTAL_ADDRESS)
-        .call();
+          .allowance(address, PORTAL_ADDRESS)
+          .call();
         dispatch({
           type: "getUnlock",
           payload: !!(res != 0),
@@ -65,16 +67,13 @@ export const onGetIsUnlock = (address) => {
 export const onGetXioLimit = () => {
   return async (dispatch) => {
     try {
-      const portalContract = await ContractInits.initPortalWithInfura().infuraPortal
-      const {web3js} = await ContractInits.init()
-      const res = await portalContract.methods
-        .getxioQuantity()
-        .call();
-        console.log('res xio quantity -->',res)
-      const xio = await web3js.utils.fromWei(
-        res.toString()
-      );
-      console.log('res after from wei -->',xio)
+      const portalContract = await ContractInits.initPortalWithInfura()
+        .infuraPortal;
+      const { web3js } = await ContractInits.init();
+      const res = await portalContract.methods.getxioQuantity().call();
+      console.log("res xio quantity -->", res);
+      const xio = await web3js.utils.fromWei(res.toString());
+      console.log("res after from wei -->", xio);
       dispatch({
         type: "onXioLimit",
         payload: xio,
@@ -110,11 +109,16 @@ export const onGetInterestRate = (
 ) => {
   return async (dispatch) => {
     try {
-      console.log('console on render ==>',  initial,
-      amountXioInput,
-      durationDaysInput,
-      token)
-      const res = await (await ContractInits.initPortalWithInfura().infuraPortal).methods
+      console.log(
+        "console on render ==>",
+        initial,
+        amountXioInput,
+        durationDaysInput,
+        token
+      );
+      const res = await (
+        await ContractInits.initPortalWithInfura().infuraPortal
+      ).methods
         .getInterestRate()
         .call();
       console.log("initial interest ==>", res);
@@ -136,11 +140,11 @@ export const onGetInterestRate = (
       //   }
       //   index++
       // }
-      console.log('minimum stake amount -->',minimum)
+      console.log("minimum stake amount -->", minimum);
       dispatch({
-        type: 'minimumStake',
-        payload: minimum
-      })
+        type: "minimumStake",
+        payload: minimum,
+      });
       dispatch({
         type: "onInterestRate",
         payload: result,
@@ -164,7 +168,7 @@ export const onGetInterestRate = (
           type: "onInitial",
           payload: false,
         });
-        onSetInitial()
+        onSetInitial();
       }
     } catch (e) {
       console.log(e);
@@ -172,57 +176,61 @@ export const onGetInterestRate = (
   };
 };
 
-const calculationBeforeStake = async (initialRate,token,xio=1,DAYS=1) => {
+const calculationBeforeStake = async (
+  initialRate,
+  token,
+  xio = 1,
+  DAYS = 1
+) => {
   try {
-    const {web3js:web3} = await ContractInits.init();
-    const contract = await ContractInits.initXioContract()
+    const { web3js: web3 } = await ContractInits.init();
+    const contract = await ContractInits.initXioContract();
     xio = await web3.utils.toWei(xio.toString());
-    const inputAmountA = initialRate
-    console.log('inputAmountA ==>',inputAmountA)
+    const inputAmountA = initialRate;
+    console.log("inputAmountA ==>", inputAmountA);
     const inputReserveA = await contract.methods
       .balanceOf(XIO_EXCHANGE_ADDRESS)
       .call();
-    console.log('inputReserveA ==>',inputReserveA)
+    console.log("inputReserveA ==>", inputReserveA);
     const outputReserveA = await web3.eth.getBalance(XIO_EXCHANGE_ADDRESS);
-    console.log("outputReserveA ==>",outputReserveA)
+    console.log("outputReserveA ==>", outputReserveA);
     const numeratorA = inputAmountA * outputReserveA * 997;
     const denominatorA = inputReserveA * 1000 + inputAmountA * 997;
     const outputAmountA = numeratorA / denominatorA;
-    console.log("outputAmountA ==>",outputAmountA)
+    console.log("outputAmountA ==>", outputAmountA);
     // ETH to TokenB conversion
-    const inputAmountB = ((outputAmountA * xio * DAYS ) / 1000000000000000000);
+    const inputAmountB = (outputAmountA * xio * DAYS) / 1000000000000000000;
     const inputReserveB = await web3.eth.getBalance(token.tokenExchangeAddress);
-    console.log("inputReserveB ==>",inputReserveB)
-    const tokenContract = new web3.eth.Contract(ERC20_ABI, token.tokenAddress)
+    console.log("inputReserveB ==>", inputReserveB);
+    const tokenContract = new web3.eth.Contract(ERC20_ABI, token.tokenAddress);
     const outputReserveB = await tokenContract.methods
       .balanceOf(token.tokenExchangeAddress)
       .call();
-    console.log("outputReserveB ==>",outputReserveB)
+    console.log("outputReserveB ==>", outputReserveB);
     const numeratorB = inputAmountB * outputReserveB * 997;
     const denominatorB = inputReserveB * 1000 + inputAmountB * 997;
     const outputAmountB = numeratorB / denominatorB;
-    console.log('retured outputAmountB ==>',outputAmountB)
-    const res = Number(outputAmountB) / Math.pow(10,token.decimals)
-    return res
+    console.log("retured outputAmountB ==>", outputAmountB);
+    const res = Number(outputAmountB) / Math.pow(10, token.decimals);
+    return res;
   } catch (e) {
     console.log(e);
-    return null
+    return null;
   }
 };
-
 
 const getXIOtoETHsAndETHtoALT = async (amount, token) => {
   try {
     console.log("amount ==>", amount);
     console.log("token ==>", token);
-    const {infuraPortal} = await ContractInits.initPortalWithInfura();
+    const { infuraPortal } = await ContractInits.initPortalWithInfura();
     const res = await infuraPortal.methods.getXIOtoETH(amount).call();
     console.log("res of xiotoeth ==>", res);
     let res1 = await infuraPortal.methods
       .getETHtoALT(res, token.tokenExchangeAddress)
       .call();
     console.log("res of ethToAlt ==>", res1);
-    res1 = Number(res1) / Math.pow(10,token.decimals)
+    res1 = Number(res1) / Math.pow(10, token.decimals);
 
     return res1;
   } catch (e) {
@@ -234,9 +242,7 @@ export const onApprove = (isUnlock, address) => {
   return async (dispatch) => {
     try {
       if (!address) {
-        dispatch(
-          onToast("PLEASE CONNECT TO METAMASK TO CONTINUE")
-        );
+        dispatch(onToast("PLEASE CONNECT TO METAMASK TO CONTINUE"));
         return;
       }
       if (isUnlock) {
@@ -366,13 +372,9 @@ export const onConfirmStake = (
         token
       );
       if (address) {
-        console.log('isUnlock on confirm ==>',isUnlock)
-        if(!isUnlock){
-          dispatch(
-            onToast(
-              "Activate Wallet to continue."
-            )
-          );
+        console.log("isUnlock on confirm ==>", isUnlock);
+        if (!isUnlock) {
+          dispatch(onToast("Activate Wallet to continue."));
           return;
         }
         if (Number(balance) < Number(amountXioInput)) {
@@ -383,7 +385,7 @@ export const onConfirmStake = (
           );
           return;
         }
-        if(Number(amountXioInput) < Number(minimumStake)){
+        if (Number(amountXioInput) < Number(minimumStake)) {
           dispatch(
             onToast(
               `You can stake minimum ${minimumStake} XIO for token ${token.outputTokenSymbol}`
@@ -413,12 +415,16 @@ export const onConfirmStake = (
           token
         );
         let resultA = tokensBought;
-        let tempA = (Number(resultA) - Number(resultA * 0.05)).toFixed(token.decimals);
-        console.log('tempA before -->',tempA)
-        if(token.decimals !== 18){
-          tokensBought = (Math.ceil(tempA * Math.pow(10,token.decimals))).toString()
-        }
-        else{
+        let tempA = (Number(resultA) - Number(resultA * 0.05)).toFixed(
+          token.decimals
+        );
+        console.log("tempA before -->", tempA);
+        console.log("~~~~~~~~!!!!!", token);
+        if (token.decimals !== 18) {
+          tokensBought = Math.ceil(
+            tempA * Math.pow(10, token.decimals)
+          ).toString();
+        } else {
           tokensBought = await web3js.utils.toWei(tempA.toString());
         }
         console.log("tokens bought ==>", tokensBought);
@@ -444,7 +450,7 @@ export const onConfirmStake = (
           .on("transactionHash", async (hash) => {
             // hash of tx
             console.log(hash);
-            await storeTransactions(address,hash)
+            await storeTransactions(address, hash);
             dispatch(onSetTransactionMessage({ message: "", hash }));
           })
           .on("confirmation", async function (confirmationNumber, receipt) {
@@ -452,11 +458,11 @@ export const onConfirmStake = (
               // tx confirmed
               console.log("recipt ==>", receipt);
               console.log("confirm ==>", confirmationNumber);
-              dispatch(onSetXio(1))
-              dispatch(onSetDays(1))
-              dispatch(onSetInterestRate(0))
+              dispatch(onSetXio(1));
+              dispatch(onSetDays(1));
+              dispatch(onSetInterestRate(0));
               dispatch(onSetStakeLoading(false));
-              dispatch(getStakerData(address))
+              dispatch(getStakerData(address));
               dispatch(
                 onToast(
                   `You have successfully staked ${amountXioInput} XIO and can unlock these tokens after ${durationDaysInput} days.`
@@ -501,45 +507,49 @@ export const storeStakedData = (address, timestamp) => {
       .where("address", "==", address.toLowerCase())
       .get()
       .then((doc) => {
-        try{
-
+        try {
           console.log("res ==>", doc);
           if (doc.empty) {
             console.log("empty ==>", doc.empty);
+            firebase
+              .collection(process.env.REACT_APP_COLLECTION)
+              .add({
+                address: address.toLowerCase(),
+                history: [timestamp],
+                active: [timestamp],
+                insertedBy: "DAPP",
+                createdAt: Date.now(),
+              })
+              .then((data) => {
+                console.log("data ==>", data);
+                return;
+              });
+          }
+          let editDoc;
+          let docID;
+          doc.forEach((item) => {
+            editDoc = item.data();
+            docID = item.id;
+          });
+          console.log("edit doc ==>", editDoc);
+          editDoc.history.push(timestamp);
+          editDoc.active.push(timestamp);
+          editDoc.hashes.pop();
           firebase
-          .collection(process.env.REACT_APP_COLLECTION)
-            .add({ address: address.toLowerCase(), history: [timestamp], active: [timestamp], insertedBy: 'DAPP' , createdAt: Date.now() })
-            .then((data) => {
-              console.log("data ==>", data);
-              return;
+            .collection(process.env.REACT_APP_COLLECTION)
+            .doc(docID)
+            .set(editDoc)
+            .then((addedDoc) => {
+              console.log("doc updated==>", addedDoc);
             });
+        } catch (e) {
+          console.log(e);
         }
-        let editDoc;
-        let docID;
-        doc.forEach((item) => {
-          editDoc = item.data();
-          docID = item.id;
-        });
-        console.log("edit doc ==>", editDoc);
-        editDoc.history.push(timestamp);
-        editDoc.active.push(timestamp);
-        editDoc.hashes.pop()
-        firebase
-        .collection(process.env.REACT_APP_COLLECTION)
-        .doc(docID)
-        .set(editDoc).then((addedDoc)=>{
-          console.log('doc updated==>',addedDoc)
-        })
-      }
-      catch(e){
-        console.log(e)
-      }
       });
   } catch (e) {
     console.log(e);
   }
 };
-
 
 const storeTransactions = (address, hash) => {
   try {
@@ -548,42 +558,45 @@ const storeTransactions = (address, hash) => {
       .where("address", "==", address.toLowerCase())
       .get()
       .then((doc) => {
-        try{
-
+        try {
           console.log("res ==>", doc);
           if (doc.empty) {
             console.log("empty ==>", doc.empty);
+            firebase
+              .collection(process.env.REACT_APP_COLLECTION)
+              .add({
+                address: address.toLowerCase(),
+                hashes: [{ hash, status: "pending" }],
+                insertedBy: "DAPP",
+                createdAt: Date.now(),
+              })
+              .then((data) => {
+                console.log("data ==>", data);
+                return;
+              });
+          }
+          let editDoc;
+          let docID;
+          doc.forEach((item) => {
+            editDoc = item.data();
+            docID = item.id;
+          });
+          console.log("edit doc ==>", editDoc);
+          if (editDoc.hashes && editDoc.hashes.length) {
+            editDoc.hashes.push({ hash, status: "pending" });
+          } else {
+            editDoc.hashes = [{ hash, status: "pending" }];
+          }
           firebase
-          .collection(process.env.REACT_APP_COLLECTION)
-            .add({ address: address.toLowerCase(), hashes: [{hash,status:'pending'}], insertedBy: 'DAPP', createdAt: Date.now() })
-            .then((data) => {
-              console.log("data ==>", data);
-              return;
+            .collection(process.env.REACT_APP_COLLECTION)
+            .doc(docID)
+            .set(editDoc)
+            .then((addedDoc) => {
+              console.log("doc updated==>", addedDoc);
             });
+        } catch (e) {
+          console.log(e);
         }
-        let editDoc;
-        let docID;
-        doc.forEach((item) => {
-          editDoc = item.data();
-          docID = item.id;
-        });
-        console.log("edit doc ==>", editDoc);
-        if(editDoc.hashes && editDoc.hashes.length){
-          editDoc.hashes.push({hash,status:'pending'});
-        }
-        else{
-          editDoc.hashes = [{hash,status:'pending'}]
-        }
-        firebase
-        .collection(process.env.REACT_APP_COLLECTION)
-        .doc(docID)
-        .set(editDoc).then((addedDoc)=>{
-          console.log('doc updated==>',addedDoc)
-        })
-      }
-      catch(e){
-        console.log(e)
-      }
       });
   } catch (e) {
     console.log(e);
