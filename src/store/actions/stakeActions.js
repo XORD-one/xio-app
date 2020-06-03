@@ -419,7 +419,6 @@ export const onConfirmStake = (
           token.decimals
         );
         console.log("tempA before -->", tempA);
-        console.log("~~~~~~~~!!!!!", token);
         if (token.decimals !== 18) {
           tokensBought = Math.ceil(
             tempA * Math.pow(10, token.decimals)

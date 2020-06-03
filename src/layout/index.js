@@ -470,7 +470,7 @@ const Index = ({ children, ...props }) => {
                             </span>
                             , YOU WILL IMMEDIATELY RECEIVE{" "}
                             <span style={{ color: "#C66065" }}>
-                              {Number(props.interestRate).toFixed(4)}{" "}
+                              {Number(props.interestRate).toFixed(7)}{" "}
                               {props.token.outputTokenSymbol}
                             </span>
                           </h6>
